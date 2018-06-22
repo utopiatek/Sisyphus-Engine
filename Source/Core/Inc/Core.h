@@ -3,7 +3,7 @@
 #define SE_CORE
 
 
-#include "Module.h"
+#include "System.h"
 #include "Memory.h"
 #include "Timer.h"
 #include "Stream.h"

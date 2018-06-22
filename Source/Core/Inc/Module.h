@@ -53,38 +53,7 @@ public:
 };
 
 
-/// <summary>
-/// 模块配置接口。
-/// </summary>
-class ISEConfig
-{
-protected:
-	/// <summary>
-	/// 模块配置接口构造函数。
-	/// </summary>
-	ISEConfig() {};
 
-public:
-	/// <summary>
-	/// 模块配置接口析构函数。
-	/// </summary>
-	virtual ~ISEConfig() {};
-
-	/// <summary>
-	/// 获取系统描述信息。
-	/// </summary>
-	virtual SECString System() = 0;
-
-	/// <summary>
-	/// 获取模块配置数据。
-	/// </summary>
-	virtual SEUInt GetConfig(SECString pModule, SECString*& aConfig, SEUInt& nCount) = 0;
-
-	/// <summary>
-	/// 获取模块配置程序。
-	/// </summary>
-	virtual SEVoid* GetProcess(SECString pName) = 0;
-};
 
 
 #endif // !SE_CORE_MODULE

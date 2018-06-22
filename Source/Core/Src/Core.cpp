@@ -2,8 +2,6 @@
 #include "Stdafx.h"
 
 
-ISEConfig* GetConfig();
-
 class __CSECore : public ISECore
 {
 public:
@@ -13,8 +11,6 @@ public:
 		memset(m_aAwakeArray, 0, sizeof(m_aAwakeArray));
 		memset(m_aActivArray, 0, sizeof(m_aActivArray));
 		memset(m_aTestArray, 0, sizeof(m_aTestArray));
-
-		ISEConfig* pCongig = GetConfig();
 	}
 
 	~__CSECore()
@@ -56,6 +52,14 @@ public:
 
 	virtual ISESingleton*& Awake(ISESingleton* pSingleton)
 	{
+		SECString* aConfig = nullptr;
+		SEUInt nCount = 0;
+
+		if (SETrue == System()->GetConfig(Name(), pSingleton->Name(), aConfig, nCount))
+		{
+			pSingleton->Config(aConfig, nCount);
+		}
+
 		return m_aAwakeArray[m_nAwakeCount++] = pSingleton;
 	}
 
@@ -83,6 +87,9 @@ public:
 
 public:
 	_SE_SINGLETON_DECL(ISECore, __CSECore, SE_TEXT("ISECore"))
+
+public:
+	static ISESystem*& System();
 
 private:
 	ISESingleton * m_aAwakeArray[_SE_MAX_SINGLETON];
@@ -120,73 +127,43 @@ SEVoid __CSECore::Reset()
 	}
 }
 
-SEVoid __CSECore::Config(SEVoid(*Record)(SECString, ...))
+SEVoid __CSECore::Config(SEVoid(*Set)(SECString, ...))
 {
-	Record(SE_TEXT("<%s>\n"), Name());
-	Record(SE_TEXT("\n"));
-
-	for (SEUInt i = 0; i < m_nAwakeCount; i++)
-	{
-		m_aAwakeArray[i]->Config(Record);
-	}
+	Set(SE_TEXT("<%s>\n"), Name());
+	Set(SE_TEXT("\n"));
 }
 
 SEVoid __CSECore::Config(SECString* pEntries, SEUInt nCount)
 {
+}
+
+SEVoid __CSECore::Config(SEBool(*Getter)(SECString, SECString*&, SEUInt& nCount))
+{
 	ISESingleton* pSingleton = nullptr;
-	SEChar aSingletonName[32];
-	SEUInt nStart = 0;
+	SECString* aConfig = nullptr;
+	SEUInt nCount = 0;
 
-	for (SEUInt i = 0; i < nCount; i++)
+	for (SEUInt i = 0; i < m_nAwakeCount; i++)
 	{
-		// 查找到一个单例配置数据的开始标签
-		if ('[' == pEntries[i][0] || i == nCount - 1)
+		pSingleton = m_aAwakeArray[i];
+
+		if (SETrue == Getter(pSingleton->Name(), aConfig, nCount))
 		{
-			// 配置上一个单例，单例标签所在行不会传入参数
-			if (nullptr != pSingleton)
-			{
-				pSingleton->Config(pEntries + nStart + 1, i - nStart);
-				pSingleton = nullptr;
-			}
-			// 配置当前模块或者丢弃无法识别的单例配置数据
-			else
-			{
-				// 配置当前模块，需要判断当前行是否是配置项
-				if (0 == nStart)
-				{
-					// ...
-				}
-			}
-
-			// 获取当前需要配置的单例接口
-			if (i != nCount - 1)
-			{
-				nStart = i;
-				sscanf(pEntries[i], SE_TEXT("[%[^]]"), aSingletonName);
-
-				for (SEUInt j = 0; j < m_nAwakeCount; j++)
-				{
-					if (0 == strcmp(m_aAwakeArray[j]->Name(), aSingletonName))
-					{
-						pSingleton = m_aAwakeArray[j];
-					}
-				}
-			}
+			pSingleton->Config(aConfig, nCount);
 		}
 	}
 }
 
-
 ISECore* ISECore::Get()
 {
-	static ISECore* pInstance = ISECore::Entity();
+	static ISECore*& pInstance = reinterpret_cast<ISECore*&>(__CSECore::System()->Activate(reinterpret_cast<__CSECore*>(ISECore::Entity())->Init()));
 
 	return pInstance;
 }
 
 ISECore* ISECore::Entity()
 {
-	static ISECore* pInstance = new __CSECore();
+	static ISECore*& pInstance = reinterpret_cast<ISECore*&>(__CSECore::System()->Awake(new __CSECore()));
 
 	return pInstance;
 }
@@ -196,20 +173,32 @@ ISECore* ISECore::Entity()
 
 #include <Windows.h>
 
-ISEConfig* GetConfig()
+ISESystem*& __CSECore::System()
 {
-	SEChar aName[256];
-	HMODULE hModule = GetModuleHandle(NULL);
-	GetModuleFileNameA(hModule, aName, 256);
+	static ISESystem* pInstance = []() {
+		SEChar aName[256];
+		HMODULE hModule = GetModuleHandle(NULL);
+		GetModuleFileNameA(hModule, aName, 256);
 
-	ISEConfig*(*_GetConfig)();
-	_GetConfig = (ISEConfig*(*)())GetProcAddress(hModule, "_GetConfig");
+		ISESystem*(*System)() = (ISESystem*(*)())GetProcAddress(hModule, "_System");
 
-	return _GetConfig();
+		return System();
+	}();
+
+	return pInstance;
 }
 
 #elif defined(SE_EMSCRIPTEN_ASM) || defined(SE_EMSCRIPTEN_WASM)
-#error unsupported platform.
+
+ISESystem*& __CSECore::System()
+{
+	static ISESystem* pInstance = nullptr;
+
+	return pInstance;
+}
+
 #else
+
 #error unsupported platform.
+
 #endif
