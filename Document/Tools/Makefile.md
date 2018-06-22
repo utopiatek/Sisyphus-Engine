@@ -1,7 +1,7 @@
-# Makefile
+ï»¿# Makefile
 
-## ÑùÀı
-* ±à¼­math.cpp´úÂë
+## æ ·ä¾‹
+* ç¼–è¾‘math.cppä»£ç 
     ```
     #define API extern "C"
 
@@ -10,7 +10,7 @@
 	    return x * x;
     }
     ```
-* ±à¼­Makefile.txtÎÄ¼ş
+* ç¼–è¾‘Makefile.txtæ–‡ä»¶
     ```
     CC=emcc
     CPPFLAGS=-g -std=gnu++11 -Wall -Wno-gnu-zero-variadic-macro-arguments -pedantic

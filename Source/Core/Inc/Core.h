@@ -1,20 +1,43 @@
-
+﻿
 #ifndef SE_CORE
 #define SE_CORE
 
 
-#ifdef _WIN32
-#ifdef SE_DLL
-#define SE_API extern "C" _declspec(dllexport)
-#else
-#define SE_API extern "C" _declspec(dllimport)
-#endif
-#else
-#define SE_API extern "C"
-#endif
+#include "Module.h"
+#include "Memory.h"
+#include "Timer.h"
+#include "Stream.h"
 
 
-SE_API int Square(int x);
+/// <summary>
+/// CORE模块接口。
+/// </summary>
+class ISECore : public ISEModule
+{
+protected:
+	/// <summary>
+	/// CORE模块接口构造函数。
+	/// </summary>
+	ISECore() {};
+
+public:
+	/// <summary>
+	/// CORE模块接口析构函数。
+	/// </summary>
+	virtual ~ISECore() {};
+
+	/// <summary>
+	/// 激活获取接口实体。
+	/// </summary>
+	/// <returns>返回接口实体。</returns>
+	static SE_API ISECore* Get();
+
+	/// <summary>
+	/// 获取接口实体。
+	/// </summary>
+	/// <returns>返回接口实体。</returns>
+	static SE_API ISECore* Entity();
+};
 
 
 #endif // !SE_CORE

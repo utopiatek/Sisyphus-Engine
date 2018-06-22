@@ -28,3 +28,7 @@ Game Engine
 		> ~~设置附加包含目录：$(SolutionDir)..\Src\~~
 
 		> ~~设置后期生成事件：xcopy /y "$(OutDir)$(TargetFileName)" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"~~
+
+## 设计
+接口、模块、系统
+模块载入后，接口一定会在全局初始化阶段完成实例化，设计允许在全局初始化阶段初始化并使用接口，接口初始化需要从系统获得配置数据，所以模块DLL载入时，允许获得配置提供器
