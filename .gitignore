@@ -1,5 +1,4 @@
 /.git/
 /.vs/
-/Build/.vs/
 /Build/Bin/
-/Build/Temp/
+/Build/Object/
