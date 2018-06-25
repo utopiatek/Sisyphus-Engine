@@ -26,7 +26,6 @@ typedef unsigned long long    SEULong;
 typedef float                 SEFloat;
 typedef double                SEDouble;
 typedef const char*           SECString;
-typedef int (__stdcall*       SEProcess)();
 
 
 #define SETrue                1u

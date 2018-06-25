@@ -49,21 +49,7 @@ public:
 	/// <returns>返回接口引用。</returns>
 	virtual ISEModule*& Activate(ISEModule* pInstance) = 0;
 
-	/// <summary>
-	/// 获取系统配置数据。
-	/// </summary>
-	/// <returns>返回配置数据存在与否。</returns>
-	virtual SEBool GetConfig(SECString pModule, SECString pClass, SECString*& aConfig, SEUInt& nCount) = 0;
-
-	/// <summary>
-	/// 保存系统配置数据。
-	/// </summary>
-	virtual SEVoid SaveConfig(SECString pConfig, ...) = 0;
-
-	/// <summary>
-	/// 获取系统配置程序。
-	/// </summary>
-	virtual SEVoid* GetProcess(SECString pName) = 0;
+	virtual SEBool GetConfigDict(SECString pModule, SEVoid(*&Get)(SECString, SEUInt(*&)(SECString, SEVoid*&)));
 };
 
 

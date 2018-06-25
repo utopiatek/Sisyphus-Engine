@@ -42,15 +42,21 @@ public:
 	/// <summary>
 	/// 获取单例配置。
 	/// </summary>
-	/// <param name="Record">记录器函数。</param>
-	virtual SEVoid Config(SEVoid(*Record)(SECString, ...)) = 0;
+	/// <param name="Set">记录器函数。</param>
+	virtual SEVoid Config(SEVoid(*Set)(SECString, ...)) = 0;
 
 	/// <summary>
 	/// 设置单例配置。
 	/// </summary>
-	/// <param name="pEntries">配置数据条目数组。</param>
-	/// <param name="nCount">配置数据条目数量。</param>
-	virtual SEVoid Config(SECString* pEntries, SEUInt nCount) = 0;
+	/// <param name="Get">获取配置数据：名称为空，返回数据数组指针和数据数量；</param>
+	/// <param name="Get">获取配置程序：名称为函数名，返回函数指针和修改标志；</param>
+	virtual SEVoid Config(SEUInt(*Get)(SECString, SEVoid*&))
+	{
+		SEVoid* pArray = nullptr;
+		SECString* pList = reinterpret_cast<SECString*>(pArray);
+
+		Get("", pArray);
+	};
 };
 
 

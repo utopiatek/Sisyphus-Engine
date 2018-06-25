@@ -6,11 +6,14 @@ class __CSECore : public ISECore
 {
 public:
 	__CSECore()
-		:m_nAwakeCount(0), m_nActivCount(0), m_nTestCount(0)
+		:m_nAwakeCount(0), m_nActivCount(0), m_nTestCount(0),
+		m_pCfgGetter(nullptr), m_pProcGetter(nullptr)
 	{
 		memset(m_aAwakeArray, 0, sizeof(m_aAwakeArray));
 		memset(m_aActivArray, 0, sizeof(m_aActivArray));
 		memset(m_aTestArray, 0, sizeof(m_aTestArray));
+
+		System()->GetConfig(Name(), m_pCfgGetter, m_pProcGetter);
 	}
 
 	~__CSECore()
@@ -52,14 +55,23 @@ public:
 
 	virtual ISESingleton*& Awake(ISESingleton* pSingleton)
 	{
-		SECString* aConfig = nullptr;
-		SEUInt nCount = 0;
-
-		if (SETrue == System()->GetConfig(Name(), pSingleton->Name(), aConfig, nCount))
+		// 名称，配置获取器
+		if (nullptr != m_pCfgGetter)
 		{
-			pSingleton->Config(aConfig, nCount);
+			SECString* aConfig = nullptr;
+			SEUInt nCount = 0;
+
+			if (SETrue == m_pCfgGetter(pSingleton->Name(), aConfig, nCount))
+			{
+				pSingleton->Config(aConfig, nCount);
+			}
 		}
 
+		if (nullptr != m_pProcGetter)
+		{
+
+		}
+		
 		return m_aAwakeArray[m_nAwakeCount++] = pSingleton;
 	}
 
@@ -85,6 +97,38 @@ public:
 		return bResult;
 	}
 
+	virtual SEVoid ConfigAll(SEVoid(*Set)(SECString, ...))
+	{
+		Config(Set);
+
+		for (SEUInt i = 0; i < m_nAwakeCount; i++)
+		{
+			m_aAwakeArray[i]->Config(Set);
+		}
+	}
+
+	virtual SEVoid ConfigAll(SEBool(*Get)(SECString, SECString*&, SEUInt& nCount))
+	{
+		ISESingleton* pSingleton = nullptr;
+		SECString* aConfig = nullptr;
+		SEUInt nCount = 0;
+
+		if (SETrue == Get(Name(), aConfig, nCount))
+		{
+			Config(aConfig, nCount);
+		}
+
+		for (SEUInt i = 0; i < m_nAwakeCount; i++)
+		{
+			pSingleton = m_aAwakeArray[i];
+
+			if (SETrue == Get(pSingleton->Name(), aConfig, nCount))
+			{
+				pSingleton->Config(aConfig, nCount);
+			}
+		}
+	}
+
 public:
 	_SE_SINGLETON_DECL(ISECore, __CSECore, SE_TEXT("ISECore"))
 
@@ -103,6 +147,10 @@ private:
 	SEUInt m_nActivCount;
 
 	SEUInt m_nTestCount;
+
+	SEBool(*m_pCfgGetter)(SECString, SECString*&, SEUInt&);
+
+	SEVoid*(*m_pProcGetter)(SECString);
 };
 
 
@@ -127,32 +175,16 @@ SEVoid __CSECore::Reset()
 	}
 }
 
-SEVoid __CSECore::Config(SEVoid(*Set)(SECString, ...))
+SEVoid __CSECore::Config(SEVoid(*Record)(SECString, ...))
 {
-	Set(SE_TEXT("<%s>\n"), Name());
-	Set(SE_TEXT("\n"));
+	Record(SE_TEXT("<%s>\n"), Name());
+	Record(SE_TEXT("\n"));
 }
 
 SEVoid __CSECore::Config(SECString* pEntries, SEUInt nCount)
 {
 }
 
-SEVoid __CSECore::Config(SEBool(*Getter)(SECString, SECString*&, SEUInt& nCount))
-{
-	ISESingleton* pSingleton = nullptr;
-	SECString* aConfig = nullptr;
-	SEUInt nCount = 0;
-
-	for (SEUInt i = 0; i < m_nAwakeCount; i++)
-	{
-		pSingleton = m_aAwakeArray[i];
-
-		if (SETrue == Getter(pSingleton->Name(), aConfig, nCount))
-		{
-			pSingleton->Config(aConfig, nCount);
-		}
-	}
-}
 
 ISECore* ISECore::Get()
 {

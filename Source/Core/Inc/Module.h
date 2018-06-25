@@ -50,10 +50,18 @@ public:
 	/// <param name="nFlags">测试方法标记。</param>
 	/// <returns>返回测试成功标记。</returns>
 	virtual SEBool Test(SEUInt nFlags) = 0;
+
+	/// <summary>
+	/// 获取模块配置。
+	/// </summary>
+	/// <param name="Record">记录器函数。</param>
+	virtual SEVoid ConfigAll(SEVoid(*Set)(SECString, ...)) = 0;
+
+	/// <summary>
+	/// 设置模块配置。
+	/// </summary>
+	virtual SEVoid ConfigAll(SEVoid(*Get)(SECString, SEUInt(*&)(SECString, SEVoid*&))) = 0;
 };
-
-
-
 
 
 #endif // !SE_CORE_MODULE
