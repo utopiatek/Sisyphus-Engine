@@ -4,53 +4,56 @@
 
 
 #include "Core/Inc/Core.h"
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 
-class _CSEConfig : public ISEConfig
+
+class _CSESystem : public ISESystem
 {
 public:
-	_CSEConfig()
+	_CSESystem()
+		:m_nAwakeCount(0), m_nActivCount(0)
+	{
+		memset(m_aAwakeArray, 0, sizeof(m_aAwakeArray));
+		memset(m_aActivArray, 0, sizeof(m_aActivArray));
+	}
+
+	~_CSESystem()
 	{
 
 	}
 
-	~_CSEConfig()
-	{
-
-	}
-
-	virtual SECString System()
+	virtual SECString Name()
 	{
 		return SE_TEXT("Test");
 	}
 
-	virtual SEUInt GetConfig(SECString pModule, SECString*& aConfig, SEUInt& nCount)
+	virtual SECString Version()
 	{
-		aConfig = nullptr;
-		nCount = 0;
-
-		return 0;
+		return SE_TEXT("0.0.1.20180626");
 	}
 
-	virtual SEVoid* GetProcess(SECString pName)
+	virtual ISEModule*& Awake(ISEModule* pInstance)
 	{
-		if (0 == strcmp(SE_TEXT("Core.ISELog.Print"), pName))
-		{
-			return _CSEConfig::Print;
-		}
-		else if (0 == strcmp(SE_TEXT("Core.ISELog.Log"), pName))
-		{
-			return _CSEConfig::Log;
-		}
-		else if (0 == strcmp(SE_TEXT("Core.ISELog.Commit"), pName))
-		{
-			return _CSEConfig::Commit;
-		}
+		return m_aAwakeArray[m_nAwakeCount++] = pInstance;
+	}
 
-		return nullptr;
+	virtual ISEModule*& Activate(ISEModule* pInstance)
+	{
+		return m_aActivArray[m_nActivCount++] = pInstance;
+	}
+
+	virtual SEVoid GetConfig(ISEModule* pModule, SEVoid(*&Config)(ISESingleton*))
+	{
+		if (0 == strcmp(SE_TEXT("ISECore"), pModule->Name()))
+		{
+			Config = ConfigCore;
+		}
+		else
+		{
+			Config = nullptr;
+		}
 	}
 
 public:
@@ -64,8 +67,6 @@ public:
 	{
 		ISETimer::Get()->Format(g_aTime, mMsg.m_nTime);
 		SECString pFileName = strstr(mMsg.m_pFile, "/Source/");
-
-		SetColor(mMsg.m_nCode);
 
 		if (1 == mMsg.m_nCode)
 		{
@@ -100,26 +101,38 @@ public:
 				printf_s(SE_TEXT("Error: %s\nFile: %d %s\nCode: %d\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_nCode >> 2, mMsg.m_pMsg, mMsg.m_pExtraMsg);
 			}
 		}
-
-		SetColor(0);
 	}
 
 	static SEVoid Commit(ISELog::ENTRY* pEntries, SEChar* pExtra, SEUInt nCount)
 	{
 	}
 
-	static SEVoid WriteConfig(SECString pFormat, ...)
+	static SEVoid Config(SECString pFormat, ...)
 	{
 	}
 
-	static SEVoid SetColor(SEInt nCode)
+	static SEVoid ConfigCore(ISESingleton* pSingleton)
 	{
+		if (0 == strcmp(SE_TEXT("ISELog"), pSingleton->Name()))
+		{
+			ISELog* pLog = reinterpret_cast<ISELog*>(pSingleton);
+
+			pLog->SetMonitor(Print);
+			pLog->SetMonitor(Log);
+			pLog->SetCommitter(Commit);
+		}
 	}
-
-
-	static SEVoid* g_pWnd;
 
 	static SEChar g_aTime[20];
+
+private:
+	SEUInt m_nAwakeCount;
+
+	SEUInt m_nActivCount;
+
+	ISEModule* m_aAwakeArray[8];
+
+	ISEModule* m_aActivArray[8];
 };
 
 

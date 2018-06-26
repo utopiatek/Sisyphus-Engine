@@ -1,21 +1,23 @@
 
 #include "../Inc/Application.h"
 
-SEVoid* _CSEConfig::g_pWnd = nullptr;
-SEChar _CSEConfig::g_aTime[20];
-_CSEConfig pConfig;
+SEChar _CSESystem::g_aTime[20];
+ISESystem* g_pSystem = nullptr;
 
-extern "C" __declspec(dllexport) ISEConfig* _GetConfig()
+extern "C" __declspec(dllexport) ISESystem* _System()
 {
-	static _CSEConfig pConfig;
-	//static int* i = new int();
-	//static _CSEConfig* pConfig = new _CSEConfig();
-	printf("----------------------------------------");
-	return &pConfig;
+	if (nullptr == g_pSystem)
+	{
+		g_pSystem = new _CSESystem();
+	}
+
+	return g_pSystem;
 }
 
 int main()
 {
+	ISECore::Get()->Test(0);
+
 	getchar();
 	return 0;
 }

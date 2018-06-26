@@ -55,12 +55,13 @@ public:
 	/// 获取模块配置。
 	/// </summary>
 	/// <param name="Record">记录器函数。</param>
-	virtual SEVoid ConfigAll(SEVoid(*Set)(SECString, ...)) = 0;
+	virtual SEVoid ConfigAll(SEVoid(*Record)(SECString, ...)) = 0;
 
 	/// <summary>
 	/// 设置模块配置。
 	/// </summary>
-	virtual SEVoid ConfigAll(SEVoid(*Get)(SECString, SEUInt(*&)(SECString, SEVoid*&))) = 0;
+	/// <param name="Config">模块配置器。</param>
+	virtual SEVoid ConfigAll(SEVoid(*&Config)(ISESingleton*)) = 0;
 };
 
 

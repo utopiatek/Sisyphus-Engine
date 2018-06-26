@@ -89,7 +89,7 @@ SEVoid __CSETimer::Reset()
 {
 }
 
-SEVoid __CSETimer::Config(SEVoid(*Record)(SECString, ...))
+SEVoid __CSETimer::Config(SEVoid(*Set)(SECString, ...))
 {
 }
 

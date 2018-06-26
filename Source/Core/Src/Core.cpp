@@ -6,14 +6,18 @@ class __CSECore : public ISECore
 {
 public:
 	__CSECore()
-		:m_nAwakeCount(0), m_nActivCount(0), m_nTestCount(0),
-		m_pCfgGetter(nullptr), m_pProcGetter(nullptr)
+		:m_nAwakeCount(0), m_nActivCount(0), m_nTestCount(0), Config_(nullptr)
 	{
 		memset(m_aAwakeArray, 0, sizeof(m_aAwakeArray));
 		memset(m_aActivArray, 0, sizeof(m_aActivArray));
 		memset(m_aTestArray, 0, sizeof(m_aTestArray));
 
-		System()->GetConfig(Name(), m_pCfgGetter, m_pProcGetter);
+		System()->GetConfig(this, Config_);
+
+		if (nullptr != Config_)
+		{
+			Config_(this);
+		}
 	}
 
 	~__CSECore()
@@ -55,23 +59,11 @@ public:
 
 	virtual ISESingleton*& Awake(ISESingleton* pSingleton)
 	{
-		// 名称，配置获取器
-		if (nullptr != m_pCfgGetter)
+		if (nullptr != Config_)
 		{
-			SECString* aConfig = nullptr;
-			SEUInt nCount = 0;
-
-			if (SETrue == m_pCfgGetter(pSingleton->Name(), aConfig, nCount))
-			{
-				pSingleton->Config(aConfig, nCount);
-			}
+			Config_(pSingleton);
 		}
 
-		if (nullptr != m_pProcGetter)
-		{
-
-		}
-		
 		return m_aAwakeArray[m_nAwakeCount++] = pSingleton;
 	}
 
@@ -97,43 +89,29 @@ public:
 		return bResult;
 	}
 
-	virtual SEVoid ConfigAll(SEVoid(*Set)(SECString, ...))
+	virtual SEVoid ConfigAll(SEVoid(*Record)(SECString, ...))
 	{
-		Config(Set);
+		Config(Record);
 
 		for (SEUInt i = 0; i < m_nAwakeCount; i++)
 		{
-			m_aAwakeArray[i]->Config(Set);
+			m_aAwakeArray[i]->Config(Record);
 		}
 	}
 
-	virtual SEVoid ConfigAll(SEBool(*Get)(SECString, SECString*&, SEUInt& nCount))
+	virtual SEVoid ConfigAll(SEVoid(*&Config)(ISESingleton*))
 	{
-		ISESingleton* pSingleton = nullptr;
-		SECString* aConfig = nullptr;
-		SEUInt nCount = 0;
-
-		if (SETrue == Get(Name(), aConfig, nCount))
-		{
-			Config(aConfig, nCount);
-		}
+		ISESingleton* pSingleton = this;
+		Config(pSingleton);
 
 		for (SEUInt i = 0; i < m_nAwakeCount; i++)
 		{
-			pSingleton = m_aAwakeArray[i];
-
-			if (SETrue == Get(pSingleton->Name(), aConfig, nCount))
-			{
-				pSingleton->Config(aConfig, nCount);
-			}
+			Config(m_aAwakeArray[i]);
 		}
 	}
 
 public:
 	_SE_SINGLETON_DECL(ISECore, __CSECore, SE_TEXT("ISECore"))
-
-public:
-	static ISESystem*& System();
 
 private:
 	ISESingleton * m_aAwakeArray[_SE_MAX_SINGLETON];
@@ -148,9 +126,10 @@ private:
 
 	SEUInt m_nTestCount;
 
-	SEBool(*m_pCfgGetter)(SECString, SECString*&, SEUInt&);
+	SEVoid(*Config_)(ISESingleton*);
 
-	SEVoid*(*m_pProcGetter)(SECString);
+public:
+	static ISESystem*& System();
 };
 
 
@@ -212,9 +191,9 @@ ISESystem*& __CSECore::System()
 		HMODULE hModule = GetModuleHandle(NULL);
 		GetModuleFileNameA(hModule, aName, 256);
 
-		ISESystem*(*System)() = (ISESystem*(*)())GetProcAddress(hModule, "_System");
+		ISESystem*(*_System)() = (ISESystem*(*)())GetProcAddress(hModule, "_System");
 
-		return System();
+		return _System();
 	}();
 
 	return pInstance;

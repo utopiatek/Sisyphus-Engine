@@ -32,7 +32,7 @@ SEVoid _CSEStreamFactory::Reset()
 {
 }
 
-SEVoid _CSEStreamFactory::Config(SEVoid(*Record)(SECString, ...))
+SEVoid _CSEStreamFactory::Config(SEVoid(*Set)(SECString, ...))
 {
 }
 

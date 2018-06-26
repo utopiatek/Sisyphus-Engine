@@ -572,7 +572,7 @@ SEVoid __CSEMemory::Reset()
 {
 }
 
-SEVoid __CSEMemory::Config(SEVoid(*Record)(SECString, ...))
+SEVoid __CSEMemory::Config(SEVoid(*Set)(SECString, ...))
 {
 }
 

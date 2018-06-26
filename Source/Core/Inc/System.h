@@ -49,7 +49,12 @@ public:
 	/// <returns>返回接口引用。</returns>
 	virtual ISEModule*& Activate(ISEModule* pInstance) = 0;
 
-	virtual SEBool GetConfigDict(SECString pModule, SEVoid(*&Get)(SECString, SEUInt(*&)(SECString, SEVoid*&)));
+	/// <summary>
+	/// 获取模块配置器。
+	/// </summary>
+	/// <param name="pModule">模块名称。</param>
+	/// <param name="Config">返回模块模块配置器。</param>
+	virtual SEVoid GetConfig(ISEModule* pModule, SEVoid(*&Config)(ISESingleton*)) = 0;
 };
 
 
