@@ -59,8 +59,8 @@ public:
 public:
 	static SEVoid Print(SECString pFormat, SEVoid* pArgs)
 	{
-		vprintf_s(pFormat, reinterpret_cast<va_list>(pArgs));
-		printf_s("\n");
+		//vprintf_s(pFormat, reinterpret_cast<va_list>(pArgs));
+		printf("\n");
 	}
 
 	static SEVoid Log(ISELog::ENTRY& mMsg)
@@ -72,33 +72,33 @@ public:
 		{
 			if (nullptr == mMsg.m_pExtraMsg)
 			{
-				printf_s(SE_TEXT("Info: %s\nFile: %d %s\nMsg: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg);
+				printf(SE_TEXT("Info: %s\nFile: %d %s\nMsg: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg);
 			}
 			else
 			{
-				printf_s(SE_TEXT("Info: %s\nFile: %d %s\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg, mMsg.m_pExtraMsg);
+				printf(SE_TEXT("Info: %s\nFile: %d %s\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg, mMsg.m_pExtraMsg);
 			}
 		}
 		else if (2 == mMsg.m_nCode)
 		{
 			if (nullptr == mMsg.m_pExtraMsg)
 			{
-				printf_s(SE_TEXT("Warn: %s\nFile: %d %s\nMsg: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg);
+				printf(SE_TEXT("Warn: %s\nFile: %d %s\nMsg: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg);
 			}
 			else
 			{
-				printf_s(SE_TEXT("Warn: %s\nFile: %d %s\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg, mMsg.m_pExtraMsg);
+				printf(SE_TEXT("Warn: %s\nFile: %d %s\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_pMsg, mMsg.m_pExtraMsg);
 			}
 		}
 		else if (2 < mMsg.m_nCode)
 		{
 			if (nullptr == mMsg.m_pExtraMsg)
 			{
-				printf_s(SE_TEXT("Error: %s\nFile: %d %s\nCode: %d\nMsg: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_nCode >> 2, mMsg.m_pMsg);
+				printf(SE_TEXT("Error: %s\nFile: %d %s\nCode: %d\nMsg: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_nCode >> 2, mMsg.m_pMsg);
 			}
 			else
 			{
-				printf_s(SE_TEXT("Error: %s\nFile: %d %s\nCode: %d\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_nCode >> 2, mMsg.m_pMsg, mMsg.m_pExtraMsg);
+				printf(SE_TEXT("Error: %s\nFile: %d %s\nCode: %d\nMsg: %s\nExtra: %s\n\n"), g_aTime, mMsg.m_nLine, pFileName, mMsg.m_nCode >> 2, mMsg.m_pMsg, mMsg.m_pExtraMsg);
 			}
 		}
 	}
@@ -136,4 +136,4 @@ private:
 };
 
 
-#endif !SE_APPLICATION
+#endif // !SE_APPLICATION

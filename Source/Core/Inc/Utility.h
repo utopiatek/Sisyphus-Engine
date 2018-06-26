@@ -69,7 +69,7 @@ typedef const char*           SECString;
 #define SE_X64
 #endif
 
-#define SE_API extern "C"
+#define SE_API
 
 #elif __APPLE__
 
@@ -83,7 +83,7 @@ typedef const char*           SECString;
 #define SE_X64
 #endif
 
-#define SE_API extern "C"
+#define SE_API
 
 #elif __EMSCRIPTEN__
 
@@ -93,7 +93,7 @@ typedef const char*           SECString;
 #define SE_EMSCRIPTEN_WASM
 #endif
 
-#define SE_API extern "C"
+#define SE_API 
 
 #else
 #error 非支持平台类型，编译中止。

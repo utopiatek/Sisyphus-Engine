@@ -11,7 +11,7 @@ public:
 		memset(m_aAwakeArray, 0, sizeof(m_aAwakeArray));
 		memset(m_aActivArray, 0, sizeof(m_aActivArray));
 		memset(m_aTestArray, 0, sizeof(m_aTestArray));
-
+		
 		System()->GetConfig(this, Config_);
 
 		if (nullptr != Config_)
@@ -201,9 +201,12 @@ ISESystem*& __CSECore::System()
 
 #elif defined(SE_EMSCRIPTEN_ASM) || defined(SE_EMSCRIPTEN_WASM)
 
+extern "C" ISESystem* _System();
+
 ISESystem*& __CSECore::System()
 {
-	static ISESystem* pInstance = nullptr;
+	// 当前构建方式，所有模块代码合并到一起，所以不需要导入符号
+	static ISESystem* pInstance = _System();
 
 	return pInstance;
 }

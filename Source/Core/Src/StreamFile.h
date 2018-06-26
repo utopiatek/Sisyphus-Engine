@@ -491,7 +491,7 @@ public:
 
 		va_start(pArgs, pFormat);
 
-		vsprintf_s(aData, sizeof(aData), pFormat, pArgs);
+		vsprintf(aData, pFormat, pArgs);
 
 		va_end(pArgs);
 
