@@ -161,7 +161,7 @@ __SE_TEST_CASE(MEMORY, "ISEMemory", "Memory test")
 	ISEMemory* pMemoryPool = ISEMemory::Get();
 
 #if defined(SE_EMSCRIPTEN_ASM) || defined(SE_EMSCRIPTEN_WASM)
-	return SEFalse;
+	//return SEFalse;
 #endif
 
 	{
@@ -171,7 +171,7 @@ __SE_TEST_CASE(MEMORY, "ISEMemory", "Memory test")
 
 		for (SEInt i = 0; i < 10000; i++)
 		{
-			SEUInt nSize = rand() % 1000000 + 10;
+			SEUInt nSize = rand() % 100000 + 10;
 			SEVoid* pMemory = pMemoryPool->Malloc(nSize);
 
 			mVector.push_back(pMemory);
