@@ -18,13 +18,16 @@ extern "C" ISESystem* _System()
 	return g_pSystem;
 }
 
+
 #include "emscripten/html5.h"
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 
 SEInt InitWebGL()
 {
 	EmscriptenWebGLContextAttributes mAttrs;
 	emscripten_webgl_init_context_attributes(&mAttrs);
-	mAttrs.majorVersion = 2;
+	mAttrs.majorVersion = 1;
 	mAttrs.minorVersion = 0;
 	mAttrs.alpha = 0;
 	mAttrs.depth = 1;
@@ -45,11 +48,15 @@ SEInt InitWebGL()
 		if (EMSCRIPTEN_RESULT_SUCCESS == emscripten_webgl_make_context_current(nContext))
 		{
 			printf("3====================\n");
+
+			glClearColor(1.0, 1.0, 0.0, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT);
 		}
 	}
 
 	return 0;
 }
+
 
 int main()
 {
@@ -65,5 +72,3 @@ int main()
 
 	return 0;
 }
-
-//http://10.0.0.19/Emscripten/Out.html
