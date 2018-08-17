@@ -19,7 +19,7 @@ protected:
 
 public:
 	/// <summary>
-	/// 内存剖析统计结构。
+	/// 显卡缓存描述。
 	/// </summary>
 	struct DESC;
 

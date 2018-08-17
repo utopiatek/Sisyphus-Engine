@@ -9,55 +9,13 @@
 /// <summary>
 /// 资源映射标志。
 /// </summary>
-enum ESE_RESOURCE_MAP_FLAG
-{
-	/// <summary>
-	/// 对资源进行只读访问。
-	/// </summary>
-	ESE_RESOURCE_MAP_READ = 1,
-
-	/// <summary>
-	/// 对资源进行只写访问。
-	/// </summary>
-	ESE_RESOURCE_MAP_WRITE = 2,
-
-	/// <summary>
-	/// 对资源进行读写访问。
-	/// </summary>
-	ESE_RESOURCE_MAP_READ_WRITE = 3,
-
-	/// <summary>
-	/// 对资源进行写访问，硬件会丢弃当前缓冲区而分配新的缓冲区。
-	/// </summary>
-	ESE_RESOURCE_MAP_WRITE_DISCARD = 4,
-
-	/// <summary>
-	/// 对资源进行写访问，已存在的内容不能被重写，只能写缓冲区尚未被初始化的部分，只能用于顶点和索引缓冲区。
-	/// </summary>
-	ESE_RESOURCE_MAP_WRITE_NO_OVERWRITE = 5
-};
+enum ESE_RESOURCE_MAP_FLAG;
 
 
 /// <summary>
 /// 资源映射地址描述结构。
 /// </summary>
-struct SSE_MAPPED_SUBRESOURCE
-{
-	/// <summary>
-	/// 地址指针。
-	/// </summary>
-	SEVoid* m_pData;
-
-	/// <summary>
-	/// 行（字节）大小。
-	/// </summary>
-	SEUInt m_nRowPitch;
-
-	/// <summary>
-	/// 页面（字节）大小。
-	/// </summary>
-	SEUInt m_nDepthPitch;
-};
+struct SSE_MAPPED_SUBRESOURCE;
 
 
 /// <summary>
@@ -106,6 +64,60 @@ public:
 	/// 解除资源读写地址映射。
 	/// </summary>
 	virtual SEVoid Unmap() = 0;
+};
+
+
+/// <summary>
+/// 资源映射标志。
+/// </summary>
+enum ESE_RESOURCE_MAP_FLAG
+{
+	/// <summary>
+	/// 对资源进行只读访问。
+	/// </summary>
+	ESE_RESOURCE_MAP_READ = 1,
+
+	/// <summary>
+	/// 对资源进行只写访问。
+	/// </summary>
+	ESE_RESOURCE_MAP_WRITE = 2,
+
+	/// <summary>
+	/// 对资源进行读写访问。
+	/// </summary>
+	ESE_RESOURCE_MAP_READ_WRITE = 3,
+
+	/// <summary>
+	/// 对资源进行写访问，硬件会丢弃当前缓冲区而分配新的缓冲区。
+	/// </summary>
+	ESE_RESOURCE_MAP_WRITE_DISCARD = 4,
+
+	/// <summary>
+	/// 对资源进行写访问，已存在的内容不能被重写，只能写缓冲区尚未被初始化的部分，只能用于顶点和索引缓冲区。
+	/// </summary>
+	ESE_RESOURCE_MAP_WRITE_NO_OVERWRITE = 5
+};
+
+
+/// <summary>
+/// 资源映射地址描述结构。
+/// </summary>
+struct SSE_MAPPED_SUBRESOURCE
+{
+	/// <summary>
+	/// 地址指针。
+	/// </summary>
+	SEVoid* m_pData;
+
+	/// <summary>
+	/// 行（字节）大小。
+	/// </summary>
+	SEUInt m_nRowPitch;
+
+	/// <summary>
+	/// 页面（字节）大小。
+	/// </summary>
+	SEUInt m_nDepthPitch;
 };
 
 
@@ -256,6 +268,101 @@ enum ESE_RESOURCE_MISC_FLAG
 	/// 允许资源兼容GDI。
 	/// </summary>
 	ESE_RESOURCE_MISC_GDI_COMPATIBLE = 0x200L
+};
+
+
+/// <summary>
+/// 资源数据格式枚举。
+/// </summary>
+enum ESE_RESOURCE_FORMAT_ENUM
+{
+	// 不明格式
+	ESE_FORMAT_UNKNOWN = 0,
+
+	///////////////////////////////////////////////////////
+
+	// R32G32B32A32格式，4分量，元素格式有FLOAT、UINT、SINT
+	ESE_FORMAT_R32G32B32A32_TYPELESS = 1,
+	ESE_FORMAT_R32G32B32A32_FLOAT = 2,
+	ESE_FORMAT_R32G32B32A32_UINT = 3,
+	ESE_FORMAT_R32G32B32A32_SINT = 4,
+
+	// R32G32B32格式，3分量，元素格式有FLOAT、UINT、SINT
+	ESE_FORMAT_R32G32B32_TYPELESS = 5,
+	ESE_FORMAT_R32G32B32_FLOAT = 6,
+	ESE_FORMAT_R32G32B32_UINT = 7,
+	ESE_FORMAT_R32G32B32_SINT = 8,
+
+	// R32G32格式，2分量，元素格式有FLOAT、UINT、SINT
+	ESE_FORMAT_R32G32_TYPELESS = 15,
+	ESE_FORMAT_R32G32_FLOAT = 16,
+	ESE_FORMAT_R32G32_UINT = 17,
+	ESE_FORMAT_R32G32_SINT = 18,
+
+	// R32格式，1分量，元素格式有FLOAT、UINT、SINT
+	ESE_FORMAT_R32_TYPELESS = 39,
+	ESE_FORMAT_R32_FLOAT = 41,
+	ESE_FORMAT_R32_UINT = 42,
+	ESE_FORMAT_R32_SINT = 43,
+
+	///////////////////////////////////////////////////////
+
+	// R16G16B16A16格式，4分量，元素格式有FLOAT、UINT、SINT、UNORM、SNORM
+	ESE_FORMAT_R16G16B16A16_TYPELESS = 9,
+	ESE_FORMAT_R16G16B16A16_FLOAT = 10,
+	ESE_FORMAT_R16G16B16A16_UNORM = 11,
+	ESE_FORMAT_R16G16B16A16_UINT = 12,
+	ESE_FORMAT_R16G16B16A16_SNORM = 13,
+	ESE_FORMAT_R16G16B16A16_SINT = 14,
+
+	// R16G16格式，2分量，元素格式有FLOAT、UINT、SINT、UNORM、SNORM
+	ESE_FORMAT_R16G16_TYPELESS = 33,
+	ESE_FORMAT_R16G16_FLOAT = 34,
+	ESE_FORMAT_R16G16_UNORM = 35,
+	ESE_FORMAT_R16G16_UINT = 36,
+	ESE_FORMAT_R16G16_SNORM = 37,
+	ESE_FORMAT_R16G16_SINT = 38,
+
+	// R16格式，1分量，元素格式有FLOAT、UINT、SINT、UNORM、SNORM
+	ESE_FORMAT_R16_TYPELESS = 53,
+	ESE_FORMAT_R16_FLOAT = 54,
+	ESE_FORMAT_R16_UNORM = 56,
+	ESE_FORMAT_R16_UINT = 57,
+	ESE_FORMAT_R16_SNORM = 58,
+	ESE_FORMAT_R16_SINT = 59,
+
+	///////////////////////////////////////////////////////
+
+	// R8G8B8A8格式，4分量，元素格式有UINT、SINT、UNORM、SNORM
+	ESE_FORMAT_R8G8B8A8_TYPELESS = 27,
+	ESE_FORMAT_R8G8B8A8_UNORM = 28,
+	ESE_FORMAT_R8G8B8A8_UINT = 30,
+	ESE_FORMAT_R8G8B8A8_SNORM = 31,
+	ESE_FORMAT_R8G8B8A8_SINT = 32,
+
+	// R8G8格式，2分量，元素格式有UINT、SINT、UNORM、SNORM
+	ESE_FORMAT_R8G8_TYPELESS = 48,
+	ESE_FORMAT_R8G8_UNORM = 49,
+	ESE_FORMAT_R8G8_UINT = 50,
+	ESE_FORMAT_R8G8_SNORM = 51,
+	ESE_FORMAT_R8G8_SINT = 52,
+
+	// R8格式，1分量，元素格式有UINT、SINT、UNORM、SNORM
+	ESE_FORMAT_R8_TYPELESS = 60,
+	ESE_FORMAT_R8_UNORM = 61,
+	ESE_FORMAT_R8_UINT = 62,
+	ESE_FORMAT_R8_SNORM = 63,
+	ESE_FORMAT_R8_SINT = 64,
+
+	///////////////////////////////////////////////////////
+
+	// 深度和模板目标资源视图格式
+	ESE_FORMAT_D32_FLOAT = 40,
+	ESE_FORMAT_D24_UNORM_S8_UINT = 45,
+
+	/*
+	元素格式为UNORM，则元素值被线性标准化到[0～1]。元素格式为UNORM，则元素值被线性标准化到[-1～1]，
+	其它元素格式则保留其在元素格式表达范围之内的原始值。*/
 };
 
 
