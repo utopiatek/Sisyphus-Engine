@@ -3,7 +3,7 @@
 #define SE_GRAPHICS
 
 
-#include "Buffer.h"
+#include "Renderer.h"
 
 
 /// <summary>
