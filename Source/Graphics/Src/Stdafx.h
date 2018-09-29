@@ -1,9 +1,11 @@
 
-#ifndef _SE_CORE_STDAFX
-#define _SE_CORE_STDAFX
+#ifndef _SE_GRAPHICS_STDAFX
+#define _SE_GRAPHICS_STDAFX
 
 
 #include "../Inc/Graphics.h"
+#include <stdlib.h>
+#include <string>
 
 
 #define _SE_MAX_SINGLETON 16
@@ -20,20 +22,20 @@ public: \
 	SEVoid Config(SEVoid(*Record)(SECString, ...)); /*获取单例配置。*/ \
 	SEVoid Config(SECString* pEntries, SEUInt nCount); /*设置单例配置。*/
 
-#define _SE_SINGLETON_IMPL(INTERFACE, INSTANCE) \
-INTERFACE* INTERFACE::Get() /*激活获取接口实体。*/ \
+template <class I, int T> I* Entity() { return nullptr; }
+template <class I, int T> I* Init(I*) { return nullptr; }
+
+#define _SE_SINGLETON_IMPL(INTERFACE, INSTANCE, TYPE) \
+template <> INTERFACE* Entity<INTERFACE, TYPE>() \
 { \
-	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Get()->Activate(reinterpret_cast<INSTANCE*>(INTERFACE::Entity())->Init())); \
-	return pInstance; \
+	return new INSTANCE(); \
 } \
-\
-INTERFACE* INTERFACE::Entity() /*获取接口实体。*/  \
+template <> INTERFACE* Init<INTERFACE, TYPE>(INTERFACE* pInstance) \
 { \
-	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Entity()->Awake(new INSTANCE())); \
-	return pInstance; \
-} \
-INTERFACE* __SINGLETON##INSTANCE = INTERFACE::Entity(); /*保证全局初始化阶段完成构造。*/
+	return reinterpret_cast<INSTANCE*>(pInstance)->Init(); \
+}
+
 #endif
 
 
-#endif // !_SE_CORE_STDAFX
+#endif // !_SE_GRAPHICS_STDAFX

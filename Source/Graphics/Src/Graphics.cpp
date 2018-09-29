@@ -170,6 +170,8 @@ ISEGraphics* ISEGraphics::Get()
 	static ISEGraphics*& pInstance = reinterpret_cast<ISEGraphics*&>(__CSEGraphics::System()->Activate(reinterpret_cast<__CSEGraphics*>(__CSEGraphics::Entity())->Init()));
 
 	return pInstance;
+
+	return nullptr;
 }
 
 ISEGraphics* ISEGraphics::Entity()
@@ -177,6 +179,8 @@ ISEGraphics* ISEGraphics::Entity()
 	static ISEGraphics*& pInstance = reinterpret_cast<ISEGraphics*&>(__CSEGraphics::System()->Awake(new __CSEGraphics()));
 
 	return pInstance;
+
+	return nullptr;
 }
 
 
@@ -203,7 +207,7 @@ ISESystem*& __CSEGraphics::System()
 
 extern "C" ISESystem* _System();
 
-ISESystem*& __CSECore::System()
+ISESystem*& __CSEGraphics::System()
 {
 	// 当前构建方式，所有模块代码合并到一起，所以不需要导入符号
 	static ISESystem* pInstance = _System();
@@ -216,3 +220,39 @@ ISESystem*& __CSECore::System()
 #error unsupported platform.
 
 #endif
+
+//
+//#define _SE_SINGLETON_APPOINT(INTERFACE) \
+//INTERFACE* INTERFACE::Get() /*激活获取接口实体。*/ \
+//{ \
+//	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Get()->Activate(__Appoint<INTERFACE>(INTERFACE::Entity()))); \
+//	return pInstance; \
+//} \
+//\
+//INTERFACE* INTERFACE::Entity() /*获取接口实体。*/  \
+//{ \
+//	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Entity()->Awake(__Appoint<INTERFACE>())); \
+//	return pInstance; \
+//} \
+//INTERFACE* __SINGLETON##INTERFACE = INTERFACE::Entity(); /*保证全局初始化阶段完成构造。*/
+//
+//template <class I> static I* __Appoint(I* pInstance = nullptr)
+//{
+//	SEInt nGrlib = __CSEGraphics::System()->Grlib();
+//
+//	switch (nGrlib)
+//	{
+//	case SE_OPENGL:
+//		return nullptr == pInstance ? Entity<I, SE_OPENGL>() : Init<I, SE_OPENGL>(pInstance);
+//		break;
+//	default:
+//		return nullptr;
+//		break;
+//	}
+//}
+
+
+//_SE_SINGLETON_APPOINT(ISEResourceFactory)
+//_SE_SINGLETON_APPOINT(ISEProgramFactory)
+//_SE_SINGLETON_APPOINT(ISEStateFactory)
+//_SE_SINGLETON_APPOINT(ISERenderer)

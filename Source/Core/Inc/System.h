@@ -36,6 +36,12 @@ public:
 	virtual SECString Version() = 0;
 
 	/// <summary>
+	/// 获取图形库类型。
+	/// </summary>
+	/// <returns>返回图形库类型。</returns>
+	virtual SEInt Grlib() = 0;
+
+	/// <summary>
 	/// 构造模块时注册。
 	/// </summary>
 	/// <param name="pInstance">接口实例。</param>

@@ -23,7 +23,7 @@ public:
 	/// <summary>
 	/// 渲染器接口析构函数。
 	/// </summary>
-	virtual ~ISERenderer() = 0 {};
+	virtual ~ISERenderer() {};
 
 	/// <summary>
 	/// 绑定多个渲染目标。

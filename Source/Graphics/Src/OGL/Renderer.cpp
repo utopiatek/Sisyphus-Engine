@@ -75,7 +75,7 @@ private:
 };
 
 
-_SE_SINGLETON_IMPL(ISERenderer, __CSERenderer)
+_SE_SINGLETON_IMPL(ISERenderer, __CSERenderer, SE_OPENGL)
 
 
 __CSERenderer* __CSERenderer::Init()

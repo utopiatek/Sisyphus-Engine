@@ -531,7 +531,7 @@ __CSEMemory* __CSEMemory::Init()
 
 #ifdef SE_X64
 	m_mStatus.m_nBlockCount = 1;
-	m_pAllocator = new __CSEVirtualAllocator();
+	m_pAllocator = new __CSEAllocator();
 	SEUInt* pBlock = m_pAllocator->ReserveBlock();
 	Add(pBlock);
 #endif
@@ -551,7 +551,7 @@ SEVoid __CSEMemory::Reinit()
 	}
 
 	m_mStatus.m_nBlockCount = 1;
-	m_pAllocator = new __CSEVirtualAllocator();
+	m_pAllocator = new __CSEAllocator();
 	SEUInt* pBlock = m_pAllocator->ReserveBlock();
 	Add(pBlock);
 #else

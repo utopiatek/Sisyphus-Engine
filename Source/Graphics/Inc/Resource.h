@@ -9,7 +9,33 @@
 /// <summary>
 /// 资源映射标志。
 /// </summary>
-enum ESE_RESOURCE_MAP_FLAG;
+enum ESE_RESOURCE_MAP_FLAG
+{
+	/// <summary>
+	/// 对资源进行只读访问。
+	/// </summary>
+	ESE_RESOURCE_MAP_READ = 1,
+
+	/// <summary>
+	/// 对资源进行只写访问。
+	/// </summary>
+	ESE_RESOURCE_MAP_WRITE = 2,
+
+	/// <summary>
+	/// 对资源进行读写访问。
+	/// </summary>
+	ESE_RESOURCE_MAP_READ_WRITE = 3,
+
+	/// <summary>
+	/// 对资源进行写访问，硬件会丢弃当前缓冲区而分配新的缓冲区。
+	/// </summary>
+	ESE_RESOURCE_MAP_WRITE_DISCARD = 4,
+
+	/// <summary>
+	/// 对资源进行写访问，已存在的内容不能被重写，只能写缓冲区尚未被初始化的部分，只能用于顶点和索引缓冲区。
+	/// </summary>
+	ESE_RESOURCE_MAP_WRITE_NO_OVERWRITE = 5
+};
 
 
 /// <summary>
@@ -64,38 +90,6 @@ public:
 	/// 解除资源读写地址映射。
 	/// </summary>
 	virtual SEVoid Unmap() = 0;
-};
-
-
-/// <summary>
-/// 资源映射标志。
-/// </summary>
-enum ESE_RESOURCE_MAP_FLAG
-{
-	/// <summary>
-	/// 对资源进行只读访问。
-	/// </summary>
-	ESE_RESOURCE_MAP_READ = 1,
-
-	/// <summary>
-	/// 对资源进行只写访问。
-	/// </summary>
-	ESE_RESOURCE_MAP_WRITE = 2,
-
-	/// <summary>
-	/// 对资源进行读写访问。
-	/// </summary>
-	ESE_RESOURCE_MAP_READ_WRITE = 3,
-
-	/// <summary>
-	/// 对资源进行写访问，硬件会丢弃当前缓冲区而分配新的缓冲区。
-	/// </summary>
-	ESE_RESOURCE_MAP_WRITE_DISCARD = 4,
-
-	/// <summary>
-	/// 对资源进行写访问，已存在的内容不能被重写，只能写缓冲区尚未被初始化的部分，只能用于顶点和索引缓冲区。
-	/// </summary>
-	ESE_RESOURCE_MAP_WRITE_NO_OVERWRITE = 5
 };
 
 
