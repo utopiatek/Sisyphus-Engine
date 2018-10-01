@@ -7,75 +7,64 @@ class __CSERenderer : public ISERenderer
 public:
 	__CSERenderer()
 	{
+		m_aPrimitivLut[ESE_STATE_PRIMITIVE_TOPOLOGY_POINTLIST] = GL_POINTS;
+		m_aPrimitivLut[ESE_STATE_PRIMITIVE_TOPOLOGY_LINELIST] = GL_LINES;
+		m_aPrimitivLut[ESE_STATE_PRIMITIVE_TOPOLOGY_LINESTRIP] = GL_LINE_STRIP;
+		m_aPrimitivLut[ESE_STATE_PRIMITIVE_TOPOLOGY_TRIANGLELIST] = GL_TRIANGLES;
+		m_aPrimitivLut[ESE_STATE_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP] = GL_TRIANGLE_STRIP;
+		m_aPrimitivLut[ESE_STATE_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ] = GL_TRIANGLE_FAN;
 	}
 
 	virtual ~__CSERenderer()
 	{
 	}
 
-	virtual void OMSetRenderTarget(SEInt nCount, SEHandle* pRTV, SEHandle* pDSV)
+	virtual void RSSetViewport(SEInt nX, SEInt nY, SEInt nWidth, SEInt nHeight)
 	{
-
+		glViewport(nX, nY, nWidth, nHeight);
 	}
 
-	/// <summary>
-	/// 清空主渲染目标缓存。
-	/// </summary>
-	virtual void ClearRenderTarget(SEFloat(&aColor)[4]) = 0;
+	virtual void IASetPrimitiveTopology(ESE_STATE_PRIMITIVE_TOPOLOGY_ENUM eTopology)
+	{
+		m_nPrimitiv = m_aPrimitivLut[eTopology];
+	}
 
-	/// <summary>
-	/// 清空主深度和模板缓存。
-	/// </summary>
-	virtual void ClearDepthStencilBuffer(SEFloat nDepth = 1.0f, SEInt nStencil = 0) = 0;
+	virtual void Draw(SEInt nCount, SEInt nOffset)
+	{
+		glDrawArrays(m_nPrimitiv, nOffset, nCount);
+	}
 
-	/// <summary>
-	/// 设置视口。
-	/// </summary>
-	virtual void RSSetViewport(SEInt nX, SEInt nY, SEInt nWidth, SEInt nHeight) = 0;
+	virtual void DrawInstanced(SEInt nCount, SEInt nOffset, SEInt nInstanceCount)
+	{
+		glDrawArraysInstanced(m_nPrimitiv, nOffset, nCount, nInstanceCount);
+	}
 
-	/// <summary>
-	/// 设置图元拓扑类型。
-	/// </summary>
-	virtual void IASetPrimitiveTopology(ESE_STATE_PRIMITIVE_TOPOLOGY_ENUM eTopology) = 0;
+	virtual void DrawIndex(SEInt nCount, SEInt nOffset)
+	{
+		glDrawElements(m_nPrimitiv, nCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(2 * nOffset));
+	}
 
-	/// <summary>
-	/// 顺序绘制顶点数组。
-	/// </summary>
-	virtual void Draw(SEInt nCount, SEInt nOffset) = 0;
+	virtual void DrawIndexedInstanced(SEInt nCount, SEInt nOffset, SEInt nInstanceCount)
+	{
+		glDrawElementsInstanced(m_nPrimitiv, nCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(2 * nOffset), nInstanceCount);
+	}
 
-	/// <summary>
-	/// 按索引绘制。
-	/// </summary>
-	virtual void DrawIndex(SEInt nCount, SEInt nOffset) = 0;
-
-	/// <summary>
-	/// 按顶点实例绘制。
-	/// </summary>
-	virtual void DrawInstanced(SEInt nVertexCount, SEInt nInstanceCount, SEInt nVertexOffset, SEInt nInstanceOffset) = 0;
-
-	/// <summary>
-	/// 按索引实例绘制。
-	/// </summary>
-	virtual void DrawIndexedInstanced(SEInt nIndexCount, SEInt nIndexOffset, SEInt nInstanceCount) = 0;
-
-	/// <summary>
-	/// 自动绘制。
-	/// </summary>
-	virtual void DrawAuto() = 0;
-
-	/// <summary>
-	/// 交换渲染目标缓存，呈现渲染之后的画面。
-	/// </summary>
-	virtual void SwapBuffer() = 0;
+	virtual void Flush()
+	{
+		glFlush();
+	}
 
 public:
 	_SE_SINGLETON_DECL(ISERenderer, __CSERenderer, SE_TEXT("ISERenderer"))
 
 private:
+	SEInt m_nPrimitiv;
+
+	SEInt m_aPrimitivLut[7];
 };
 
 
-_SE_SINGLETON_IMPL(ISERenderer, __CSERenderer, SE_OPENGL)
+_SE_SINGLETON_IMPL(ISERenderer, __CSERenderer)
 
 
 __CSERenderer* __CSERenderer::Init()

@@ -135,6 +135,9 @@ public:
 
 __CSEGraphics* __CSEGraphics::Init()
 {
+	// 保证模块释放的顺序是正确的
+	ISECore::Get();
+
 	return this;
 }
 
@@ -221,38 +224,37 @@ ISESystem*& __CSEGraphics::System()
 
 #endif
 
-//
-//#define _SE_SINGLETON_APPOINT(INTERFACE) \
-//INTERFACE* INTERFACE::Get() /*激活获取接口实体。*/ \
-//{ \
-//	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Get()->Activate(__Appoint<INTERFACE>(INTERFACE::Entity()))); \
-//	return pInstance; \
-//} \
-//\
-//INTERFACE* INTERFACE::Entity() /*获取接口实体。*/  \
-//{ \
-//	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Entity()->Awake(__Appoint<INTERFACE>())); \
-//	return pInstance; \
-//} \
-//INTERFACE* __SINGLETON##INTERFACE = INTERFACE::Entity(); /*保证全局初始化阶段完成构造。*/
-//
-//template <class I> static I* __Appoint(I* pInstance = nullptr)
-//{
-//	SEInt nGrlib = __CSEGraphics::System()->Grlib();
-//
-//	switch (nGrlib)
-//	{
-//	case SE_OPENGL:
-//		return nullptr == pInstance ? Entity<I, SE_OPENGL>() : Init<I, SE_OPENGL>(pInstance);
-//		break;
-//	default:
-//		return nullptr;
-//		break;
-//	}
-//}
+
+#ifndef __SE_SINGLETON_APPOINT
+#define __SE_SINGLETON_APPOINT(INTERFACE) \
+INTERFACE* INTERFACE::Get() /*激活获取接口实体。*/ \
+{ \
+	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Get()->Activate(__Appoint<INTERFACE>(INTERFACE::Entity()))); \
+	return pInstance; \
+} \
+\
+INTERFACE* INTERFACE::Entity() /*获取接口实体。*/  \
+{ \
+	static INTERFACE*& pInstance = reinterpret_cast<INTERFACE*&>(ISEGraphics::Entity()->Awake(__Appoint<INTERFACE>())); \
+	return pInstance; \
+} \
+INTERFACE* __SINGLETON##INTERFACE = INTERFACE::Entity(); /*保证全局初始化阶段完成构造。*/
+
+template <class I> static I* __Appoint(I* pInstance = nullptr)
+{
+	SEInt nGrlib = __CSEGraphics::System()->Grlib();
+
+	switch (nGrlib)
+	{
+	case SE_OPENGL:
+		return nullptr == pInstance ? Entity<I, SE_OPENGL>() : Init<I, SE_OPENGL>(pInstance);
+		break;
+	default:
+		return nullptr;
+		break;
+	}
+}
+#endif
 
 
-//_SE_SINGLETON_APPOINT(ISEResourceFactory)
-//_SE_SINGLETON_APPOINT(ISEProgramFactory)
-//_SE_SINGLETON_APPOINT(ISEStateFactory)
-//_SE_SINGLETON_APPOINT(ISERenderer)
+__SE_SINGLETON_APPOINT(ISERenderer)

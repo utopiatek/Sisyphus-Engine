@@ -24,17 +24,6 @@ public: \
 
 template <class I, int T> I* Entity() { return nullptr; }
 template <class I, int T> I* Init(I*) { return nullptr; }
-
-#define _SE_SINGLETON_IMPL(INTERFACE, INSTANCE, TYPE) \
-template <> INTERFACE* Entity<INTERFACE, TYPE>() \
-{ \
-	return new INSTANCE(); \
-} \
-template <> INTERFACE* Init<INTERFACE, TYPE>(INTERFACE* pInstance) \
-{ \
-	return reinterpret_cast<INSTANCE*>(pInstance)->Init(); \
-}
-
 #endif
 
 

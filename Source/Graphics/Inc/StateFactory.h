@@ -7,6 +7,7 @@
 #include "DepthStencilState.h"
 #include "BlendState.h"
 #include "Sampler.h"
+#include "RenderTarget.h"
 
 
 /// <summary>
@@ -25,6 +26,13 @@ public:
 	/// 资源工厂接口析构函数。
 	/// </summary>
 	virtual ~ISEStateFactory() {};
+
+	/// <summary>
+	/// 创建渲染目标。
+	/// </summary>
+	/// <param name="pDesc">渲染目标描述信息。</param>
+	/// <returns>返回渲染目标指针。</returns>
+	virtual ISERenderTarget* CreateRenderTarget(ISERenderTarget::DESC* pDesc) = 0;
 
 	/// <summary>
 	/// 创建光栅化状态。

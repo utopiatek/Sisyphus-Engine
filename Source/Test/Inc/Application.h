@@ -4,6 +4,7 @@
 
 
 #include "Core/Inc/Core.h"
+#include "Graphics/Inc/Graphics.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -32,6 +33,11 @@ public:
 	virtual SECString Version()
 	{
 		return SE_TEXT("0.0.1.20180626");
+	}
+
+	virtual SEInt Grlib()
+	{
+		return SE_OPENGL;
 	}
 
 	virtual ISEModule*& Awake(ISEModule* pInstance)

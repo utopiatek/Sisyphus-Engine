@@ -20,8 +20,8 @@ extern "C" ISESystem* _System()
 
 
 #include "emscripten/html5.h"
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#include <GLES3/gl3.h>
+#include <GLES3/gl2ext.h>
 
 SEInt InitWebGL()
 {
@@ -56,7 +56,7 @@ SEInt InitWebGL()
 
 	return 0;
 }
-
+// http://localhost/Emscripten/Out.html
 int main()
 {
 	printf("1----------------------------------------------\n");

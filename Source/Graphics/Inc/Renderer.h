@@ -24,22 +24,7 @@ public:
 	/// 渲染器接口析构函数。
 	/// </summary>
 	virtual ~ISERenderer() {};
-
-	/// <summary>
-	/// 绑定多个渲染目标。
-	/// </summary>
-	virtual void OMSetRenderTarget(SEInt nCount, SEHandle* pRTV, SEHandle* pDSV) = 0;
-
-	/// <summary>
-	/// 清空主渲染目标缓存。
-	/// </summary>
-	virtual void ClearRenderTarget(SEFloat(&aColor)[4]) = 0;
-
-	/// <summary>
-	/// 清空主深度和模板缓存。
-	/// </summary>
-	virtual void ClearDepthStencilBuffer(SEFloat nDepth = 1.0f, SEInt nStencil = 0) = 0;
-
+	
 	/// <summary>
 	/// 设置视口。
 	/// </summary>
@@ -54,31 +39,26 @@ public:
 	/// 顺序绘制顶点数组。
 	/// </summary>
 	virtual void Draw(SEInt nCount, SEInt nOffset) = 0;
+	
+	/// <summary>
+	/// 按顶点实例绘制。
+	/// </summary>
+	virtual void DrawInstanced(SEInt nCount, SEInt nOffset, SEInt nInstanceCount) = 0;
 
 	/// <summary>
-	/// 按索引绘制。
+	/// 按索引绘制，仅支持SEUShort类型索引。
 	/// </summary>
 	virtual void DrawIndex(SEInt nCount, SEInt nOffset) = 0;
 
 	/// <summary>
-	/// 按顶点实例绘制。
-	/// </summary>
-	virtual void DrawInstanced(SEInt nVertexCount, SEInt nInstanceCount, SEInt nVertexOffset, SEInt nInstanceOffset) = 0;
-
-	/// <summary>
-	/// 按索引实例绘制。
+	/// 按索引实例绘制，OpenGL ES3以上支持。
 	/// </summary>
 	virtual void DrawIndexedInstanced(SEInt nIndexCount, SEInt nIndexOffset, SEInt nInstanceCount) = 0;
-
+	
 	/// <summary>
-	/// 自动绘制。
+	/// 提交命令缓冲区到硬件执行，不会等待命令执行完成。
 	/// </summary>
-	virtual void DrawAuto() = 0;
-
-	/// <summary>
-	/// 交换渲染目标缓存，呈现渲染之后的画面。
-	/// </summary>
-	virtual void SwapBuffer() = 0;
+	virtual void Flush() = 0;
 
 	/// <summary>
 	/// 激活获取接口实体。

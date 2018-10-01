@@ -29,20 +29,6 @@ public:
 	virtual ~ISETexture2D() {};
 
 	/// <summary>
-	/// 将贴图作为渲染目标绑定到渲染管线。如果贴图不支持则绑定无效。
-	/// 仅支持绑定SE_FORMAT_R8G8B8A8_UNORM格式的贴图。
-	/// </summary>
-	/// <param name="nIndex">数组贴图索引。</param>
-	virtual SEBool BindAsRenderTarget(SEInt nIndex = 0) = 0;
-
-	/// <summary>
-	/// 将贴图作为深度和模板目标绑定到渲染管线。如果贴图不支持则绑定无效。
-	/// 仅支持绑定ESE_FORMAT_D24_UNORM_S8_UINT，ESE_FORMAT_D32_FLOAT格式的贴图。
-	/// </summary>
-	/// <param name="nIndex">数组贴图索引。</param>
-	virtual SEBool BindAsDepthStencilTarget(SEInt nIndex = 0) = 0;
-
-	/// <summary>
 	/// 将贴图作为普通贴图（着色器资源）绑定到渲染管线。如果贴图不支持则绑定无效。
 	/// </summary>
 	virtual SEBool BindAsMap() = 0;

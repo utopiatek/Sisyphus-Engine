@@ -10,7 +10,7 @@ class _CSEStream : public ISEStream
 {
 protected:
 	_CSEStream()
-		:m_pLast(nullptr), m_pNext(nullptr)
+		:m_nRefCount(0), m_pLast(nullptr), m_pNext(nullptr)
 	{
 	}
 
