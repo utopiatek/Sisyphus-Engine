@@ -22,8 +22,8 @@ public: \
 	SEVoid Config(SEVoid(*Record)(SECString, ...)); /*获取单例配置。*/ \
 	SEVoid Config(SECString* pEntries, SEUInt nCount); /*设置单例配置。*/
 
-template <class I, int T> I* Entity() { return nullptr; }
-template <class I, int T> I* Init(I*) { return nullptr; }
+template <class I, int T> I* Entity();
+template <class I, int T> I* Init(I*);
 #endif
 
 

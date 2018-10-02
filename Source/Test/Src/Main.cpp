@@ -49,8 +49,21 @@ SEInt InitWebGL()
 		{
 			printf("3====================\n");
 
-			glClearColor(1.0, 1.0, 0.0, 1.0);
-			glClear(GL_COLOR_BUFFER_BIT);
+			ISERenderTarget::DESC mDesc;
+			mDesc.m_bOffscreen = SEFalse;
+
+			ISERenderTarget* pTarget = ISEStateFactory::Get()->CreateRenderTarget(&mDesc);
+			
+			if (nullptr != pTarget)
+			{
+				printf("4====================\n");
+				SEFloat aColor[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
+				pTarget->Bind();
+				pTarget->ClearColor(aColor);
+			}
+
+			//glClearColor(1.0, 1.0, 0.0, 1.0);
+			//glClear(GL_COLOR_BUFFER_BIT);
 		}
 	}
 

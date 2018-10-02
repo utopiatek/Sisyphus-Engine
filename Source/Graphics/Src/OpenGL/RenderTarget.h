@@ -46,7 +46,7 @@ public:
 		else
 		{
 			GLenum aBuffer[] = { GL_BACK };
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
 			glDrawBuffers(1, aBuffer);
 		}
 	}
