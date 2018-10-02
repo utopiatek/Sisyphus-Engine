@@ -3,14 +3,14 @@
 #define _SE_GRAPHICS_OGL_RENDER_TARGET
 
 
-#include "StateFactory.h"
+#include "Stdafx.h"
 
 
-class _CSERenderTarget : public _CSEState, ISERenderTarget
+class _CSERenderTarget : public ISERenderTarget
 {
 public:
 	_CSERenderTarget()
-		:_CSEState()
+		:m_nID(0), m_bOffscreen(SEFalse), m_nRefCount(0), m_pLast(nullptr), m_pNext(nullptr)
 	{
 	}
 
@@ -21,6 +21,16 @@ public:
 	virtual SECString Name()
 	{
 		return SE_TEXT("_CSERenderTarget");
+	}
+
+	virtual SEResID ID()
+	{
+		return m_nID;
+	}
+
+	virtual SEVoid SetID(SEResID nID)
+	{
+		m_nID = nID;
 	}
 
 	virtual SEHandle Handle()
@@ -59,36 +69,64 @@ public:
 		m_bOffscreen = pDesc->m_bOffscreen;
 		m_nRefCount = 1;
 
-		_CSEStateFactory::Get()->Register(this);
+		Cache().Register(this);
 
 		return this;
 	}
 
 	virtual SEVoid Finalize()
 	{
-		_CSEStateFactory::Get()->Unregister(this);
+		Cache().Unregister(this);
 
 		m_bOffscreen = SEFalse;
 		m_nRefCount = 0;
+		m_pLast = nullptr;
+		m_pNext = nullptr;
 
-		_CSEStateFactory::Get()->Cache(this);
+		Cache().Cache(this);
 	}
 
 	virtual SEVoid Discard()
 	{
 		m_bOffscreen = SEFalse;
 		m_nRefCount = 0;
+		m_pLast = nullptr;
+		m_pNext = nullptr;
 
 		delete this;
 	}
 
+	virtual SEVoid AddRef()
+	{
+		++m_nRefCount;
+	}
+
+	virtual SEVoid Release()
+	{
+		if (0 == --m_nRefCount)
+		{
+			Finalize();
+		}
+	}
+
 public:
+	static _CSECache<_CSERenderTarget>& Cache()
+	{
+		static _CSECache<_CSERenderTarget> mCache = _CSECache<_CSERenderTarget>();
+
+		return mCache;
+	}
+
+public:
+	SEResID m_nID;
+
 	SEBool m_bOffscreen;
 
 	SEInt m_nRefCount;
 
-public:
+	_CSERenderTarget* m_pLast;
 
+	_CSERenderTarget* m_pNext;
 };
 
 
