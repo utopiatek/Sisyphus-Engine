@@ -99,7 +99,7 @@ public:
 		return mCache;
 	}
 
-private:
+public:
 	SEResID m_nID;
 
 	SEUInt m_nShader;
@@ -218,7 +218,7 @@ public:
 		return mCache;
 	}
 
-private:
+public:
 	SEResID m_nID;
 
 	SEUInt m_nProgram;

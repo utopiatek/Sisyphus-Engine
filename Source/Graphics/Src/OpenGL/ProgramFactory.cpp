@@ -24,7 +24,7 @@ public:
 			SE_ERROR(0, "Shader generate failed!");
 			return nullptr;
 		}
-
+		
 		glShaderSource(nShader, pDesc->m_nSourceCount, pDesc->m_pSource, pDesc->m_pLength);
 		glCompileShader(nShader);
 

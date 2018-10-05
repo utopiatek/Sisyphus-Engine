@@ -259,3 +259,4 @@ template <class I> static I* __Appoint(I* pInstance = nullptr)
 
 __SE_SINGLETON_APPOINT(ISERenderer)
 __SE_SINGLETON_APPOINT(ISEStateFactory)
+__SE_SINGLETON_APPOINT(ISEProgramFactory)
