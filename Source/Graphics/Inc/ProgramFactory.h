@@ -38,6 +38,13 @@ public:
 	virtual ISEProgram* CreateProgram(ISEProgram::DESC* pDesc) = 0;
 
 	/// <summary>
+	/// 加载着色器程序。
+	/// </summary>
+	/// <param name="pDesc">着色器程序描述信息。</param>
+	/// <returns>返回着色器程序指针。</returns>
+	virtual ISEProgram* LoadProgram(ISEProgram::DESC* pDesc) = 0;
+
+	/// <summary>
 	/// 激活获取接口实体。
 	/// </summary>
 	/// <returns>返回接口实体。</returns>

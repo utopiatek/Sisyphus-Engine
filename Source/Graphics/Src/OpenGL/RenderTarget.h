@@ -66,6 +66,7 @@ public:
 
 	virtual _CSERenderTarget* Init(ISERenderTarget::DESC* pDesc)
 	{
+		m_nID = 0;
 		m_bOffscreen = pDesc->m_bOffscreen;
 		m_nRefCount = 1;
 
@@ -78,6 +79,7 @@ public:
 	{
 		Cache().Unregister(this);
 
+		m_nID = 0;
 		m_bOffscreen = SEFalse;
 		m_nRefCount = 0;
 		m_pLast = nullptr;
@@ -88,6 +90,7 @@ public:
 
 	virtual SEVoid Discard()
 	{
+		m_nID = 0;
 		m_bOffscreen = SEFalse;
 		m_nRefCount = 0;
 		m_pLast = nullptr;
