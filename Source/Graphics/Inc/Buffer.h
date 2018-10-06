@@ -57,7 +57,7 @@ public:
 	/// 将缓存作为流输出缓存绑定到渲染管线。需要标记允许。
 	/// </summary>
 	/// <param name="nOffset">缓存起始地址偏移。</param>
-	virtual SEVoid BindAsStreamOutBuffer(SEInt nOffset) = 0;
+	virtual SEVoid BindAsStreamOutBuffer(SEInt nSlot, SEInt nOffset) = 0;
 };
 
 

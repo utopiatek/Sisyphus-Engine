@@ -164,4 +164,3 @@ SEVoid __CSEProgramFactory::Config(SEVoid(*Set)(SECString, ...))
 SEVoid __CSEProgramFactory::Config(SECString* pEntries, SEUInt nCount)
 {
 }
-
