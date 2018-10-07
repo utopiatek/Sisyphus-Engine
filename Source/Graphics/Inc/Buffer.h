@@ -38,7 +38,7 @@ public:
 	/// <param name="nElementNum">结构数组：绑定元素数量。</param>
 	/// <param name="nStride">绑定元素偏移步幅。</param>
 	/// <param name="nOffset">数据起始地址偏移。</param>
-	virtual SEVoid BindAsVBuffer(SEInt nStartSlot, SEInt nElementNum, SEInt nStride, SEInt nOffset) = 0;
+	virtual SEVoid BindAsVBuffer() = 0;
 
 	/// <summary>
 	/// 将缓存作为索引缓存绑定到渲染管线。需要标记允许。

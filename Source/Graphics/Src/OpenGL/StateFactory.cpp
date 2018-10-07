@@ -44,7 +44,7 @@ public:
 
 			if (16 > mElement.m_nSlot)
 			{
-				mElement.m_pBuffer->BindAsVBuffer(0, 0, 0, 0);
+				mElement.m_pBuffer->BindAsVBuffer();
 				pPointer += mElement.m_nBufferOffset + mElement.m_nOffset;
 
 				SEInt nSize = 0;

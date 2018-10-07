@@ -81,7 +81,7 @@ public:
 		glBindBuffer(m_nBind, 0);
 	}
 
-	virtual SEVoid BindAsVBuffer(SEInt nStartSlot, SEInt nElementNum, SEInt nStride, SEInt nOffset)
+	virtual SEVoid BindAsVBuffer()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer);
 	}
@@ -93,6 +93,8 @@ public:
 
 	virtual SEVoid BindAsCBuffer(SEInt nSlot)
 	{
+		
+
 		glBindBufferBase(GL_UNIFORM_BUFFER, nSlot, m_nBuffer);
 	}
 
