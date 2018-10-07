@@ -63,6 +63,22 @@ SEInt InitWebGL()
 	mPixelShaderDesc.m_pLength = nullptr;// aLength0;
 	mPixelShaderDesc.m_pSource = aSource1;
 
+	SEFloat aPosition[] = {
+		0.0f, 0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f };
+
+	SSE_MAPPED_SUBRESOURCE mInitData;
+	mInitData.m_pData = aPosition;
+	mInitData.m_nRowPitch = sizeof(aPosition);
+	mInitData.m_nDepthPitch = sizeof(aPosition);
+
+	ISEBuffer::DESC mVertexBufferDesc;
+	mVertexBufferDesc.m_nSize = sizeof(aPosition);
+	mVertexBufferDesc.m_nElementStride = 4;
+	mVertexBufferDesc.m_eUsage = ESE_RESOURCE_USAGE_IMMUTABLE;
+	mVertexBufferDesc.m_nBindFlags = ESE_RESOURCE_BIND_VERTEX_BUFFER;
+	
 	EmscriptenWebGLContextAttributes mAttrs;
 	emscripten_webgl_init_context_attributes(&mAttrs);
 	mAttrs.majorVersion = 2;
@@ -95,9 +111,6 @@ SEInt InitWebGL()
 			if (nullptr != pTarget)
 			{
 				printf("4====================\n");
-				SEFloat aColor[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
-				pTarget->Bind();
-				pTarget->ClearColor(aColor);
 			}
 
 			ISEShader* pVertexShader = ISEProgramFactory::Get()->CreateShader(&mVertexShaderDesc);
@@ -122,8 +135,49 @@ SEInt InitWebGL()
 				printf("7====================\n");
 			}
 
-			//glClearColor(1.0, 1.0, 0.0, 1.0);
-			//glClear(GL_COLOR_BUFFER_BIT);
+
+			ISEBuffer* pVertexBuffer = ISEResourceFactory::Get()->CreateBuffer(&mVertexBufferDesc, &mInitData);
+			if (nullptr != pVertexBuffer)
+			{
+				printf("8====================\n");
+			}
+
+			ISERenderer* pRenderer = ISERenderer::Get();
+			if (nullptr != pRenderer)
+			{
+				printf("9====================\n");
+			}
+
+			{
+				SEFloat aColor[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
+				pTarget->Bind();
+				pTarget->ClearColor(aColor);
+
+				pProgram->Bind();
+
+				pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glEnableVertexAttribArray(0);
+
+				pRenderer->IASetPrimitiveTopology(ESE_STATE_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				pRenderer->Draw(3, 0);
+
+				pRenderer->Flush();
+
+				printf("10====================\n");
+			}
+			//SEFloat aColor[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
+			//pTarget->Bind();
+			//pTarget->ClearColor(aColor);
+
+			//pProgram->Bind();
+
+			//pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+			//glEnableVertexAttribArray(0);
+			//glDrawArrays(GL_TRIANGLES, 0, 3);
+			//printf("9====================\n");
+			//glSwapBu
 		}
 	}
 

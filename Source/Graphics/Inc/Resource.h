@@ -84,7 +84,7 @@ public:
 	/// </summary>
 	/// <param name="pResource">资源映射地址描述。</param>
 	/// <param name="pResource">资源映射地址描述。</param>
-	virtual SEVoid Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag) = 0;
+	virtual SEVoid Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag, SEInt nOffset, SEInt nLength) = 0;
 
 	/// <summary>
 	/// 解除资源读写地址映射。

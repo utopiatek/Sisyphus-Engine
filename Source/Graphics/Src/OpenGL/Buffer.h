@@ -39,7 +39,7 @@ public:
 		return reinterpret_cast<SEHandle>(m_nBuffer);
 	}
 
-	virtual SEVoid Map(SEInt nOffset, SEInt nLength, ESE_RESOURCE_MAP_FLAG eFlag, SSE_MAPPED_SUBRESOURCE* pResource)
+	virtual SEVoid Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag, SEInt nOffset, SEInt nLength)
 	{
 		SEUInt nFlag = 0;
 
@@ -72,6 +72,7 @@ public:
 
 		glBindBuffer(m_nBind, m_nBuffer);
 		glMapBufferRange(m_nBind, nOffset, nLength, nFlag);
+		
 	}
 
 	virtual SEVoid Unmap()
