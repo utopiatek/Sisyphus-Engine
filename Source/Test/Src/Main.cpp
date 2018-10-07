@@ -28,22 +28,26 @@ extern "C" ISESystem* _System()
 SEInt InitWebGL()
 {
 
-	SEChar pSource0[] = ("                           \
-		#version 300 es                           \n \
-		layout (location = 0) in vec4 vPosition;  \n \
-		void main()                               \n \
-		{                                         \n \
-			gl_Position = vPosition;              \n \
-		}                                         \n ");
+	SEChar pSource0[] = ("                             \
+		#version 300 es                             \n \
+		layout (location = 0) in vec4 vPosition;    \n \
+		void main()                                 \n \
+		{                                           \n \
+			gl_Position = vPosition;                \n \
+		}                                           \n ");
 
-	SEChar pSource1[] = ("                           \
-		#version 300 es                           \n \
-		precision mediump float;                  \n \
-		out vec4 fragColor;                       \n \
-		void main()                               \n \
-		{                                         \n \
-			fragColor = vec4(1.0, 0.0, 0.0, 1.0); \n \
-		}                                         \n ");
+	SEChar pSource1[] = ("                             \
+		#version 300 es                             \n \
+		precision mediump float;                    \n \
+		layout(std140) uniform CUSTOM_PER_MATERIAL  \n \
+		{                                           \n \
+			vec4 Color;                             \n \
+		};                                          \n \
+		out vec4 fragColor;                         \n \
+		void main()                                 \n \
+		{                                           \n \
+			fragColor = Color;// vec4(1.0, 0.0, 0.0, 1.0);   \n \
+		}                                           \n ");
 
 	SECString aSource0[] = { pSource0 };
 	SEInt aLength0[] = { sizeof(pSource0) };
@@ -79,6 +83,19 @@ SEInt InitWebGL()
 	mVertexBufferDesc.m_eUsage = ESE_RESOURCE_USAGE_IMMUTABLE;
 	mVertexBufferDesc.m_nBindFlags = ESE_RESOURCE_BIND_VERTEX_BUFFER;
 	
+	SEFloat aCBufferData[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+
+	SSE_MAPPED_SUBRESOURCE mCBufferInitData;
+	mCBufferInitData.m_pData = aCBufferData;
+	mCBufferInitData.m_nRowPitch = sizeof(aCBufferData);
+	mCBufferInitData.m_nDepthPitch = sizeof(aCBufferData);
+
+	ISEBuffer::DESC mCBufferDesc;
+	mCBufferDesc.m_nSize = sizeof(aCBufferData);
+	mCBufferDesc.m_nElementStride = 4;
+	mCBufferDesc.m_eUsage = ESE_RESOURCE_USAGE_IMMUTABLE;
+	mCBufferDesc.m_nBindFlags = ESE_RESOURCE_BIND_CONSTANT_BUFFER;
+
 	EmscriptenWebGLContextAttributes mAttrs;
 	emscripten_webgl_init_context_attributes(&mAttrs);
 	mAttrs.majorVersion = 2;
@@ -142,6 +159,12 @@ SEInt InitWebGL()
 				printf("8====================\n");
 			}
 
+			ISEBuffer* pConstBuffer = ISEResourceFactory::Get()->CreateBuffer(&mCBufferDesc, &mCBufferInitData);
+			if (nullptr != pConstBuffer)
+			{
+				printf("9====================\n");
+			}
+
 			ISEInputLayout::DESC mInputLayoutDesc;
 			mInputLayoutDesc.m_pProgram = pProgram;
 			mInputLayoutDesc.m_nCount = 1;
@@ -159,13 +182,13 @@ SEInt InitWebGL()
 			ISEInputLayout* pLayout = ISEStateFactory::Get()->CreateInputLayout(&mInputLayoutDesc);
 			if (nullptr != pLayout)
 			{
-				printf("9====================\n");
+				printf("10====================\n");
 			}
 
 			ISERenderer* pRenderer = ISERenderer::Get();
 			if (nullptr != pRenderer)
 			{
-				printf("10====================\n");
+				printf("11====================\n");
 			}
 
 			{
@@ -174,8 +197,10 @@ SEInt InitWebGL()
 				pTarget->ClearColor(aColor);
 
 				pProgram->Bind();
-
+				
 				pLayout->Bind();
+
+				pConstBuffer->BindAsCBuffer(1);
 				//pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
 				//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 				//glEnableVertexAttribArray(0);
@@ -185,7 +210,7 @@ SEInt InitWebGL()
 
 				pRenderer->Flush();
 
-				printf("11====================\n");
+				printf("12====================\n");
 			}
 			
 			//glGenVertexArrays

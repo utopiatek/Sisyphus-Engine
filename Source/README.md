@@ -49,10 +49,14 @@
 // 通过GL_MAX_UNIFORM_BUFFER_BINDINGS查询可以绑定点数，一般为36
 // https://blog.csdn.net/csxiaoshui/article/details/32101977
 // http://www.zwqxin.com/archives/shaderglsl/communication-between-opengl-glsl-2.html
+// https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext#Uniform_buffer_objects
 // A0 B1
 // A0 C1
 // A0 B1 C？
 // 基于以上可知不可分配全局绑定点，分全局绑定点和局部绑定点，全局针对摄像机数据这些，局部针对材质，着色器这些。
+配置文件声明若干常量缓存块，着色器只能使用已声明的这些常量缓存块
+用户可自定义其中两个常量缓存块，一个时着色器常量，一个是材质常量
+ 
 
 // 缓存对象。
 

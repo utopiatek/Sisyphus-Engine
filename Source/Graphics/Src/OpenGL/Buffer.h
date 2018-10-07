@@ -93,8 +93,6 @@ public:
 
 	virtual SEVoid BindAsCBuffer(SEInt nSlot)
 	{
-		
-
 		glBindBufferBase(GL_UNIFORM_BUFFER, nSlot, m_nBuffer);
 	}
 

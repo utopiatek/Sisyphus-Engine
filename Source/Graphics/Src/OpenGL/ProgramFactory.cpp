@@ -6,7 +6,11 @@ class __CSEProgramFactory : public ISEProgramFactory
 {
 public:
 	__CSEProgramFactory()
+		:m_nConstBufferCount(0)
 	{
+		m_aConstBuffer[0] = SE_TEXT("CUSTOM_PER_SHADER");
+		m_aConstBuffer[1] = SE_TEXT("CUSTOM_PER_MATERIAL");
+		m_nConstBufferCount = 2;
 	}
 
 	virtual ~__CSEProgramFactory()
@@ -92,6 +96,17 @@ public:
 			return nullptr;
 		}
 
+		for (SEUInt i = 0; i < m_nConstBufferCount; i++)
+		{
+			SEInt nIndex = glGetUniformBlockIndex(nProgram, m_aConstBuffer[i]);
+
+			if (-1 != nIndex)
+			{
+				glUniformBlockBinding(nProgram, nIndex, i);
+			}
+		}
+		
+
 		return _CSEProgram::Cache().Cache()->Init(nProgram);
 	}
 
@@ -135,6 +150,11 @@ public:
 
 public:
 	_SE_SINGLETON_DECL(ISEProgramFactory, __CSEProgramFactory, SE_TEXT("ISEProgramFactory"))
+
+private:
+	SEUInt m_nConstBufferCount;
+
+	SECString m_aConstBuffer[16];
 };
 
 
