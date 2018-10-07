@@ -142,10 +142,30 @@ SEInt InitWebGL()
 				printf("8====================\n");
 			}
 
+			ISEInputLayout::DESC mInputLayoutDesc;
+			mInputLayoutDesc.m_pProgram = pProgram;
+			mInputLayoutDesc.m_nCount = 1;
+
+			ISEInputLayout::ELEMENT& mInput0 = mInputLayoutDesc.m_aElement[0];
+			mInput0.m_pName = "";
+			mInput0.m_nSlot = 0;
+			mInput0.m_eFormat = ESE_FORMAT_R32G32B32_FLOAT;
+			mInput0.m_pBuffer = pVertexBuffer;
+			mInput0.m_nBufferOffset = 0;
+			mInput0.m_nOffset = 0;
+			mInput0.m_nStride = 12;
+			mInput0.m_nInstanceCount = 0;
+
+			ISEInputLayout* pLayout = ISEStateFactory::Get()->CreateInputLayout(&mInputLayoutDesc);
+			if (nullptr != pLayout)
+			{
+				printf("9====================\n");
+			}
+
 			ISERenderer* pRenderer = ISERenderer::Get();
 			if (nullptr != pRenderer)
 			{
-				printf("9====================\n");
+				printf("10====================\n");
 			}
 
 			{
@@ -155,29 +175,20 @@ SEInt InitWebGL()
 
 				pProgram->Bind();
 
-				pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-				glEnableVertexAttribArray(0);
+				pLayout->Bind();
+				//pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
+				//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				//glEnableVertexAttribArray(0);
 
 				pRenderer->IASetPrimitiveTopology(ESE_STATE_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				pRenderer->Draw(3, 0);
 
 				pRenderer->Flush();
 
-				printf("10====================\n");
+				printf("11====================\n");
 			}
-			//SEFloat aColor[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
-			//pTarget->Bind();
-			//pTarget->ClearColor(aColor);
-
-			//pProgram->Bind();
-
-			//pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
-			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-			//glEnableVertexAttribArray(0);
-			//glDrawArrays(GL_TRIANGLES, 0, 3);
-			//printf("9====================\n");
-			//glSwapBu
+			
+			//glGenVertexArrays
 		}
 	}
 

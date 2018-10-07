@@ -8,6 +8,7 @@
 #include "BlendState.h"
 #include "Sampler.h"
 #include "RenderTarget.h"
+#include "InputLayout.h"
 
 
 /// <summary>
@@ -33,6 +34,13 @@ public:
 	/// <param name="pDesc">渲染目标描述信息。</param>
 	/// <returns>返回渲染目标指针。</returns>
 	virtual ISERenderTarget* CreateRenderTarget(ISERenderTarget::DESC* pDesc) = 0;
+
+	/// <summary>
+	/// 创建输入布局。
+	/// </summary>
+	/// <param name="pDesc">输入布局描述信息。</param>
+	/// <returns>返回输入布局指针。</returns>
+	virtual ISEInputLayout* CreateInputLayout(ISEInputLayout::DESC* pDesc) = 0;
 
 	/// <summary>
 	/// 创建光栅化状态。
