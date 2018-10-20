@@ -27,12 +27,16 @@ extern "C" ISESystem* _System()
 
 SEInt InitWebGL()
 {
+	
 
 	SEChar pSource0[] = ("                             \
 		#version 300 es                             \n \
 		layout (location = 0) in vec4 vPosition;    \n \
+		layout (location = 1) in vec2 vUV;          \n \
+		out vec2 v_UV;                              \n \
 		void main()                                 \n \
 		{                                           \n \
+			v_UV = vUV;                             \n \
 			gl_Position = vPosition;                \n \
 		}                                           \n ");
 
@@ -43,10 +47,11 @@ SEInt InitWebGL()
 		{                                           \n \
 			vec4 Color;                             \n \
 		};                                          \n \
+		in vec2 v_UV;                               \n \
 		out vec4 fragColor;                         \n \
 		void main()                                 \n \
 		{                                           \n \
-			fragColor = Color;// vec4(1.0, 0.0, 0.0, 1.0);   \n \
+			fragColor =  vec4(v_UV, 0.0f, 1.0f);//Color;// vec4(1.0, 0.0, 0.0, 1.0);   \n \
 		}                                           \n ");
 
 	SECString aSource0[] = { pSource0 };
@@ -70,7 +75,11 @@ SEInt InitWebGL()
 	SEFloat aPosition[] = {
 		0.0f, 0.5f, 0.0f,
 		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f };
+		0.5f, -0.5f, 0.0f,
+
+		0.5f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f };
 
 	SSE_MAPPED_SUBRESOURCE mInitData;
 	mInitData.m_pData = aPosition;
@@ -110,7 +119,7 @@ SEInt InitWebGL()
 	//mAttrs.failIfMajorPerformanceCaveat = 0;
 	//mAttrs.enableExtensionsByDefault = 0;
 	//mAttrs.explicitSwapControl = 0;
-
+	
 	EMSCRIPTEN_WEBGL_CONTEXT_HANDLE nContext = emscripten_webgl_create_context(0, &mAttrs);
 	printf("1====================\n");
 	if (nContext)
@@ -167,7 +176,7 @@ SEInt InitWebGL()
 
 			ISEInputLayout::DESC mInputLayoutDesc;
 			mInputLayoutDesc.m_pProgram = pProgram;
-			mInputLayoutDesc.m_nCount = 1;
+			mInputLayoutDesc.m_nCount = 2;
 
 			ISEInputLayout::ELEMENT& mInput0 = mInputLayoutDesc.m_aElement[0];
 			mInput0.m_pName = "";
@@ -178,6 +187,16 @@ SEInt InitWebGL()
 			mInput0.m_nOffset = 0;
 			mInput0.m_nStride = 12;
 			mInput0.m_nInstanceCount = 0;
+
+			ISEInputLayout::ELEMENT& mInput1 = mInputLayoutDesc.m_aElement[1];
+			mInput1.m_pName = "";
+			mInput1.m_nSlot = 1;
+			mInput1.m_eFormat = ESE_FORMAT_R32G32_FLOAT;
+			mInput1.m_pBuffer = pVertexBuffer;
+			mInput1.m_nBufferOffset = 36;
+			mInput1.m_nOffset = 0;
+			mInput1.m_nStride = 8;
+			mInput1.m_nInstanceCount = 0;
 
 			ISEInputLayout* pLayout = ISEStateFactory::Get()->CreateInputLayout(&mInputLayoutDesc);
 			if (nullptr != pLayout)
@@ -213,7 +232,12 @@ SEInt InitWebGL()
 				printf("12====================\n");
 			}
 			
-			//glGenVertexArrays
+			//SEInt nCount = 0;
+			//glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &nCount);
+			//for (int i=0; i<nCount; i++)
+			//{
+			//	
+			//}
 		}
 	}
 

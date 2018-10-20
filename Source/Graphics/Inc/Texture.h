@@ -73,11 +73,6 @@ struct ISETexture2D::DESC
 	SEUInt m_nHeight;
 
 	/// <summary>
-	/// 贴图深度。
-	/// </summary>
-	SEUInt m_nDepth;
-
-	/// <summary>
 	/// 贴图多级渐进纹理层数。
 	/// </summary>
 	SEUInt m_nMipLevels;

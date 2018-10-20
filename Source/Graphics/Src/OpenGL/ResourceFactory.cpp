@@ -1,5 +1,6 @@
 
 #include "Buffer.h"
+#include "Texture.h"
 
 
 class __CSEResourceFactory : public ISEResourceFactory
@@ -87,6 +88,26 @@ public:
 
 	virtual ISETexture2D* CreateTexture2D(ISETexture2D::DESC* pDesc, SSE_MAPPED_SUBRESOURCE* pInitData = nullptr)
 	{
+		SEUInt nTexture = 0;
+
+		glGenTextures(1, &nTexture);
+
+		if (0 == nTexture)
+		{
+			SE_ERROR(0, "Texture generate failed!");
+			return nullptr;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, nTexture);
+
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		//GL_TEXTURE_2D\GL_TEXTURE_3D\GL_TEXTURE_2D_ARRAY\GL_TEXTURE_CUBE_MAP
+		//glDeleteTextures
+		//glTexImage2D\glTexStorage2D
+		//
+
 		return nullptr;
 	}
 
