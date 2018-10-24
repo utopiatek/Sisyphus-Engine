@@ -21,7 +21,6 @@ public:
 	_CSETransport()
 		:m_nIndex(0)
 	{
-		//glMapBufferRange
 	}
 
 	_CSETransport()
@@ -55,96 +54,6 @@ public:
 		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 		return 0;
-	}
-
-	SEVoid ParseFormat(ESE_RESOURCE_FORMAT_ENUM eFormat)
-	{
-		SEUInt nSpec = 0;
-		SEUInt nCount = 0;
-		SEUInt nSize = 0;
-
-		SEUInt aLut[4][3][6] = {
-					{
-						{ 0, 0, GL_R8UI, /*GL_R8I*/GL_R8I, GL_R8, GL_R8_SNORM },
-						{ 0, GL_R16F, GL_R16UI, /*GL_R16I*/GL_R16I, 0, 0 },
-						{ 0, GL_R32F, GL_R32UI, GL_R32I, 0, 0 }
-					},
-					{
-						{ 0, 0, GL_RG8UI, GL_RG8I, GL_RG8, GL_RG8_SNORM },
-						{ 0, GL_RG16F, GL_RG16UI, /*GL_RG16I*/GL_RG16I, 0, 0 },
-						{ 0, GL_RG32F, GL_RG32UI, GL_RG32I, 0, 0 }
-					},
-					{
-						{ 0, 0, GL_RGB8UI, /*GL_RGB8I*/GL_RGB8I, GL_RGB8, GL_RGB8_SNORM },
-						{ 0, GL_RGB16F, GL_RGB16UI, GL_RGB16I, 0, 0 },
-						{ 0, GL_RGB32F, GL_RGB32UI, GL_RGB32I, 0, 0 }
-					},
-					{
-						{ 0, 0, GL_RGBA8UI, GL_RGBA8I, GL_RGBA8, GL_RGBA8_SNORM },
-						{ 0, GL_RGBA16F, GL_RGBA16UI, GL_RGBA16I, 0, 0 },
-						{ 0, GL_RGBA32F, GL_RGBA32UI, GL_RGBA32I, 0, 0 }
-					}
-		};
-
-		if (0 == nSpec)
-		{
-			if (1 == nCount)
-			{
-				nSize--;
-
-				
-
-				SEInt aLut5[13] = {
-					GL_DEPTH_COMPONENT32F,
-					GL_DEPTH24_STENCIL8,
-					GL_DEPTH_COMPONENT16,
-					GL_DEPTH_COMPONENT24,
-					GL_SRGB8,
-					GL_SRGB8_ALPHA8,
-					GL_RGBA4,
-					GL_RGB565,
-					GL_RGB5_A1,
-					GL_RGB9_E5,
-					GL_RGB10_A2,
-					GL_RGB10_A2UI,
-					GL_R11F_G11F_B10F,
-					
-
-				};
-			}
-
-			if (2 == nCount)
-			{
-			}
-
-			if (3 == nCount)
-			{
-			}
-
-			if (4 == nCount)
-			{
-			}
-		}
-		else
-		{
-		}
-
-
-		//SEInt aLut[4][6];
-
-		//aLut = {
-		//	{ 0, 0, 0, 0, SETrue, SETrue },
-		//	{ 0, 0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_BYTE, GL_BYTE },
-		//	{ 0, GL_FIXED, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_SHORT, GL_SHORT },
-		//	{ 0, GL_FLOAT, GL_UNSIGNED_INT, GL_INT, GL_UNSIGNED_INT, GL_INT } };
-
-		// 1, 2, 4
-
-		/*SEInt aLut[4][6] = {
-			{ 0, 0, 0, 0, SETrue, SETrue },
-			{ 0, 0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_BYTE, GL_BYTE },
-			{ 0, GL_FIXED, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_SHORT, GL_SHORT },
-			{ 0, GL_FLOAT, GL_UNSIGNED_INT, GL_INT, GL_UNSIGNED_INT, GL_INT } };*/
 	}
 
 public:
@@ -200,7 +109,7 @@ public:
 		//glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_nBuffer);
 	}
 
-	virtual SEVoid Unmap( SEInt nLevel, SEUInt nWidth, SEUInt nHeight)
+	virtual SEVoid Unmap(  SEInt nLevel, SEUInt nWidth, SEUInt nHeight)
 	{
 		if (m_nBuffer)
 		{

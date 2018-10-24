@@ -351,8 +351,13 @@ enum ESE_RESOURCE_FORMAT_ENUM
 	///////////////////////////////////////////////////////
 
 	// 深度和模板目标资源视图格式
+	ESE_FORMAT_L8_UINT = 0,
+
+
 	ESE_FORMAT_D32_FLOAT = 0x1131,
-	ESE_FORMAT_D24_UNORM_S8_UINT = 0x2134,
+	ESE_FORMAT_D24_FLOAT = 0x2101,
+	ESE_FORMAT_D16_FLOAT = 0x3121,
+	ESE_FORMAT_D24_UNORM_S8_UINT = 0x4134,
 
 	/*
 	元素格式为UNORM，则元素值被线性标准化到[0～1]。元素格式为UNORM，则元素值被线性标准化到[-1～1]，
