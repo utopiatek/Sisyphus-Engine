@@ -177,6 +177,77 @@ class _CSEFormatUtil
 public:
 	_CSEFormatUtil()
 	{
+		SEUInt nTextureFormatLut[64][3] = {
+			{ 0, 0, 0 },
+
+			// R32G32B32A32格式，4分量，元素格式有FLOAT、UINT、SINT
+			{ 0, 0, 0 },
+			{ GL_RGBA32F, GL_RGBA, GL_FLOAT },
+			{ GL_RGBA32UI, GL_RGBA_INTEGER, GL_UNSIGNED_INT },
+			{ GL_RGBA32I, GL_RGBA_INTEGER, GL_INT },
+			// R32G32B32格式，3分量，元素格式有FLOAT、UINT、SINT
+			{ 0, 0, 0 },
+			{ GL_RGB32F, GL_RGB, GL_FLOAT },
+			{ GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT },
+			{ GL_RGB32I, GL_RGB_INTEGER, GL_INT },
+			// R32G32格式，2分量，元素格式有FLOAT、UINT、SINT
+			{ 0, 0, 0 },
+			{ GL_RG32F, GL_RG, GL_FLOAT },
+			{ GL_RG32UI, GL_RG_INTEGER, GL_UNSIGNED_INT },
+			{ GL_RG32I, GL_RG_INTEGER, GL_INT },
+			// R32格式，1分量，元素格式有FLOAT、UINT、SINT
+			{ 0, 0, 0 },
+			{ GL_R32F, GL_RED, GL_FLOAT },
+			{ GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT },
+			{ GL_R32I, GL_RED_INTEGER, GL_INT },
+
+			// R16G16B16A16格式，4分量，元素格式有FLOAT、UINT、SINT、UNORM、SNORM
+			{ 0, 0, 0 },
+			{ GL_RGBA16F, GL_RGBA, GL_HALF_FLOAT },
+			{ GL_RGBA16UI, GL_RGBA_INTEGER, GL_UNSIGNED_SHORT },
+			{ GL_RGBA16I, GL_RGBA_INTEGER, GL_SHORT },
+			{ 0, 0, 0 },
+			{ 0, 0, 0 },
+			// R16G16格式，2分量，元素格式有FLOAT、UINT、SINT、UNORM、SNORM
+			{ 0, 0, 0 },
+			{ GL_RG16F, GL_RG, GL_HALF_FLOAT },
+			{ GL_RG16UI, GL_RG_INTEGER, GL_UNSIGNED_SHORT },
+			{ GL_RG16I, GL_RG_INTEGER, GL_SHORT },
+			{ 0, 0, 0 },
+			{ 0, 0, 0 },
+			// R16格式，1分量，元素格式有FLOAT、UINT、SINT、UNORM、SNORM
+			{ 0, 0, 0 },
+			{ GL_R16F, GL_RED, GL_HALF_FLOAT },
+			{ GL_R16UI, GL_RED_INTEGER, GL_UNSIGNED_SHORT },
+			{ GL_R16I, GL_RED_INTEGER, GL_SHORT },
+			{ 0, 0, 0 },
+			{ 0, 0, 0 },
+
+			// R8G8B8A8格式，4分量，元素格式有UINT、SINT、UNORM、SNORM
+			{ 0, 0, 0 },
+			{ GL_RGBA8UI, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE },
+			{ GL_RGBA8I, GL_RGBA_INTEGER, GL_BYTE },
+			{ GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE },
+			{ GL_RGBA8_SNORM, GL_RGBA, GL_BYTE },
+			// R8G8格式，2分量，元素格式有UINT、SINT、UNORM、SNORM
+			{ 0, 0, 0 },
+			{ GL_RG8UI, GL_RG_INTEGER, GL_UNSIGNED_BYTE },
+			{ GL_RG8I, GL_RG_INTEGER, GL_BYTE },
+			{ GL_RG8, GL_RG, GL_UNSIGNED_BYTE },
+			{ GL_RG8_SNORM, GL_RG, GL_BYTE },
+			// R8格式，1分量，元素格式有UINT、SINT、UNORM、SNORM
+			{ 0, 0, 0 },
+			{ GL_R8UI, GL_RED_INTEGER, GL_UNSIGNED_BYTE },
+			{ GL_R8I, GL_RED_INTEGER, GL_BYTE },
+			{ GL_R8, GL_RED, GL_UNSIGNED_BYTE },
+			{ GL_R8_SNORM, GL_RED, GL_BYTE },
+
+
+		};
+
+
+
+
 		SEUInt aFormatTypeLut[4][6] = {
 			{ 0, 0, 0, 0, SETrue, SETrue },
 			{ 0, 0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_BYTE, GL_BYTE },
@@ -211,44 +282,6 @@ public:
 		};
 
 		memcpy(m_aFormatInfoSpecLut, aFormatInfoSpecLut, sizeof(m_aFormatInfoSpecLut));
-
-
-
-		SEUInt aFormatInfoLut[6][3][6] = {
-			// 内部格式：9-5：规范化格式 9-6：浮点型格式 9-7：整型格式
-			{
-				{ 0, 0, GL_R8UI, GL_R8I, GL_R8, GL_R8_SNORM },
-				{ 0, GL_R16F, GL_R16UI, GL_R16I, 0, 0 },
-				{ 0, GL_R32F, GL_R32UI, GL_R32I, 0, 0 }
-			},
-			{
-				{ 0, 0, GL_RG8UI, GL_RG8I, GL_RG8, GL_RG8_SNORM },
-				{ 0, GL_RG16F, GL_RG16UI, GL_RG16I, 0, 0 },
-				{ 0, GL_RG32F, GL_RG32UI, GL_RG32I, 0, 0 }
-			},
-			{
-				{ 0, 0, GL_RGB8UI, GL_RGB8I, GL_RGB8, GL_RGB8_SNORM },
-				{ 0, GL_RGB16F, GL_RGB16UI, GL_RGB16I, 0, 0 },
-				{ 0, GL_RGB32F, GL_RGB32UI, GL_RGB32I, 0, 0 }
-			},
-			{
-				{ 0, 0, GL_RGBA8UI, GL_RGBA8I, GL_RGBA8, GL_RGBA8_SNORM },
-				{ 0, GL_RGBA16F, GL_RGBA16UI, GL_RGBA16I, 0, 0 },
-				{ 0, GL_RGBA32F, GL_RGBA32UI, GL_RGBA32I, 0, 0 }
-			},
-			// 数据格式：FORMAT - UINT/INT - COUNT，FORMAT - FLOAT - COUNT
-			{
-				{ 0, GL_RED_INTEGER,  GL_RG_INTEGER,  GL_RGB_INTEGER, GL_RGBA_INTEGER, 0 },
-				{ 0, GL_RED,  GL_RG,  GL_RGB, GL_RGBA, 0 },
-				{ 0, 0,  0,  0, 0, 0 },
-			},
-			// 数据类型：TYPE - UINT - SIZE，TYPE - INT - SIZE，TYPE - FLOAT - SIZE
-			{
-				{ 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT, 0, 0 },
-				{ 0, GL_BYTE, GL_SHORT, GL_INT, 0, 0 },
-				{ 0, 0, GL_HALF_FLOAT, GL_FLOAT, 0, 0 }
-			}
-		};
 
 		memcpy(m_aFormatInfoLut, aFormatInfoLut, sizeof(m_aFormatInfoLut));
 	}
