@@ -177,17 +177,45 @@ class _CSEFormatUtil
 public:
 	_CSEFormatUtil()
 	{
-		SEUInt aFormatLut[4][6] = {
+		SEUInt aFormatTypeLut[4][6] = {
 			{ 0, 0, 0, 0, SETrue, SETrue },
 			{ 0, 0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_BYTE, GL_BYTE },
 			{ 0, GL_FIXED, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_SHORT, GL_SHORT },
 			{ 0, GL_FLOAT, GL_UNSIGNED_INT, GL_INT, GL_UNSIGNED_INT, GL_INT }
 		};
 
-		memcpy(m_aFormatLut, aFormatLut, sizeof(m_aFormatLut));
+		memcpy(m_aFormatTypeLut, aFormatTypeLut, sizeof(m_aFormatTypeLut));
 
-		SEUInt aInternalFormatLut0[4][3][6] = {
-			// 不确定是否支持这些格式：GL_R8I GL_R16I GL_RG16I GL_RGB8I
+		SEUInt aFormatInfoSpecLut[16][3] = {
+			{0, 0, 0}, // 无效格式
+
+			{GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE}, // ESE_FORMAT_L8_UNORM
+			{GL_ALPHA, GL_ALPHA, GL_UNSIGNED_BYTE}, // ESE_FORMAT_A8_UNORM
+			{GL_LUMINANCE_ALPHA, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE}, // ESE_FORMAT_L8A8_UNORM
+
+			{GL_RGB565, GL_RGB, GL_UNSIGNED_SHORT_5_6_5}, // ESE_FORMAT_R5G6B5_UNORM
+			{GL_RGB5_A1, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1}, // ESE_FORMAT_R5G5B5A1_UNORM
+			{GL_RGBA4, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4}, // ESE_FORMAT_R4G4B4A4_UNORM
+			{GL_RGB10_A2, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV}, // ESE_FORMAT_R10G10B10A2_UNORM
+
+			{GL_R11F_G11F_B10F, GL_RGB, GL_UNSIGNED_INT_10F_11F_11F_REV}, // ESE_FORMAT_R11G11B10_FLOAT
+			{GL_RGB9_E5, GL_RGB, GL_UNSIGNED_INT_5_9_9_9_REV}, // ESE_FORMAT_R9G9B9E5_FLOAT
+
+			{GL_SRGB8, GL_RGB, GL_UNSIGNED_BYTE}, // ESE_FORMAT_SR8G8B8_UNORM
+			{GL_SRGB8_ALPHA8, GL_RGBA, GL_UNSIGNED_BYTE}, // ESE_FORMAT_SR8G8B8A8_UNORM
+
+			{GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT}, // ESE_FORMAT_D32_FLOAT
+			{GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT}, // ESE_FORMAT_D24_UNORM
+			{GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT}, // ESE_FORMAT_D16_UNORM
+			{GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8}, // ESE_FORMAT_D24_UNORM_S8_UINT
+		};
+
+		memcpy(m_aFormatInfoSpecLut, aFormatInfoSpecLut, sizeof(m_aFormatInfoSpecLut));
+
+
+
+		SEUInt aFormatInfoLut[6][3][6] = {
+			// 内部格式：9-5：规范化格式 9-6：浮点型格式 9-7：整型格式
 			{
 				{ 0, 0, GL_R8UI, GL_R8I, GL_R8, GL_R8_SNORM },
 				{ 0, GL_R16F, GL_R16UI, GL_R16I, 0, 0 },
@@ -207,30 +235,22 @@ public:
 				{ 0, 0, GL_RGBA8UI, GL_RGBA8I, GL_RGBA8, GL_RGBA8_SNORM },
 				{ 0, GL_RGBA16F, GL_RGBA16UI, GL_RGBA16I, 0, 0 },
 				{ 0, GL_RGBA32F, GL_RGBA32UI, GL_RGBA32I, 0, 0 }
+			},
+			// 数据格式：FORMAT - UINT/INT - COUNT，FORMAT - FLOAT - COUNT
+			{
+				{ 0, GL_RED_INTEGER,  GL_RG_INTEGER,  GL_RGB_INTEGER, GL_RGBA_INTEGER, 0 },
+				{ 0, GL_RED,  GL_RG,  GL_RGB, GL_RGBA, 0 },
+				{ 0, 0,  0,  0, 0, 0 },
+			},
+			// 数据类型：TYPE - UINT - SIZE，TYPE - INT - SIZE，TYPE - FLOAT - SIZE
+			{
+				{ 0, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT, 0, 0 },
+				{ 0, GL_BYTE, GL_SHORT, GL_INT, 0, 0 },
+				{ 0, 0, GL_HALF_FLOAT, GL_FLOAT, 0, 0 }
 			}
 		};
 
-		memcpy(m_aInternalFormatLut0, aInternalFormatLut0, sizeof(m_aInternalFormatLut0));
-
-		SEUInt aInternalFormatLut1[14] = {
-			GL_DEPTH_COMPONENT32F,
-			GL_DEPTH_COMPONENT24,
-			GL_DEPTH_COMPONENT16,
-			GL_DEPTH24_STENCIL8,
-			GL_SRGB8,
-			GL_SRGB8_ALPHA8,
-			GL_RGBA4,
-			GL_RGB565,
-			GL_RGB5_A1,
-			GL_RGB9_E5,
-			GL_RGB10_A2,
-			GL_RGB10_A2UI,
-			GL_R11F_G11F_B10F,
-		};
-
-		memcpy(m_aInternalFormatLut1, aInternalFormatLut1, sizeof(m_aInternalFormatLut1));
-
-		
+		memcpy(m_aFormatInfoLut, aFormatInfoLut, sizeof(m_aFormatInfoLut));
 	}
 
 	SEVoid ParseFormat(SEUInt nFormat, SEUInt& nSpec, SEUInt& nCount, SEUInt& nSize, SEUInt& nType, SEBool& bNormalized)
@@ -241,11 +261,12 @@ public:
 		nSpec = nFormat >> 12;
 		nCount = (nFormat & 0x00000F00) >> 8;
 		nSize = nSize_;
-		nType = m_aFormatLut[nSize_][nType_];
-		bNormalized = m_aFormatLut[0][nType_];
+		nType = m_aFormatTypeLut[nSize_][nType_];
+		bNormalized = m_aFormatTypeLut[0][nType_];
 	}
 
-	SEUInt ParseInternalFormat(SEUInt nFormat)
+
+	SEUInt GetInternalFormat(SEUInt nFormat)
 	{
 		SEUInt nSpec = 0;
 		SEUInt nCount = 0;
@@ -265,7 +286,7 @@ public:
 		}
 	}
 
-	SEUInt ParseTextureFormat(SEUInt nTextureFormat, SEUInt& nFormat, SEUInt& nType)
+	SEUInt ParseTextureFormat(SEUInt nFormat, SEUInt& nResFormat, SEUInt& nDataFormat, SEUInt& nDataType)
 	{
 		SEUInt nSpec_ = 0;
 		SEUInt nCount_ = 0;
@@ -288,59 +309,42 @@ public:
 			{ 0, 0, GL_HALF_FLOAT, GL_FLOAT }
 		};
 
-		SEUInt aTypeLut2[] = {
-			GL_DEPTH_COMPONENT16,
-
-
-			GL_UNSIGNED_SHORT_5_6_5,
-			GL_UNSIGNED_SHORT_4_4_4_4,
-			GL_UNSIGNED_SHORT_5_5_5_1,
-
-			GL_UNSIGNED_INT_2_10_10_10_REV,
-			GL_UNSIGNED_INT_10F_11F_11F_REV,
-			GL_UNSIGNED_INT_5_9_9_9_REV,
-			GL_UNSIGNED_INT_24_8,
-			GL_FLOAT_32_UNSIGNED_INT_24_8_REV,
-		};
-
 		if (0 == nSpec_)
 		{
+			nResFormat = m_aFormatInfoLut[nCount_ - 1][nSize_ - 1][nType_];
+
 			if (2 == nType_)
 			{
-				nFormat = aFormatLut[0][nCount_ - 1];
-				nType = aFormatLut[2][nSize_];
+				nDataFormat = m_aFormatInfoLut[4][0][nCount_];
+				nDataType = m_aFormatInfoLut[5][0][nSize_];
 			}
 			else if (3 == nType_)
 			{
-				nFormat = aFormatLut[0][nCount_ - 1];
-				nType = aFormatLut[3][nSize_];
+				nDataFormat = m_aFormatInfoLut[4][0][nCount_];
+				nDataType = m_aFormatInfoLut[5][1][nSize_];
 			}
 			else
 			{
-				nFormat = aFormatLut[1][nCount_ - 1];
-				nType = aFormatLut[4][nSize_];
+				nDataFormat = m_aFormatInfoLut[4][1][nCount_];
+				nDataType = m_aFormatInfoLut[5][2][nSize_];
 			}
 		}
 		else
-		{		// FORMAT - SPEC - COUNT
-			{ GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL, GL_LUMINANCE_ALPHA, GL_ALPHA },
-			if (4 > nSpec_)
-			{
-				nFormat = aFormatLut[2][0];
-			}
-			else if (4 == nSpec_)
-			{
-				nFormat = aFormatLut[2][1];
-			}
+		{
+			SEUInt* pLut = m_aFormatInfoSpecLut[nSpec_];
+
+			nResFormat = pLut[0];
+			nDataFormat = pLut[1];
+			nDataType = pLut[2];
 		}
 	}
 
 private:
-	SEUInt m_aFormatLut[4][6];
+	SEUInt m_aFormatTypeLut[4][6];
 
-	SEUInt m_aInternalFormatLut0[4][3][6];
+	SEUInt m_aFormatInfoLut[5][3][6];
 
-	SEUInt m_aInternalFormatLut1[14];
+	SEUInt m_aFormatInfoSpecLut[16][3];
 };
 
 
