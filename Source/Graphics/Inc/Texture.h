@@ -28,16 +28,6 @@ public:
 	/// </summary>
 	virtual ~ISETexture2D() {};
 
-	/// <summary>
-	/// 将贴图作为普通贴图（着色器资源）绑定到渲染管线。如果贴图不支持则绑定无效。
-	/// </summary>
-	virtual SEBool BindAsMap() = 0;
-
-	/// <summary>
-	/// 将贴图作为立方体贴图（着色器资源）绑定到渲染管线。如果贴图不支持则绑定无效。
-	/// </summary>
-	virtual SEBool BindAsCubeMap() = 0;
-
 	/*
 	为了提高图形程序的效率，我们对纹理类型的资源的格式选择做以下限定：
 
@@ -78,39 +68,9 @@ struct ISETexture2D::DESC
 	SEUInt m_nMipLevels;
 
 	/// <summary>
-	/// 贴图多重采样次数。
-	/// </summary>
-	SEUInt m_nSampleCount;
-
-	/// <summary>
-	/// 贴图多重采样质量。
-	/// </summary>
-	SEUInt m_nSampleQuality;
-
-	/// <summary>
 	/// 贴图像素格式。
 	/// </summary>
 	ESE_RESOURCE_FORMAT_ENUM m_eFormat;
-
-	/// <summary>
-	/// 贴图用法。
-	/// </summary>
-	ESE_RESOURCE_USAGE_ENUM m_eUsage;
-
-	/// <summary>
-	/// 贴图CPU访问权限标志。
-	/// </summary>
-	ESE_RESOURCE_CPU_ACCESS_FLAG m_nAccessFlags;
-
-	/// <summary>
-	/// 贴图绑定位置标志。
-	/// </summary>
-	ESE_RESOURCE_BIND_FLAG m_nBindFlags;
-
-	/// <summary>
-	/// 贴图其它选项标志。
-	/// </summary>
-	ESE_RESOURCE_MISC_FLAG m_nMiscFlags;
 };
 
 

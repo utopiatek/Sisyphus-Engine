@@ -39,7 +39,7 @@ public:
 		return reinterpret_cast<SEHandle>(m_nBuffer);
 	}
 
-	virtual SEVoid Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag, SEInt nOffset, SEInt nLength)
+	virtual SEBool Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag)
 	{
 		SEUInt nFlag = 0;
 
@@ -56,8 +56,8 @@ public:
 			nFlag += GL_MAP_WRITE_BIT;
 			break;
 		case ESE_RESOURCE_MAP_WRITE_DISCARD:
-			nFlag += GL_MAP_INVALIDATE_BUFFER_BIT;
-			nFlag += GL_MAP_WRITE_BIT;
+			nFlag |= GL_MAP_INVALIDATE_BUFFER_BIT;
+			nFlag |= GL_MAP_WRITE_BIT;
 			break;
 		case ESE_RESOURCE_MAP_WRITE_NO_OVERWRITE:
 			nFlag += GL_MAP_WRITE_BIT;
@@ -66,17 +66,18 @@ public:
 			break;
 		}
 
-		pResource->m_nRowPitch = 0;
-		pResource->m_nDepthPitch = 0;
-		pResource->m_pData = glMapBufferRange(m_nBind, 0, 0, 0);
-
 		glBindBuffer(m_nBind, m_nBuffer);
-		glMapBufferRange(m_nBind, nOffset, nLength, nFlag);
-		
+		SEVoid* pPointer = glMapBufferRange(m_nBind, pResource->m_nOffsetX, pResource->m_nWidth, nFlag);
+		glBindBuffer(m_nBind, 0);
+
+		pResource->m_pData = pPointer;
+
+		return nullptr != pPointer ? SETrue : SEFalse;
 	}
 
 	virtual SEVoid Unmap()
 	{
+		glBindBuffer(m_nBind, m_nBuffer);
 		glUnmapBuffer(m_nBind);
 		glBindBuffer(m_nBind, 0);
 	}

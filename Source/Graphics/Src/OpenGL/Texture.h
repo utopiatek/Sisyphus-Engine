@@ -6,78 +6,14 @@
 #include "Stdafx.h"
 
 
-/*
-	元素格式为UNORM，则元素值被线性标准化到[0～1]。元素格式为UNORM，则元素值被线性标准化到[-1～1]，
-	其它元素格式则保留其在元素格式表达范围之内的原始值。
-	枚举值规范：4个二进制位标识一个属性，特殊格式编号 | 元素数量 | 类型大小 | 类型
-	类型：TYPELESS=0 | FLOAT=1 | UINT=2 | SINT=3 | UNORM=4 | SNORM=5
-	类型大小：1 | 2 | 3
-	元素数量：1 | 2 | 3 | 4
-	*/
-
-class _CSETransport
-{
-public:
-	_CSETransport()
-		:m_nIndex(0)
-	{
-	}
-
-	_CSETransport()
-	{
-
-	}
-
-	SEUInt Map(SEUInt nSize, SEVoid** ppPointer)
-	{
-		SEInt nIndex = m_nIndex++ % 3;
-		SEUInt nBuffer = m_aBuffer[nIndex];
-
-		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, nBuffer);
-
-		*ppPointer = glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0, nSize, GL_MAP_WRITE_BIT);
-
-		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-		return nBuffer;
-	}
-
-	SEUInt Unmap(SEUInt nBuffer)
-	{
-		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, nBuffer);
-
-		if (glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER))
-		{
-			return nBuffer;
-		}
-
-		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-		return 0;
-	}
-
-public:
-	static _CSETransport* Entity()
-	{
-		static _CSETransport* pInstance = new _CSETransport();
-		return pInstance;
-	}
-
-private:
-	SEUInt m_aBuffer[4];
-
-	SEUInt m_aSize[4];
-
-	SEInt m_nIndex;
-};
-
-
 class _CSETexture2D : public ISETexture2D
 {
 public:
 	_CSETexture2D()
-		:m_nID(0), m_nRefCount(0), m_pLast(nullptr), m_pNext(nullptr)
+		:m_nID(0), m_nTexture(0), m_nWidth(0), m_nHeight(0), m_nMipLevels(0), m_nRefCount(0), m_eFormat(ESE_FORMAT_UNKNOWN),
+		m_aFormat(nullptr), m_pMapInfo(nullptr), m_pLast(nullptr), m_pNext(nullptr)
 	{
+		memset(&m_mMapInfo, 0, sizeof(m_mMapInfo));
 	}
 
 	virtual ~_CSETexture2D()
@@ -104,31 +40,90 @@ public:
 		return nullptr;
 	}
 
-	virtual void Map()
+	virtual SEBool Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag)
 	{
-		//glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_nBuffer);
+		if (ESE_RESOURCE_MAP_WRITE_DISCARD == eFlag)
+		{
+			m_mMapInfo.m_nLevel = pResource->m_nLevel;
+			m_mMapInfo.m_nOffsetX = pResource->m_nOffsetX;
+			m_mMapInfo.m_nOffsetY = pResource->m_nOffsetY;
+			m_mMapInfo.m_nOffsetZ = pResource->m_nOffsetZ;
+			m_mMapInfo.m_nWidth = pResource->m_nWidth;
+			m_mMapInfo.m_nHeight = pResource->m_nHeight;
+			m_mMapInfo.m_nDepth = pResource->m_nDepth;
+			m_mMapInfo.m_nBuffer = 0;
+			m_mMapInfo.m_nFlag = GL_MAP_WRITE_BIT;
+
+			pResource->m_pData = _ISEResourceUtil::Get()->Map(m_mMapInfo);
+
+			if (nullptr != pResource->m_pData)
+			{
+				m_pMapInfo = &m_mMapInfo;
+
+				return SETrue;
+			}
+		}
+
+		return SEFalse;
 	}
 
-	virtual SEVoid Unmap(  SEInt nLevel, SEUInt nWidth, SEUInt nHeight)
+	virtual SEVoid Unmap()
 	{
-		if (m_nBuffer)
+		if (nullptr != m_pMapInfo)
 		{
-			m_nBuffer = _CSETransport::Entity()->Unmap(m_nBuffer);
+			_ISEResourceUtil::Get()->Unmap(m_pMapInfo);
 
-			if (m_nBuffer)
+			if (nullptr != m_pMapInfo)
 			{
-				//glTexImage2D(GL_TEXTURE_2D, nLevel, pTexDesc->Format.InternalFormat, nWidth, nHeight, 0, pTexDesc->Format.Format, pTexDesc->Format.Type, nullptr);
+				glBindTexture(GL_TEXTURE_2D, m_nTexture);
+
+				if (GL_MAP_WRITE_BIT == m_pMapInfo->m_nFlag)
+				{
+					glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_pMapInfo->m_nBuffer);
+
+					glTexSubImage2D(GL_TEXTURE_2D, m_pMapInfo->m_nLevel, m_pMapInfo->m_nOffsetX, m_pMapInfo->m_nOffsetY, m_pMapInfo->m_nWidth, m_pMapInfo->m_nHeight, m_aFormat[1], m_aFormat[2], nullptr);
+
+					glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+				}
+
+				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 
-			m_nBuffer = 0;
+			m_pMapInfo = nullptr;
 		}
+	}
+
+	virtual _CSETexture2D* Init(SEUInt nTexture, SEConst SEUInt* aFormat, ISETexture2D::DESC* pDesc)
+	{
+		m_nID = 0;
+		m_nTexture = nTexture;
+		m_nWidth = pDesc->m_nWidth;
+		m_nHeight = pDesc->m_nHeight;
+		m_nMipLevels = pDesc->m_nMipLevels;
+		m_eFormat = pDesc->m_eFormat;
+		m_aFormat = aFormat;
+		m_pMapInfo = nullptr;
+		m_nRefCount = 1;
+
+		Cache().Register(this);
+
+		return this;
 	}
 
 	virtual SEVoid Finalize()
 	{
 		Cache().Unregister(this);
 
+		glDeleteTextures(1, &m_nTexture);
+
 		m_nID = 0;
+		m_nTexture = 0;
+		m_nWidth = 0;
+		m_nHeight = 0;
+		m_nMipLevels = 0;
+		m_eFormat = ESE_FORMAT_UNKNOWN;
+		m_aFormat = nullptr;
+		m_pMapInfo = nullptr;
 		m_nRefCount = 0;
 		m_pLast = nullptr;
 		m_pNext = nullptr;
@@ -139,6 +134,13 @@ public:
 	virtual SEVoid Discard()
 	{
 		m_nID = 0;
+		m_nTexture = 0;
+		m_nWidth = 0;
+		m_nHeight = 0;
+		m_nMipLevels = 0;
+		m_eFormat = ESE_FORMAT_UNKNOWN;
+		m_aFormat = nullptr;
+		m_pMapInfo = nullptr;
 		m_nRefCount = 0;
 		m_pLast = nullptr;
 		m_pNext = nullptr;
@@ -172,9 +174,19 @@ public:
 
 	SEUInt m_nTexture;
 
-	SEUInt m_nBuffer;
+	SEUInt m_nWidth;
 
-	SEInt m_nUpload;
+	SEUInt m_nHeight;
+
+	SEUInt m_nMipLevels;
+
+	ESE_RESOURCE_FORMAT_ENUM m_eFormat;
+
+	SEConst SEUInt* m_aFormat;
+
+	_ISEResourceUtil::MAP_INFO m_mMapInfo;
+
+	_ISEResourceUtil::MAP_INFO* m_pMapInfo;
 
 	SEInt m_nRefCount;
 

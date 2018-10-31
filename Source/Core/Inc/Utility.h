@@ -31,6 +31,7 @@ typedef const char*           SECString;
 #define SETrue                1u
 #define SEFalse               0u
 #define SEError               SEBool
+#define SEConst               const
 
 
 #define SE_CHECK_FLAG(P, FLAG) ((P & FLAG) > 0)

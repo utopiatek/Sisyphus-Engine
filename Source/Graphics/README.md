@@ -16,6 +16,7 @@ GL_PIXEL_UNPACK_BUFFERÓĞÁ½ÖÖÖ÷ÒªµÄÊ¹ÓÃPBOÌá¸ß´«ÊäÏñËØÊı¾İµÄ·½Ê½£ºÉÏ´«µ½ÎÆÀíºÍ´ÓÖ
 È»ºó£¬OpenGL½«·ÏÆú¾ÉµÄ»º³åÇø£¬Îª»º³åÇø·ÖÅäĞÂµÄÄÚ´æ¡£ »º³åÇø¶ÔÏó±ØĞëÈ¡ÏûÓ³Éä,¿ÉÊ¹ÓÃglUnmapBufferARB()¡£Èç¹û³É¹¦£¬glUnmapBufferARB()·µ»ØGL_TRUE ·ñÔò·µ»ØGL_FALSE¡£
 Àı×Ó:Streaming Texture Uploads
 https://blog.csdn.net/dreamcs/article/details/7708018
+https://www.cnblogs.com/rainbow70626/p/8719818.html
 
 /// ÌØÊâÎÆÀí¸ñÊ½
 /// ÄÚ²¿¸ñÊ½ ¸ñÊ½£¨ÊäÈëµÄÀàĞÍ£© ÀàĞÍ£¨ÊäÈëµÄ¸ñÊ½£©

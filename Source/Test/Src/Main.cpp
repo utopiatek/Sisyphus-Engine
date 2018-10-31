@@ -24,11 +24,8 @@ extern "C" ISESystem* _System()
 #include <GLES3/gl2ext.h>
 
 
-
 SEInt InitWebGL()
 {
-	
-
 	SEChar pSource0[] = ("                             \
 		#version 300 es                             \n \
 		layout (location = 0) in vec4 vPosition;    \n \
@@ -81,10 +78,10 @@ SEInt InitWebGL()
 		0.0f, 0.0f,
 		1.0f, 0.0f };
 
-	SSE_MAPPED_SUBRESOURCE mInitData;
-	mInitData.m_pData = aPosition;
-	mInitData.m_nRowPitch = sizeof(aPosition);
-	mInitData.m_nDepthPitch = sizeof(aPosition);
+	//SSE_MAPPED_SUBRESOURCE mInitData;
+	//mInitData.m_pData = aPosition;
+	//mInitData.m_nRowPitch = sizeof(aPosition);
+	//mInitData.m_nDepthPitch = sizeof(aPosition);
 
 	ISEBuffer::DESC mVertexBufferDesc;
 	mVertexBufferDesc.m_nSize = sizeof(aPosition);
@@ -94,10 +91,10 @@ SEInt InitWebGL()
 	
 	SEFloat aCBufferData[] = { 0.0f, 1.0f, 1.0f, 1.0f };
 
-	SSE_MAPPED_SUBRESOURCE mCBufferInitData;
-	mCBufferInitData.m_pData = aCBufferData;
-	mCBufferInitData.m_nRowPitch = sizeof(aCBufferData);
-	mCBufferInitData.m_nDepthPitch = sizeof(aCBufferData);
+	//SSE_MAPPED_SUBRESOURCE mCBufferInitData;
+	//mCBufferInitData.m_pData = aCBufferData;
+	//mCBufferInitData.m_nRowPitch = sizeof(aCBufferData);
+	//mCBufferInitData.m_nDepthPitch = sizeof(aCBufferData);
 
 	ISEBuffer::DESC mCBufferDesc;
 	mCBufferDesc.m_nSize = sizeof(aCBufferData);
@@ -161,16 +158,37 @@ SEInt InitWebGL()
 				printf("7====================\n");
 			}
 
+			SSE_MAPPED_SUBRESOURCE mMapData;
 
-			ISEBuffer* pVertexBuffer = ISEResourceFactory::Get()->CreateBuffer(&mVertexBufferDesc, &mInitData);
+			ISEBuffer* pVertexBuffer = ISEResourceFactory::Get()->CreateBuffer(&mVertexBufferDesc);
 			if (nullptr != pVertexBuffer)
 			{
+				mMapData.m_nOffsetX = 0;
+				mMapData.m_nWidth = sizeof(aPosition);
+
+				if (pVertexBuffer->Map(&mMapData, ESE_RESOURCE_MAP_WRITE_DISCARD))
+				{
+					printf("8sdfsfergergrgrgrg\n");
+					memcpy(mMapData.m_pData, aPosition, sizeof(aPosition));
+				}
+
+				pVertexBuffer->Unmap();
+
 				printf("8====================\n");
 			}
 
-			ISEBuffer* pConstBuffer = ISEResourceFactory::Get()->CreateBuffer(&mCBufferDesc, &mCBufferInitData);
+			ISEBuffer* pConstBuffer = ISEResourceFactory::Get()->CreateBuffer(&mCBufferDesc);
 			if (nullptr != pConstBuffer)
 			{
+				mMapData.m_nOffsetX = 0;
+				mMapData.m_nWidth = sizeof(aCBufferData);
+
+				if (pConstBuffer->Map(&mMapData, ESE_RESOURCE_MAP_WRITE_DISCARD))
+				{
+					memcpy(mMapData.m_pData, aCBufferData, sizeof(aCBufferData));
+				}
+
+				pConstBuffer->Unmap();
 				printf("9====================\n");
 			}
 
@@ -243,7 +261,7 @@ SEInt InitWebGL()
 
 	return 0;
 }
-// http://localhost/Emscripten/Out.html
+// http://localhost/Emscripten/index.html
 
 
 int main()

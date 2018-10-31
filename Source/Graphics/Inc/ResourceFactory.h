@@ -30,7 +30,7 @@ public:
 	/// <param name="pDesc">缓存描述信息。</param>
 	/// <param name="pInitData">缓存初始化数据。</param>
 	/// <returns>返回缓存资源指针。</returns>
-	virtual ISEBuffer* CreateBuffer(ISEBuffer::DESC* pDesc, SSE_MAPPED_SUBRESOURCE* pInitData = nullptr) = 0;
+	virtual ISEBuffer* CreateBuffer(ISEBuffer::DESC* pDesc) = 0;
 
 	/// <summary>
 	/// 创建二维贴图。
@@ -38,7 +38,7 @@ public:
 	/// <param name="pDesc">贴图描述信息。</param>
 	/// <param name="pInitData">贴图初始化数据。</param>
 	/// <returns>返回二维贴图指针。</returns>
-	virtual ISETexture2D* CreateTexture2D(ISETexture2D::DESC* pDesc, SSE_MAPPED_SUBRESOURCE* pInitData = nullptr) = 0;
+	virtual ISETexture2D* CreateTexture2D(ISETexture2D::DESC* pDesc) = 0;
 
 	/// <summary>
 	/// 激活获取接口实体。

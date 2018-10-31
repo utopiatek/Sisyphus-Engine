@@ -84,7 +84,7 @@ public:
 	/// </summary>
 	/// <param name="pResource">资源映射地址描述。</param>
 	/// <param name="pResource">资源映射地址描述。</param>
-	virtual SEVoid Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag, SEInt nOffset, SEInt nLength) = 0;
+	virtual SEBool Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag) = 0;
 
 	/// <summary>
 	/// 解除资源读写地址映射。
@@ -99,19 +99,44 @@ public:
 struct SSE_MAPPED_SUBRESOURCE
 {
 	/// <summary>
+	/// 指针指向资源LOD级别。
+	/// </summary>
+	SEUInt m_nLevel;
+
+	/// <summary>
+	/// 指针X方向偏移。
+	/// </summary>
+	SEInt m_nOffsetX;
+
+	/// <summary>
+	/// 指针Y方向偏移。
+	/// </summary>
+	SEInt m_nOffsetY;
+
+	/// <summary>
+	/// 指针Z方向偏移。
+	/// </summary>
+	SEInt m_nOffsetZ;
+
+	/// <summary>
+	/// 映射空间宽度。
+	/// </summary>
+	SEInt m_nWidth;
+
+	/// <summary>
+	/// 映射空间高度。
+	/// </summary>
+	SEInt m_nHeight;
+
+	/// <summary>
+	/// 映射空间深度。
+	/// </summary>
+	SEInt m_nDepth;	
+
+	/// <summary>
 	/// 地址指针。
 	/// </summary>
 	SEVoid* m_pData;
-
-	/// <summary>
-	/// 行（字节）大小。
-	/// </summary>
-	SEUInt m_nRowPitch;
-
-	/// <summary>
-	/// 页面（字节）大小。
-	/// </summary>
-	SEUInt m_nDepthPitch;
 };
 
 
@@ -223,7 +248,7 @@ enum ESE_RESOURCE_BIND_FLAG
 
 
 /// <summary>
-/// 资源微选项标志。
+/// 资源选项标志。
 /// </summary>
 enum ESE_RESOURCE_MISC_FLAG
 {
@@ -357,6 +382,8 @@ enum ESE_RESOURCE_FORMAT_ENUM
 	ESE_FORMAT_D24_UNORM = 0x34134,
 	ESE_FORMAT_D16_UNORM = 0x35124,
 	ESE_FORMAT_D24_UNORM_S8_UINT = 0x36230,
+
+	///////////////////////////////////////////////////////
 
 	/*
 	元素格式为UNORM，则元素值被线性标准化到[0～1]。元素格式为UNORM，则元素值被线性标准化到[-1～1]，
