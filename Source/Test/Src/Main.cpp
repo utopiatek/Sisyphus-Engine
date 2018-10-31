@@ -44,11 +44,12 @@ SEInt InitWebGL()
 		{                                           \n \
 			vec4 Color;                             \n \
 		};                                          \n \
+		uniform sampler2D tex0;                     \n \
 		in vec2 v_UV;                               \n \
 		out vec4 fragColor;                         \n \
 		void main()                                 \n \
 		{                                           \n \
-			fragColor =  vec4(v_UV, 0.0f, 1.0f);//Color;// vec4(1.0, 0.0, 0.0, 1.0);   \n \
+			fragColor = texture(tex0, v_UV);//  vec4(v_UV, 0.0f, 1.0f);//Color;// vec4(1.0, 0.0, 0.0, 1.0);   \n \
 		}                                           \n ");
 
 	SECString aSource0[] = { pSource0 };
@@ -101,6 +102,20 @@ SEInt InitWebGL()
 	mCBufferDesc.m_nElementStride = 4;
 	mCBufferDesc.m_eUsage = ESE_RESOURCE_USAGE_IMMUTABLE;
 	mCBufferDesc.m_nBindFlags = ESE_RESOURCE_BIND_CONSTANT_BUFFER;
+
+	SEUByte aColor[4 * 4] = {
+		255, 0, 0, 255,
+		0, 255, 0, 255,
+		0, 0, 255, 255,
+		255, 255, 255, 255
+	};
+
+	ISETexture2D::DESC mTextureDesc;
+	mTextureDesc.m_nWidth = 2;
+	mTextureDesc.m_nHeight = 2;
+	mTextureDesc.m_nMipLevels = 1;
+	mTextureDesc.m_eFormat = ESE_FORMAT_R8G8B8A8_UNORM;
+
 
 	EmscriptenWebGLContextAttributes mAttrs;
 	emscripten_webgl_init_context_attributes(&mAttrs);
@@ -168,7 +183,6 @@ SEInt InitWebGL()
 
 				if (pVertexBuffer->Map(&mMapData, ESE_RESOURCE_MAP_WRITE_DISCARD))
 				{
-					printf("8sdfsfergergrgrgrg\n");
 					memcpy(mMapData.m_pData, aPosition, sizeof(aPosition));
 				}
 
@@ -190,6 +204,27 @@ SEInt InitWebGL()
 
 				pConstBuffer->Unmap();
 				printf("9====================\n");
+			}
+
+			ISETexture2D* pTexture = ISEResourceFactory::Get()->CreateTexture2D(&mTextureDesc);
+			if (nullptr != pTexture)
+			{
+				mMapData.m_nLevel = 0;
+				mMapData.m_nOffsetX = 0;
+				mMapData.m_nOffsetY = 0;
+				mMapData.m_nOffsetZ = 0;
+				mMapData.m_nWidth = 2;
+				mMapData.m_nHeight = 2;
+				mMapData.m_nDepth = 1;
+				printf("91====================\n");
+				if (pTexture->Map(&mMapData, ESE_RESOURCE_MAP_WRITE_DISCARD))
+				{
+					memcpy(mMapData.m_pData, aColor, sizeof(aColor));
+					printf("92====================\n");
+				}
+
+				pTexture->Unmap();
+				printf("93====================\n");
 			}
 
 			ISEInputLayout::DESC mInputLayoutDesc;
@@ -238,6 +273,7 @@ SEInt InitWebGL()
 				pLayout->Bind();
 
 				pConstBuffer->BindAsCBuffer(1);
+				pTexture->Bind(0);
 				//pVertexBuffer->BindAsVBuffer(0, 0, 0, 0);
 				//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 				//glEnableVertexAttribArray(0);

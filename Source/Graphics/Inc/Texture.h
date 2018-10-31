@@ -28,6 +28,12 @@ public:
 	/// </summary>
 	virtual ~ISETexture2D() {};
 
+	/// <summary>
+	/// 将纹理绑定到渲染管线。
+	/// </summary>
+	/// <param name="nSlot">绑定端口号。</param>
+	virtual SEVoid Bind(SEInt nSlot) = 0;
+
 	/*
 	为了提高图形程序的效率，我们对纹理类型的资源的格式选择做以下限定：
 

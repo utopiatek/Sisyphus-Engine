@@ -182,17 +182,13 @@ public:
 
 	virtual ~_ISEResourceUtil() {};
 
-	virtual const SEUInt* ParseFormat(SEUInt nFormat) = 0;
+	virtual SEConst SEUInt* ParseFormat(SEUInt nFormat) = 0;
 
 	virtual SEVoid* Map(MAP_INFO& pMapInfo) = 0;
 
 	virtual SEVoid Unmap(MAP_INFO*& pMapInfo) = 0;
 
-	static _ISEResourceUtil* Get()
-	{
-		static _ISEResourceUtil* pInstance = reinterpret_cast<_ISEResourceUtil*>(ISEResourceFactory::Get());
-		return pInstance;
-	}
+	static _ISEResourceUtil* Get();
 };
 
 struct _ISEResourceUtil::MAP_INFO

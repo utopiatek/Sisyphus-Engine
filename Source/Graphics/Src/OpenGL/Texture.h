@@ -40,6 +40,14 @@ public:
 		return nullptr;
 	}
 
+	virtual SEVoid Bind(SEInt nSlot)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_nTexture);
+		//glGetUniformLocation();
+		//glUniform1i();
+	}
+
 	virtual SEBool Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag)
 	{
 		if (ESE_RESOURCE_MAP_WRITE_DISCARD == eFlag)
@@ -53,7 +61,7 @@ public:
 			m_mMapInfo.m_nDepth = pResource->m_nDepth;
 			m_mMapInfo.m_nBuffer = 0;
 			m_mMapInfo.m_nFlag = GL_MAP_WRITE_BIT;
-
+			
 			pResource->m_pData = _ISEResourceUtil::Get()->Map(m_mMapInfo);
 
 			if (nullptr != pResource->m_pData)

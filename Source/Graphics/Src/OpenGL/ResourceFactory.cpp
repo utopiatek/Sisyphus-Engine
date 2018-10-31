@@ -3,7 +3,7 @@
 #include "Texture.h"
 
 
-class __CSEResourceFactory : public ISEResourceFactory, _ISEResourceUtil
+class __CSEResourceFactory : public ISEResourceFactory, public _ISEResourceUtil
 {
 public:
 	__CSEResourceFactory()
@@ -181,19 +181,21 @@ public:
 		SEUInt nWidth = pDesc->m_nWidth;
 		SEUInt nHeight = pDesc->m_nHeight;
 
-		for (SEUInt i = 0; i < pDesc->m_nMipLevels; i++)
-		{
-			glTexStorage2D(GL_TEXTURE_2D, i, aFormat[0], nWidth, nHeight);
-			nWidth /= 2;
-			nHeight /= 2;
-		}
+		glTexStorage2D(GL_TEXTURE_2D, pDesc->m_nMipLevels, aFormat[0], nWidth, nHeight);
+
+		//for (SEUInt i = 0; i < pDesc->m_nMipLevels; i++)
+		//{
+		//	glTexStorage2D(GL_TEXTURE_2D, i, aFormat[0], nWidth, nHeight);
+		//	nWidth /= 2;
+		//	nHeight /= 2;
+		//}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		return _CSETexture2D::Cache().Cache()->Init(nTexture, aFormat, pDesc);
 	}
 
-	virtual const SEUInt* ParseFormat(SEUInt nFormat)
+	virtual SEConst SEUInt* ParseFormat(SEUInt nFormat)
 	{
 		return m_aFormatLut[nFormat >> 12];
 	}
@@ -204,7 +206,7 @@ public:
 		{
 			SEUInt nIndex = m_nTexBufferIndex++ % 4;
 			SEUInt nBuffer = m_aTexBuffer[nIndex];
-			SEUInt nSize = pMapInfo.m_nWidth * pMapInfo.m_nHeight * pMapInfo.m_nDepth;
+			SEUInt nSize = pMapInfo.m_nWidth * pMapInfo.m_nHeight * pMapInfo.m_nDepth * 4;
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, nBuffer);
 
@@ -218,7 +220,7 @@ public:
 				m_aTexBufferAccess[nIndex] = GL_MAP_WRITE_BIT;
 			}
 
-			SEVoid* pPointer = glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0, nSize, GL_MAP_WRITE_BIT);
+			SEVoid* pPointer = glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0, nSize, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 			
@@ -300,4 +302,11 @@ SEVoid __CSEResourceFactory::Config(SEVoid(*Set)(SECString, ...))
 
 SEVoid __CSEResourceFactory::Config(SECString* pEntries, SEUInt nCount)
 {
+}
+
+
+_ISEResourceUtil* _ISEResourceUtil::Get()
+{
+	static __CSEResourceFactory* pInstance = static_cast<__CSEResourceFactory*>(ISEResourceFactory::Get());
+	return pInstance;
 }
