@@ -183,12 +183,9 @@ public:
 
 		glTexStorage2D(GL_TEXTURE_2D, pDesc->m_nMipLevels, aFormat[0], nWidth, nHeight);
 
-		//for (SEUInt i = 0; i < pDesc->m_nMipLevels; i++)
-		//{
-		//	glTexStorage2D(GL_TEXTURE_2D, i, aFormat[0], nWidth, nHeight);
-		//	nWidth /= 2;
-		//	nHeight /= 2;
-		//}
+		// 不设置的话贴图不完备，无法渲染
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -223,12 +220,12 @@ public:
 			SEVoid* pPointer = glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0, nSize, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-			
+
 			pMapInfo.m_nBuffer = nBuffer;
 
 			return pPointer;
 		}
-		
+
 		return nullptr;
 	}
 

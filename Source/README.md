@@ -69,3 +69,9 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 
  304 306 303 325 324
 */
+
+// DirectXMath
+// https://www.cnblogs.com/X-Jun/p/9041966.html
+// https://github.com/Microsoft/DirectXMath/blob/master/Inc/DirectXMath.h
+
+// note that currently - 2018-7-11 - only asm.js supports SIMD

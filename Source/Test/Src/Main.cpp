@@ -24,6 +24,7 @@ extern "C" ISESystem* _System()
 #include <GLES3/gl2ext.h>
 
 
+
 SEInt InitWebGL()
 {
 	SEChar pSource0[] = ("                             \
@@ -297,20 +298,37 @@ SEInt InitWebGL()
 
 	return 0;
 }
-// http://localhost/Emscripten/index.html
 
 
+#define _XM_NO_INTRINSICS_
+#include "DirectXMath/Inc/DirectXMath.h"
+
+// 下载最新DirectXMath库
+// 拷贝sal.h和concurrencysal.h文件
+// 定义_XM_NO_INTRINSICS_
+// 设置fdeclspec编译宏
+// -Wignored-attributes
 int main()
 {
-	printf("1----------------------------------------------\n");
+	DirectX::XMFLOAT3  position;
+	position.x = 155.8f;
+
+	DirectX::XMVECTOR myVector = XMLoadFloat3(&position);
+
+	DirectX::XMFLOAT3  position2;
+	DirectX::XMStoreFloat3(&position2, myVector);
+
+	printf("1----------------------------------------------%f\n", position2.x);
 	ISECore::Get()->Test(0);
 	printf("N----------------------------------------------\n");
 
 	InitWebGL();
-
+	//XMMath;
 #ifdef SE_WINDOWS_DESKTOP
 	getchar();
 #endif
 
 	return 0;
 }
+
+
