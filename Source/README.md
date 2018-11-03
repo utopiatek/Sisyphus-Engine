@@ -75,3 +75,27 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 // https://github.com/Microsoft/DirectXMath/blob/master/Inc/DirectXMath.h
 
 // note that currently - 2018-7-11 - only asm.js supports SIMD
+
+
+#define _XM_NO_INTRINSICS_
+#include "DirectXMath/Inc/DirectXMath.h"
+
+// 下载最新DirectXMath库
+// 拷贝sal.h和concurrencysal.h文件
+// 定义_XM_NO_INTRINSICS_
+// 设置fdeclspec编译宏
+// -Wignored-attributes
+
+	DirectX::XMFLOAT3  position;
+	position.x = 155.8f;
+
+	DirectX::XMVECTOR myVector = XMLoadFloat3(&position);
+
+	DirectX::XMFLOAT3  position2;
+	DirectX::XMStoreFloat3(&position2, myVector);
+
+
+	Opengl下载： https://www.khronos.org/registry/OpenGL/
+	<GL/glext.h>：扩展头文件。因为微软公司对OpenGL的支持不太积极，VC系列编译器虽然有<GL/gl.h>这个头文件，但是里面只有OpenGL 1.1版本中所规定的内容，
+	而没有OpenGL 1.2及其以后版本。对当前的计算机配置而言，几乎都支持OpenGL 1.4版本，更高的则到1.5, 2.0, 2.1，而VC无法直接使用这些功能。
+	为了解决这一问题，就有了<GL/glext.h>头文件。这个头文件提供了高版本OpenGL所需要的各种常数声明以及函数指针声明。

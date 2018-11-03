@@ -1,6 +1,6 @@
 
-#ifndef SE_APPLICATION
-#define SE_APPLICATION
+#ifndef SE_TEST_SYSTEM
+#define SE_TEST_SYSTEM
 
 
 #include "Core/Inc/Core.h"
@@ -22,7 +22,6 @@ public:
 
 	~_CSESystem()
 	{
-
 	}
 
 	virtual SECString Name()
@@ -131,7 +130,9 @@ public:
 
 	static SEChar g_aTime[20];
 
-private:
+	static ISESystem* g_pInstance;
+
+protected:
 	SEUInt m_nAwakeCount;
 
 	SEUInt m_nActivCount;
@@ -142,4 +143,5 @@ private:
 };
 
 
-#endif // !SE_APPLICATION
+
+#endif // !SE_TEST_SYSTEM

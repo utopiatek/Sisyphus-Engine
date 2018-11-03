@@ -1,5 +1,7 @@
 PROJECT(Test)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 INCLUDE_DIRECTORIES("$ENV{EMSDK}/emscripten/1.38.5/system/include/")
+endif()
 AUX_SOURCE_DIRECTORY(./Src DIR_SRC)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 ADD_LIBRARY(Test SHARED ${DIR_SRC})

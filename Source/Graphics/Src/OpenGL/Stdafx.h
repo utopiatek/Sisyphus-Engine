@@ -4,9 +4,16 @@
 
 
 #include "../Stdafx.h"
-#include <emscripten/html5.h>
+
+#ifdef SE_WINDOWS_DESKTOP
+#define GL_GLEXT_PROTOTYPES
+#include "GLEW/glew.h"
+#include <GL/GL.h>
+#elif defined(SE_EMSCRIPTEN_ASM) || defined(SE_EMSCRIPTEN_WASM)
+#include "emscripten/html5.h"
 #include <GLES3/gl3.h>
 #include <GLES3/gl2ext.h>
+#endif
 
 
 #ifndef _SE_SINGLETON_IMPL

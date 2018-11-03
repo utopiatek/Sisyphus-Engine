@@ -36,7 +36,7 @@ public:
 
 	virtual SEHandle Handle()
 	{
-		return reinterpret_cast<SEHandle>(m_nBuffer);
+		return reinterpret_cast<SEHandle>(static_cast<SELong>(m_nBuffer));
 	}
 
 	virtual SEBool Map(SSE_MAPPED_SUBRESOURCE* pResource, ESE_RESOURCE_MAP_FLAG eFlag)
