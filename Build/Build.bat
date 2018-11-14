@@ -26,7 +26,7 @@ echo %cd%
 
 ::TOTAL_MEMORY=1024*1024*1024
 ::ALLOW_MEMORY_GROWTH=1 会影响一些性能优化
-call emcc -O3 libCore.so libGraphics.so libTest.so -s USE_WEBGL2=1 -s FULL_ES3=1 -s TOTAL_MEMORY=536870912 -s ASSERTIONS=1 -s WASM=1 -o index.html
+call emcc -O3 libCore.so libMath.so libGraphics.so libTest.so -s USE_WEBGL2=1 -s FULL_ES3=1 -s TOTAL_MEMORY=536870912 -s ASSERTIONS=1 -s WASM=1 -o index.html
 
 echo "==2======================================"
 pause

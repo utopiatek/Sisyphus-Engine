@@ -1,8 +1,14 @@
 
-#include "../Inc/Math.h"
+#include "Stdafx.h"
 
 
-SE_API int Square2(int x)
+SEFloat SSEFloat3::Length()
 {
-	return x * x;
+	XMFLOAT3 mFloat3(x, y, z);
+	XMVECTOR mVector = XMLoadFloat3(&mFloat3);
+
+	mVector = XMVector3Length(mVector);
+	XMStoreFloat3(&mFloat3, mVector);
+
+	return mFloat3.x;
 }

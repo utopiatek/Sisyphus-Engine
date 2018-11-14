@@ -3,13 +3,7 @@
 #define SE_GRAPHICS_UTILITY
 
 
-//namespace Core
-//{
 #include "Core/Inc/Core.h"
-//#include "Core/Inc/Templ/Stl.h" //¥À¥¶±‡“Î±®¥Ì
-//}
-
-//using namespace Core;
 
 
 typedef SEUInt  SEResID;
