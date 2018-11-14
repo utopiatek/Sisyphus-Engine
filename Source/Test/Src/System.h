@@ -143,5 +143,23 @@ protected:
 };
 
 
+SEChar _CSESystem::g_aTime[20];
+ISESystem* _CSESystem::g_pInstance = nullptr;
+
+
+#ifdef SE_WINDOWS_DESKTOP
+extern "C" __declspec(dllexport) ISESystem* _System()
+#else
+extern "C" ISESystem* _System()
+#endif
+{
+	if (nullptr == _CSESystem::g_pInstance)
+	{
+		_CSESystem::g_pInstance = new _CSESystem();
+	}
+
+	return _CSESystem::g_pInstance;
+}
+
 
 #endif // !SE_TEST_SYSTEM

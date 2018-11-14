@@ -99,3 +99,13 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 	<GL/glext.h>：扩展头文件。因为微软公司对OpenGL的支持不太积极，VC系列编译器虽然有<GL/gl.h>这个头文件，但是里面只有OpenGL 1.1版本中所规定的内容，
 	而没有OpenGL 1.2及其以后版本。对当前的计算机配置而言，几乎都支持OpenGL 1.4版本，更高的则到1.5, 2.0, 2.1，而VC无法直接使用这些功能。
 	为了解决这一问题，就有了<GL/glext.h>头文件。这个头文件提供了高版本OpenGL所需要的各种常数声明以及函数指针声明。
+
+	OPENGL 调试工具 RenderDoc https://www.khronos.org/opengl/wiki/Debugging_Tools https://renderdoc.org/
+	https://developer.nvidia.com/nsight-visual-studio-edition
+	https://www.cnblogs.com/minggoddess/p/5465075.html
+	需要调用wglSwapLayerBuffers(m_hDC, 0);调试器才能捕捉到信息
+
+	CMAKE一些问题：https://www.jianshu.com/p/5ad9934f3e98
+
+	WGL： http://www.mamicode.com/info-detail-2118543.html
+	https://blog.csdn.net/SUKHOI27SMK/article/details/82492946
