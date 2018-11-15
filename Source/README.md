@@ -111,3 +111,5 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 	https://blog.csdn.net/SUKHOI27SMK/article/details/82492946
 
 	引用类型传参：Transform->Position(SSEFloat3()); 参数声明必须带CONST：SEVoid Position(SEConst SSEFloat3& mPosition)
+
+	声明precision mediump float;如果两个着色器声明相同类型的常量缓存块会导致链接失败，使用precision highp float;

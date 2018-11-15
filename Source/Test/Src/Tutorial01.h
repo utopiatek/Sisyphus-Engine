@@ -41,8 +41,8 @@ public:
 
 		m_pRenderer = CreateRenderer();
 
-		m_pCameraCtrl = new _CSECameraCtrl();
-		m_pCameraCtrl->Init();
+		//m_pCameraCtrl = new _CSECameraCtrl();
+		//m_pCameraCtrl->Init();
 	}
 
 	virtual SEVoid Reinit()
@@ -90,11 +90,16 @@ protected:
 		#version 300 es                             \n \
 		layout (location = 0) in vec4 vPosition;    \n \
 		layout (location = 1) in vec2 vUV;          \n \
+		layout(std140) uniform CUSTOM_PER_MATERIAL  \n \
+		{                                           \n \
+			vec4 Color;                             \n \
+			mat4x4 Proj;                            \n \
+		};                                          \n \
 		out vec2 v_UV;                              \n \
 		void main()                                 \n \
 		{                                           \n \
 			v_UV = vUV;                             \n \
-			gl_Position = vPosition;                \n \
+			gl_Position = Proj * vPosition;                \n \
 		}                                           \n ");
 
 		SECString aSource[] = { pSource };
@@ -115,7 +120,7 @@ protected:
 	{
 		SEChar pSource[] = ("                          \
 		#version 300 es                             \n \
-		precision mediump float;                    \n \
+		precision highp float;                    \n \
 		layout(std140) uniform CUSTOM_PER_MATERIAL  \n \
 		{                                           \n \
 			vec4 Color;                             \n \
@@ -126,7 +131,7 @@ protected:
 		out vec4 fragColor;                         \n \
 		void main()                                 \n \
 		{                                           \n \
-			fragColor = Proj[2];//texture(tex0, v_UV);        \n \
+			fragColor = Proj[0];//texture(tex0, v_UV);        \n \
 		}                                           \n ");
 
 		SECString aSource[] = { pSource };
@@ -169,9 +174,13 @@ protected:
 	ISEBuffer* CreateVertexBuffer()
 	{
 		SEFloat aVertex[] = {
-		0.0f, 0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
+		//0.0f, 0.5f, 0.0f,
+		//-0.5f, -0.5f, 0.0f,
+		//0.5f, -0.5f, 0.0f,
+
+		0.0f, 1.0f, 2.0f,
+		-4.0f, 0.0f, 2.0f,
+		2.0f, 0.0f, 2.0f,
 
 		0.5f, 1.0f,
 		0.0f, 0.0f,
@@ -205,7 +214,7 @@ protected:
 	{
 		SSEFloat4x4 mProjection = SSEFloat4x4::PerspectiveFovLH(90.0f, 1280.0f / 720.0f, 1.0f, 1000.0f);
 
-		SEFloat aData[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+		SEFloat aData[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		ISEBuffer::DESC mDesc;
 		mDesc.m_nSize = sizeof(aData) + sizeof(mProjection);
@@ -218,7 +227,7 @@ protected:
 		{
 			SSE_MAPPED_SUBRESOURCE mData;
 			mData.m_nOffsetX = 0;
-			mData.m_nWidth = sizeof(aData);
+			mData.m_nWidth = sizeof(aData) + sizeof(mProjection);
 
 			if (pBuffer->Map(&mData, ESE_RESOURCE_MAP_WRITE_DISCARD))
 			{
