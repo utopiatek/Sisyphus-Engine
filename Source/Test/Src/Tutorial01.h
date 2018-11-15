@@ -4,6 +4,7 @@
 
 
 #include "System.h"
+#include "CameraCtrl.h"
 
 #ifdef SE_WINDOWS_DESKTOP
 #include "TutorialOGL.h"
@@ -39,6 +40,9 @@ public:
 		m_pRenderTarget = CreateRenderTarget();
 
 		m_pRenderer = CreateRenderer();
+
+		m_pCameraCtrl = new _CSECameraCtrl();
+		m_pCameraCtrl->Init();
 	}
 
 	virtual SEVoid Reinit()
@@ -115,13 +119,14 @@ protected:
 		layout(std140) uniform CUSTOM_PER_MATERIAL  \n \
 		{                                           \n \
 			vec4 Color;                             \n \
+			mat4x4 Proj;                            \n \
 		};                                          \n \
 		uniform sampler2D tex0;                     \n \
 		in vec2 v_UV;                               \n \
 		out vec4 fragColor;                         \n \
 		void main()                                 \n \
 		{                                           \n \
-			fragColor = texture(tex0, v_UV);        \n \
+			fragColor = Proj[2];//texture(tex0, v_UV);        \n \
 		}                                           \n ");
 
 		SECString aSource[] = { pSource };
@@ -198,10 +203,12 @@ protected:
 
 	ISEBuffer* CreateConstBuffer()
 	{
+		SSEFloat4x4 mProjection = SSEFloat4x4::PerspectiveFovLH(90.0f, 1280.0f / 720.0f, 1.0f, 1000.0f);
+
 		SEFloat aData[] = { 0.0f, 1.0f, 1.0f, 1.0f };
 
 		ISEBuffer::DESC mDesc;
-		mDesc.m_nSize = sizeof(aData);
+		mDesc.m_nSize = sizeof(aData) + sizeof(mProjection);
 		mDesc.m_nElementStride = 4;
 		mDesc.m_eUsage = ESE_RESOURCE_USAGE_IMMUTABLE;
 		mDesc.m_nBindFlags = ESE_RESOURCE_BIND_CONSTANT_BUFFER;
@@ -216,6 +223,7 @@ protected:
 			if (pBuffer->Map(&mData, ESE_RESOURCE_MAP_WRITE_DISCARD))
 			{
 				memcpy(mData.m_pData, aData, sizeof(aData));
+				memcpy(static_cast<char*>(mData.m_pData) + sizeof(aData), &mProjection, sizeof(mProjection));
 			}
 
 			pBuffer->Unmap();
@@ -327,6 +335,8 @@ private:
 	ISERenderTarget* m_pRenderTarget;
 
 	ISERenderer* m_pRenderer;
+
+	_CSECameraCtrl* m_pCameraCtrl;
 };
 
 
