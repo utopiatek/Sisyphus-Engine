@@ -26,13 +26,9 @@ public:
 public:
 	static SEVoid Multiply(SSEFloat4x4* pMatrix, SEConst SSEFloat4x4* pLeft, SEConst SSEFloat4x4* pRight);
 
-	static SEVoid LookAtLH(SSEFloat4x4* pMatrix, SEConst SSEFloat3& mEye, SEConst SSEFloat3& mFocus, SEConst SSEFloat3& mUp);
+	static SEVoid LookAtLH(SSEFloat4x4* pMatrix, SEConst SSEFloat3* pEye, SEConst SSEFloat3* pFocus, SEConst SSEFloat3* pUp);
 
 	static SEVoid PerspectiveFovLH(SSEFloat4x4* pMatrix, SEFloat nFovAngleY, SEFloat nAspectRatio, SEFloat nNearZ, SEFloat nFarZ);
-
-	static SSEFloat4x4 Translation(SEConst SSEFloat3& mOffset);
-
-	static SSEFloat4x4 Inverse(SEConst SSEFloat4x4& mMatrix);
 };
 
 

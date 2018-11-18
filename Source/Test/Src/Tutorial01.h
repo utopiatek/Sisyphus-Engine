@@ -30,7 +30,7 @@ public:
 	virtual SEVoid Init()
 	{
 		m_pCameraCtrl = new _CSECameraCtrl();
-		m_pCameraCtrl->Init(1280, 720, 75.0f, 1.0f, 100.0f);
+		m_pCameraCtrl->Init(1280, 720, 3.14159f * 0.3333f, 1.0f, 100.0f);
 
 		m_pProgram = CreateProgram();
 
@@ -99,7 +99,7 @@ protected:
 		void main()                                 \n \
 		{                                           \n \
 			v_UV = vUV;                             \n \
-			gl_Position = Proj * vPosition;                \n \
+			gl_Position = vPosition * Proj;         \n \
 		}                                           \n ");
 
 		SECString aSource[] = { pSource };
@@ -214,7 +214,6 @@ protected:
 	{
 		SSEFloat4x4 mCamera;
 		SSEFloat4x4::Multiply(&mCamera, m_pCameraCtrl->ViewMatrix(), m_pCameraCtrl->ProjectionMatrix());
-
 		SEFloat aData[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		ISEBuffer::DESC mDesc;

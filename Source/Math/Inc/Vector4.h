@@ -20,8 +20,6 @@ public:
 		:x(_x), y(_y), z(_z), w(_w)
 	{
 	}
-
-	SSEFloat4 operator *(SEConst SSEFloat4x4& mMatrix);
 };
 
 

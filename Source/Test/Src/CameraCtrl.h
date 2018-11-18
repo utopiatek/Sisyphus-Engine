@@ -19,26 +19,20 @@ public:
 
 	SEVoid Init(SEFloat nWidth, SEFloat nHeight, SEFloat nFov, SEFloat nNear, SEFloat nFar)
 	{
-		m_mDistanceRange.x = 1.0f;
-		m_mDistanceRange.y = 1000.0f;
-
-		m_mLatitudeRange.x = 5.0f;
-		m_mLatitudeRange.y = 85.0f;
-
-		m_mSensit.x = 0.5f;
-		m_mSensit.y = 50.0f;
-		m_mSensit.z = 2.0f;
-
 		m_nWidth = nWidth;
 		m_nHeight = nHeight;
 		m_nAspect = nWidth / nHeight;
 
-		SSEFloat4x4::PerspectiveFovLH(&m_mProjectionMatrix, 90/*nFov*/, m_nAspect, nNear, nFar);
+		m_mDistanceRange = { 1.0f, 1000.0f };
+		m_mLatitudeRange = { 5.0f, 85.0f };
+		m_mSensit = { 0.5f, 50.0f, 2.0f };
 
-		SetView(SSEFloat3(0.0f, 0.0f, 0.0f), SSEFloat3(3.1416f * 0.25f, 0.0f, 0.0f), 5.0f);
+		SetView({ 0.0f, 0.0f, 0.0f }, { 3.1416f * 0.25f, 0.0f, 0.0f }, 05.0f);
+
+		SSEFloat4x4::PerspectiveFovLH(&m_mProjectionMatrix, nFov, m_nAspect, nNear, nFar);
 	}
 
-	SEVoid SetView(SSEFloat3 mFocus, SSEFloat3 mAngles, SEFloat nDistance)
+	SEVoid SetView(SEConst SSEFloat3& mFocus, SEConst SSEFloat3& mAngles, SEFloat nDistance)
 	{
 		m_mCurFocus = mFocus;
 		m_mNextFocus = mFocus;
@@ -50,15 +44,14 @@ public:
 		m_mNextAngles = mAngles;
 
 		SSEFloat3 mForward(0.0f, 0.0f, -1.0f);
-		SSEQuaternion::Multiply(&mForward, mForward, m_mCurRotation);
+		SSEFloat3 mUp(0.0f, 1.0f, 0.0f);
+		SSEQuaternion::Multiply(&mForward, &mForward, &m_mCurRotation);
 
 		SSEFloat3 mPosition(0.0f, 0.0f, 0.0f);
 		SSEFloat3::Scale(&mForward, &mForward, nDistance);
 		SSEFloat3::Add(&mPosition, mFocus, mForward);
 
-		SSEFloat4x4::LookAtLH(&m_mViewMatrix, mPosition, m_mCurFocus, SSEFloat3(0.0f, 1.0f, 0.0f));
-
-		printf("zxxxxxxxxxxxx£º %f, %f, %f \n", mForward.x, mForward.y, mForward.z);
+		SSEFloat4x4::LookAtLH(&m_mViewMatrix, &mPosition, &m_mCurFocus, &mUp);
 	}
 
 	SEConst SSEFloat4x4* ViewMatrix()

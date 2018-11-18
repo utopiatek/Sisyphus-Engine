@@ -16,32 +16,15 @@ public:
 	{
 	}
 
-	SSEFloat3(SSEFloat3&)
-		:x(0.0f), y(0.0f), z(0.0f)
-	{
-	}
-
 	SSEFloat3(SEFloat _x, SEFloat _y, SEFloat _z)
 		:x(_x), y(_y), z(_z)
 	{
 	}
-
-	SEFloat Length();
-
-	SSEFloat3 operator *(SEFloat nRight);
-
+	
 public:
 	static SEVoid Add(SSEFloat3* pVector, SEConst SSEFloat3& mLeft, SEConst SSEFloat3& mRight);
 
 	static SEVoid Scale(SSEFloat3* pVector, SEConst SSEFloat3* pVectorIn, SEConst SEFloat nScale);
-
-	static SSEFloat3 Zero();
-
-	static SSEFloat3 Right();
-
-	static SSEFloat3 Up();
-
-	static SSEFloat3 Forward();
 };
 
 

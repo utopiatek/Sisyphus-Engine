@@ -22,7 +22,7 @@ public:
 	}
 
 public:
-	static SEVoid Multiply(SSEFloat3* pVector, SEConst SSEFloat3& mVector, SEConst SSEQuaternion& mQuaternion);
+	static SEVoid Multiply(SSEFloat3* pVector, SEConst SSEFloat3* pVectorIn, SEConst SSEQuaternion* pQuaternion);
 
 	static SEVoid RotationRollPitchYaw(SSEQuaternion* pQuaternion, SEFloat nPitch, SEFloat nYaw, SEFloat nRoll);
 };
