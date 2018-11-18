@@ -11,3 +11,8 @@ SEVoid SSEQuaternion::RotationRollPitchYaw(SSEQuaternion* pQuaternion, SEFloat n
 {
 	_SE_XMQUATERNION_STORE(pQuaternion, XMQuaternionRotationRollPitchYaw(nPitch, nYaw, nRoll));
 }
+
+SEVoid SSEQuaternion::Slerp(SSEQuaternion* pRotation, SEConst SSEQuaternion* pFrom, SEConst SSEQuaternion* pTo, SEFloat t)
+{
+	_SE_XMQUATERNION_STORE(pRotation, XMQuaternionSlerp(_SE_XMQUATERNION(pFrom), _SE_XMQUATERNION(pTo), t));
+}

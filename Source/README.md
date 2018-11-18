@@ -115,6 +115,7 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 	声明precision mediump float;如果两个着色器声明相同类型的常量缓存块会导致链接失败，使用precision highp float;
 
 	左手坐标系：X向右，Y向上，Z向前。
+	矩阵变换，在C++中从左往右乘，在GLSL中从右往左乘
 	旋转使用弧度，旋转轴朝里，逆时针旋转为正
 
 

@@ -8,12 +8,20 @@
 #include <GL/GL.h>
 #include <Windows.h>
 
+
 class _CSETutorial
 {
 protected:
 	_CSETutorial()
 		:m_hInstance(0), m_hWnd(0), m_hDC(0), m_hRC(0)
 	{
+		if (nullptr != g_pInstance)
+		{
+			SE_ERROR(0, "nullptr != _CSETutorial::g_pInstance");
+			return;
+		}
+
+		g_pInstance = this;
 	}
 
 public:
@@ -289,17 +297,45 @@ public:
 	virtual SEVoid Finalize() = 0;
 	
 protected:
+	virtual SEVoid OnDrag(SEInt nButton, SEInt nDeltaX, SEInt nDeltaY) = 0;
+
+protected:
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
 	{
+		// 鼠标是否移动，上次鼠标移动信息，当前鼠标移动信息
+		static SEInt aMouseMove[] = {0, -1, 0, 0, 0, 0, 0 };
+		aMouseMove[0] = 0;
+
 		switch (nMsg)
 		{
+		case WM_MOUSEMOVE:
+			aMouseMove[0] = 1;
+			aMouseMove[4] = (SEInt)wParam;
+			aMouseMove[5] = (SEInt)LOWORD(lParam);
+			aMouseMove[6] = (SEInt)HIWORD(lParam);
+			
+			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
 		}
 
+		if (1 == aMouseMove[0])
+		{
+			if (0 < aMouseMove[4])
+			{
+				g_pInstance->OnDrag(aMouseMove[4], aMouseMove[5] - aMouseMove[2], aMouseMove[6] - aMouseMove[3]);
+			}
+			
+			aMouseMove[1] = aMouseMove[4];
+			aMouseMove[2] = aMouseMove[5];
+			aMouseMove[3] = aMouseMove[6];
+		}
+
 		return DefWindowProc(hWnd, nMsg, wParam, lParam);
 	}
+
+	static _CSETutorial* g_pInstance;
 
 public:
 	HINSTANCE m_hInstance;
@@ -312,6 +348,8 @@ public:
 
 	PIXELFORMATDESCRIPTOR m_mPFD;
 };
+
+_CSETutorial* _CSETutorial::g_pInstance = nullptr;
 
 
 #endif // !SE_TEST_TUTORIAL_OGL

@@ -51,6 +51,23 @@ public:
 
 	virtual SEBool Update()
 	{
+		m_pCameraCtrl->Update();
+
+		SSEFloat4x4 mCamera;
+		SSEFloat4x4::Multiply(&mCamera, m_pCameraCtrl->ViewMatrix(), m_pCameraCtrl->ProjectionMatrix());
+		SEFloat aData[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		SSE_MAPPED_SUBRESOURCE mData;
+		mData.m_nOffsetX = 0;
+		mData.m_nWidth = sizeof(aData) + sizeof(mCamera);
+
+		if (m_pConstBuffer->Map(&mData, ESE_RESOURCE_MAP_WRITE_DISCARD))
+		{
+			memcpy(mData.m_pData, aData, sizeof(aData));
+			memcpy(static_cast<char*>(mData.m_pData) + sizeof(aData), &mCamera, sizeof(mCamera));
+		}
+		m_pConstBuffer->Unmap();
+
 		SEFloat aColor[4] = { 0.0f, 1.0f, 1.0f, 1.0f };
 		m_pRenderTarget->Bind();
 		m_pRenderTarget->ClearColor(aColor);
@@ -82,6 +99,14 @@ public:
 	virtual SEVoid Finalize()
 	{
 	}
+protected:
+	virtual SEVoid OnDrag(SEInt nButton, SEInt nDeltaX, SEInt nDeltaY)
+	{
+		if (nullptr != m_pCameraCtrl)
+		{
+			m_pCameraCtrl->OnDrag(nButton, nDeltaX, nDeltaY);
+		}
+	}
 
 protected:
 	ISEShader* CreateVertexShader()
@@ -99,7 +124,7 @@ protected:
 		void main()                                 \n \
 		{                                           \n \
 			v_UV = vUV;                             \n \
-			gl_Position = vPosition * Proj;         \n \
+			gl_Position = Proj * vPosition;         \n \
 		}                                           \n ");
 
 		SECString aSource[] = { pSource };

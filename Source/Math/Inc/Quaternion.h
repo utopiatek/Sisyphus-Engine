@@ -25,6 +25,8 @@ public:
 	static SEVoid Multiply(SSEFloat3* pVector, SEConst SSEFloat3* pVectorIn, SEConst SSEQuaternion* pQuaternion);
 
 	static SEVoid RotationRollPitchYaw(SSEQuaternion* pQuaternion, SEFloat nPitch, SEFloat nYaw, SEFloat nRoll);
+
+	static SEVoid Slerp(SSEQuaternion* pRotation, SEConst SSEQuaternion* pFrom, SEConst SSEQuaternion* pTo, SEFloat t);
 };
 
 
