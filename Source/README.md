@@ -115,7 +115,7 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 	声明precision mediump float;如果两个着色器声明相同类型的常量缓存块会导致链接失败，使用precision highp float;
 
 	左手坐标系：X向右，Y向上，Z向前。
-
+	旋转使用弧度，旋转轴朝里，逆时针旋转为正
 
 
 	如果没有自定义拷贝构造函数，系统会提供一个缺省的拷贝构造函数，缺省的拷贝构造函数对于基本类型的成员变量，按字节复制，对于类类型成员变量，调用其相应类型的拷贝构造函数
@@ -155,3 +155,14 @@ A b = CloneA(b);
 
 
 // https://blog.csdn.net/u010780613/article/details/54923139
+// https://blog.csdn.net/jadeshu/article/details/21254587
+
+
+
+
+
+
+
+
+
+

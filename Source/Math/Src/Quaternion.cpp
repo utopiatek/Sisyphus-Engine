@@ -1,25 +1,13 @@
 
 #include "Stdafx.h"
 
-SSEFloat4x4 SSEQuaternion::Matrix()
+
+SEVoid SSEQuaternion::Multiply(SSEFloat3* pVector, SEConst SSEFloat3& mVector, SEConst SSEQuaternion& mQuaternion)
 {
-	SSEFloat4x4 mFloat4x4;
-
-	XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&mFloat4x4), XMMatrixRotationQuaternion(XMLoadFloat4(reinterpret_cast<XMFLOAT4*>(this))));
-
-	return mFloat4x4;
+	_SE_XMFLOAT3_STORE(pVector, XMVector3Rotate(_SE_XMFLOAT3(&mVector), _SE_XMQUATERNION(&mQuaternion)));
 }
 
-SSEQuaternion SSEQuaternion::Identity()
+SEVoid SSEQuaternion::RotationRollPitchYaw(SSEQuaternion* pQuaternion, SEFloat nPitch, SEFloat nYaw, SEFloat nRoll)
 {
-	return SSEQuaternion(0.0f, 0.0f, 0.0f, 0.0f);
-}
-
-SSEQuaternion SSEQuaternion::EulerAngles(SEFloat nPitch, SEFloat nYaw, SEFloat nRoll)
-{
-	SSEQuaternion mFloat4;
-
-	XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&mFloat4), XMQuaternionRotationRollPitchYaw(nPitch, nYaw, nRoll));
-	
-	return mFloat4;
+	_SE_XMQUATERNION_STORE(pQuaternion, XMQuaternionRotationRollPitchYaw(nPitch, nYaw, nRoll));
 }

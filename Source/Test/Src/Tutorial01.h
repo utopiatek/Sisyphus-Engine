@@ -29,6 +29,9 @@ public:
 
 	virtual SEVoid Init()
 	{
+		m_pCameraCtrl = new _CSECameraCtrl();
+		m_pCameraCtrl->Init(1280, 720, 75.0f, 1.0f, 100.0f);
+
 		m_pProgram = CreateProgram();
 
 		m_pInputLayout = CreateInputLayout(m_pProgram);
@@ -40,9 +43,6 @@ public:
 		m_pRenderTarget = CreateRenderTarget();
 
 		m_pRenderer = CreateRenderer();
-
-		//m_pCameraCtrl = new _CSECameraCtrl();
-		//m_pCameraCtrl->Init();
 	}
 
 	virtual SEVoid Reinit()
@@ -212,20 +212,13 @@ protected:
 
 	ISEBuffer* CreateConstBuffer()
 	{
-		//SSEQuaternion mRotation = SSEQuaternion::EulerAngles(3.1416f * -0.25f, 0.0f, 0.0f);
-		//SSEFloat4x4 mView = SSEFloat4x4::Translation(SSEFloat3(0.0f, 0.0f, -10.0f)) * mRotation.Matrix();
-		//SSEFloat4 mPos(0.0f, 0.0f, 0.0f, 1.0f);
-		//mPos = mPos * mView; //从后往前乘是正确的
-
-		SSEFloat4x4 mView2; SSEFloat4x4::LookAtLH(&mView2, SSEFloat3(0.0f, 0.0f, -5.0f), SSEFloat3(0.0f, 0.0f, 0.0f), SSEFloat3(0.0f, 1.0f, 0.0f));
-		SSEFloat4x4 mProjection; SSEFloat4x4::PerspectiveFovLH(&mProjection, 90.0f, 1280.0f / 720.0f, 1.0f, 1000.0f);
-
-		SSEFloat4x4::Multiply(&mProjection, &mView2, &mProjection);
+		SSEFloat4x4 mCamera;
+		SSEFloat4x4::Multiply(&mCamera, m_pCameraCtrl->ViewMatrix(), m_pCameraCtrl->ProjectionMatrix());
 
 		SEFloat aData[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		ISEBuffer::DESC mDesc;
-		mDesc.m_nSize = sizeof(aData) + sizeof(mProjection);
+		mDesc.m_nSize = sizeof(aData) + sizeof(mCamera);
 		mDesc.m_nElementStride = 4;
 		mDesc.m_eUsage = ESE_RESOURCE_USAGE_IMMUTABLE;
 		mDesc.m_nBindFlags = ESE_RESOURCE_BIND_CONSTANT_BUFFER;
@@ -235,12 +228,12 @@ protected:
 		{
 			SSE_MAPPED_SUBRESOURCE mData;
 			mData.m_nOffsetX = 0;
-			mData.m_nWidth = sizeof(aData) + sizeof(mProjection);
+			mData.m_nWidth = sizeof(aData) + sizeof(mCamera);
 
 			if (pBuffer->Map(&mData, ESE_RESOURCE_MAP_WRITE_DISCARD))
 			{
 				memcpy(mData.m_pData, aData, sizeof(aData));
-				memcpy(static_cast<char*>(mData.m_pData) + sizeof(aData), &mProjection, sizeof(mProjection));
+				memcpy(static_cast<char*>(mData.m_pData) + sizeof(aData), &mCamera, sizeof(mCamera));
 			}
 
 			pBuffer->Unmap();

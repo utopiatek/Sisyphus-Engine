@@ -31,6 +31,10 @@ public:
 	SSEFloat3 operator *(SEFloat nRight);
 
 public:
+	static SEVoid Add(SSEFloat3* pVector, SEConst SSEFloat3& mLeft, SEConst SSEFloat3& mRight);
+
+	static SEVoid Scale(SSEFloat3* pVector, SEConst SSEFloat3* pVectorIn, SEConst SEFloat nScale);
+
 	static SSEFloat3 Zero();
 
 	static SSEFloat3 Right();

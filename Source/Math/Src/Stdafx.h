@@ -17,6 +17,10 @@ using namespace DirectX;
 
 
 #define _SE_XMFLOAT3(POINTER) XMLoadFloat3(reinterpret_cast<SEConst XMFLOAT3*>(POINTER))
+#define _SE_XMFLOAT3_STORE(POINTER, DATA) XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(POINTER), DATA);
+
+#define _SE_XMQUATERNION(POINTER) XMLoadFloat4(reinterpret_cast<SEConst XMFLOAT4*>(POINTER))
+#define _SE_XMQUATERNION_STORE(POINTER, DATA) XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(POINTER), DATA);
 
 #define _SE_XMFLOAT4X4(POINTER) XMLoadFloat4x4(reinterpret_cast<SEConst XMFLOAT4X4*>(POINTER))
 #define _SE_XMFLOAT4X4_STORE(POINTER, DATA) XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(POINTER), DATA);

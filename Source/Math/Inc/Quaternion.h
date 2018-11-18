@@ -21,12 +21,10 @@ public:
 	{
 	}
 
-	SSEFloat4x4 Matrix();
-
 public:
-	static SSEQuaternion Identity();
+	static SEVoid Multiply(SSEFloat3* pVector, SEConst SSEFloat3& mVector, SEConst SSEQuaternion& mQuaternion);
 
-	static SSEQuaternion EulerAngles(SEFloat nPitch, SEFloat nYaw, SEFloat nRoll);
+	static SEVoid RotationRollPitchYaw(SSEQuaternion* pQuaternion, SEFloat nPitch, SEFloat nYaw, SEFloat nRoll);
 };
 
 
