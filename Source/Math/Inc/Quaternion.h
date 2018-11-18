@@ -3,7 +3,7 @@
 #define SE_MATH_QUATERNION
 
 
-#include "Utility.h"
+#include "Matrix.h"
 
 
 struct SE_API SSEQuaternion
@@ -21,8 +21,12 @@ public:
 	{
 	}
 
+	SSEFloat4x4 Matrix();
+
 public:
 	static SSEQuaternion Identity();
+
+	static SSEQuaternion EulerAngles(SEFloat nPitch, SEFloat nYaw, SEFloat nRoll);
 };
 
 

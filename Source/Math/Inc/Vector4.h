@@ -3,7 +3,7 @@
 #define SE_MATH_VECTOR4
 
 
-#include "Utility.h"
+#include "Matrix.h"
 
 
 struct SE_API SSEFloat4
@@ -20,6 +20,8 @@ public:
 		:x(_x), y(_y), z(_z), w(_w)
 	{
 	}
+
+	SSEFloat4 operator *(SEConst SSEFloat4x4& mMatrix);
 };
 
 

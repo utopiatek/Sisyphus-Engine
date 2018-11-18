@@ -178,9 +178,9 @@ protected:
 		//-0.5f, -0.5f, 0.0f,
 		//0.5f, -0.5f, 0.0f,
 
-		0.0f, 1.0f, 2.0f,
-		-4.0f, 0.0f, 2.0f,
-		2.0f, 0.0f, 2.0f,
+		0.0f, 2.0f, 0.0f,
+		-2.0f, 0.0f, 0.0f,
+		2.0f, 0.0f, 0.0f,
 
 		0.5f, 1.0f,
 		0.0f, 0.0f,
@@ -212,7 +212,15 @@ protected:
 
 	ISEBuffer* CreateConstBuffer()
 	{
-		SSEFloat4x4 mProjection = SSEFloat4x4::PerspectiveFovLH(90.0f, 1280.0f / 720.0f, 1.0f, 1000.0f);
+		//SSEQuaternion mRotation = SSEQuaternion::EulerAngles(3.1416f * -0.25f, 0.0f, 0.0f);
+		//SSEFloat4x4 mView = SSEFloat4x4::Translation(SSEFloat3(0.0f, 0.0f, -10.0f)) * mRotation.Matrix();
+		//SSEFloat4 mPos(0.0f, 0.0f, 0.0f, 1.0f);
+		//mPos = mPos * mView; //从后往前乘是正确的
+
+		SSEFloat4x4 mView2; SSEFloat4x4::LookAtLH(&mView2, SSEFloat3(0.0f, 0.0f, -5.0f), SSEFloat3(0.0f, 0.0f, 0.0f), SSEFloat3(0.0f, 1.0f, 0.0f));
+		SSEFloat4x4 mProjection; SSEFloat4x4::PerspectiveFovLH(&mProjection, 90.0f, 1280.0f / 720.0f, 1.0f, 1000.0f);
+
+		SSEFloat4x4::Multiply(&mProjection, &mView2, &mProjection);
 
 		SEFloat aData[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 

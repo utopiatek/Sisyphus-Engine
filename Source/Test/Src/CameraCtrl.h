@@ -165,6 +165,16 @@ public:
 		}
 	}
 
+	SEConst SSEFloat4x4* ViewMatrix()
+	{
+
+	}
+
+	SEConst SSEFloat4x4* ViewMatrix()
+	{
+
+	}
+	
 	SEVoid OnPinch(SEFloat nDelta)
 	{
 		if (!m_bEnabled)

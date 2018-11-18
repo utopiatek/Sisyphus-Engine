@@ -11,13 +11,13 @@ SEFloat SSEFloat3::Length()
 	return mFloat3.x;
 }
 
-SSEFloat3& SSEFloat3::operator *(SEFloat nRight)
+SSEFloat3 SSEFloat3::operator *(SEFloat nRight)
 {
-	XMFLOAT3* pFloat3 = reinterpret_cast<XMFLOAT3*>(this);
-	
-	XMStoreFloat3(pFloat3, XMVectorScale(XMLoadFloat3(pFloat3), nRight));
+	SSEFloat3 mFloat3(x, y, z);
 
-	return *this;
+	XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&mFloat3), XMVectorScale(XMLoadFloat3(reinterpret_cast<XMFLOAT3*>(&mFloat3)), nRight));
+
+	return mFloat3;
 }
 
 SSEFloat3 SSEFloat3::Zero()

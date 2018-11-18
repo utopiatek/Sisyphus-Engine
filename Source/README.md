@@ -113,3 +113,45 @@ glCompressedTexImage3D加载厂商专用3D纹理压缩格式：
 	引用类型传参：Transform->Position(SSEFloat3()); 参数声明必须带CONST：SEVoid Position(SEConst SSEFloat3& mPosition)
 
 	声明precision mediump float;如果两个着色器声明相同类型的常量缓存块会导致链接失败，使用precision highp float;
+
+	左手坐标系：X向右，Y向上，Z向前。
+
+
+
+	如果没有自定义拷贝构造函数，系统会提供一个缺省的拷贝构造函数，缺省的拷贝构造函数对于基本类型的成员变量，按字节复制，对于类类型成员变量，调用其相应类型的拷贝构造函数
+
+	struct A
+{
+public:
+	A(int _a)
+		:a(_a)
+	{
+		printf("--------------------------\n");
+	}
+	/// 自定义拷贝构造函数，缺省拷贝构造函数是浅拷贝
+	A(const A& a_)
+	{
+		a = 4;
+		printf("2--------------------------\n");
+	};
+	~A()
+	{
+		printf("~~~~~~~~~~~\n");
+	}
+	int a;
+};
+
+
+A CloneA(A a) 
+{
+	/// 存在一个拷贝构造
+	return a;
+}
+
+/// 构造直接赋值跟参数，不是构造一个对象在拷贝赋值参数
+A a = CloneA(A(2));
+/// 存在一个拷贝构造
+A b = CloneA(b);
+
+
+// https://blog.csdn.net/u010780613/article/details/54923139

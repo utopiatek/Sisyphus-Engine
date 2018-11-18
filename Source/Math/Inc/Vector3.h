@@ -28,7 +28,7 @@ public:
 
 	SEFloat Length();
 
-	SSEFloat3& operator *(SEFloat nRight);
+	SSEFloat3 operator *(SEFloat nRight);
 
 public:
 	static SSEFloat3 Zero();
