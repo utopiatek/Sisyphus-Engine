@@ -22,9 +22,13 @@ public:
 	}
 	
 public:
-	static SEVoid Add(SSEFloat3* pVector, SEConst SSEFloat3& mLeft, SEConst SSEFloat3& mRight);
+	static SEVoid Normalize(SSEFloat3* pVector, SEConst SSEFloat3* pVectorIn);
+
+	static SEVoid Add(SSEFloat3* pVector, SEConst SSEFloat3* pLeft, SEConst SSEFloat3* pRight);
 
 	static SEVoid Scale(SSEFloat3* pVector, SEConst SSEFloat3* pVectorIn, SEConst SEFloat nScale);
+
+	static SEVoid Lerp(SSEFloat3* pVector, SEConst SSEFloat3* pFrom, SEConst SSEFloat3* pTo, SEFloat t);
 };
 
 

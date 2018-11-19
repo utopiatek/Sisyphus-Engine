@@ -100,6 +100,14 @@ public:
 	{
 	}
 protected:
+	virtual SEVoid OnPinch(SEFloat nDelta)
+	{
+		if (nullptr != m_pCameraCtrl)
+		{
+			m_pCameraCtrl->OnPinch(nDelta);
+		}
+	}
+
 	virtual SEVoid OnDrag(SEInt nButton, SEInt nDeltaX, SEInt nDeltaY)
 	{
 		if (nullptr != m_pCameraCtrl)

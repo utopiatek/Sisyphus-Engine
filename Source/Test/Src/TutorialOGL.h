@@ -297,6 +297,8 @@ public:
 	virtual SEVoid Finalize() = 0;
 	
 protected:
+	virtual SEVoid OnPinch(SEFloat nDelta) = 0;
+
 	virtual SEVoid OnDrag(SEInt nButton, SEInt nDeltaX, SEInt nDeltaY) = 0;
 
 protected:
@@ -314,6 +316,13 @@ protected:
 			aMouseMove[5] = (SEInt)LOWORD(lParam);
 			aMouseMove[6] = (SEInt)HIWORD(lParam);
 			
+			break;
+		case WM_MOUSEWHEEL:
+			if (0 < (SEInt)wParam)
+				g_pInstance->OnPinch(1.0f);
+			else
+				g_pInstance->OnPinch(-1.0f);
+
 			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
