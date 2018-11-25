@@ -12,6 +12,7 @@
 #include <math.h>
 #include <algorithm>
 
+
 class _CSESystem : public ISESystem
 {
 public:
@@ -162,6 +163,55 @@ extern "C" ISESystem* _System()
 
 	return _CSESystem::g_pInstance;
 }
+
+
+struct _SSE_EVENT_DATA
+{
+	/// <summary>
+	/// 应用接口，事件会路由到应用。
+	/// </summary>
+	SEVoid* m_pApplication;
+
+	/// <summary>
+	/// 事件接收目标。
+	/// </summary>
+	SECString m_pTarget;
+
+	/// <summary>
+	/// 事件类型。
+	/// </summary>
+	SECString m_pType;
+
+	/// <summary>
+	/// 事件发生时间戳。
+	/// </summary>
+	SEULong m_nTimestamp;
+
+	/// <summary>
+	/// 当前改名状态的鼠标或键盘按键。
+	/// </summary>
+	SEUInt m_nKeyCode;
+
+	/// <summary>
+	/// 鼠标位置。
+	/// </summary>
+	SSEFloat2 m_mPoint;
+
+	/// <summary>
+	/// 鼠标位移。
+	/// </summary>
+	SSEFloat3 m_mMovement;
+
+	/// <summary>
+	/// 鼠标按键状态。
+	/// </summary>
+	SEUInt m_nButtons;
+
+	/// <summary>
+	/// 键盘按键状态。
+	/// </summary>
+	SEUInt m_aKey[4];
+};
 
 
 #endif // !SE_TEST_SYSTEM

@@ -109,7 +109,7 @@ public:
 
 	SEVoid OnDrag(SEInt nButton, SEFloat nDeltaX, SEFloat nDeltaY)
 	{
-		if (1 == nButton)
+		if (0 == nButton)
 		{
 			float nFactor = (atan(m_nFov * 0.5f) * 2.0f * m_nCurDistance) / m_nHeight;
 

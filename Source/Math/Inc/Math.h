@@ -9,5 +9,6 @@
 #include "Quaternion.h"
 #include "Matrix.h"
 
+extern "C" int Square2(int x);
 
 #endif // !SE_MATH

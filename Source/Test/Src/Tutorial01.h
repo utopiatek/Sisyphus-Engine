@@ -30,7 +30,7 @@ public:
 	virtual SEVoid Init()
 	{
 		m_pCameraCtrl = new _CSECameraCtrl();
-		m_pCameraCtrl->Init(1280, 720, 3.14159f * 0.3333f, 1.0f, 100.0f);
+		m_pCameraCtrl->Init(m_nWidth, m_nHeight, 3.14159f * 0.3333f, 1.0f, 100.0f);
 
 		m_pProgram = CreateProgram();
 
@@ -51,6 +51,7 @@ public:
 
 	virtual SEBool Update()
 	{
+		//m_pCameraCtrl->OnDrag(2, 1.0f, 0.0f);
 		m_pCameraCtrl->Update();
 
 		SSEFloat4x4 mCamera;
@@ -99,20 +100,41 @@ public:
 	virtual SEVoid Finalize()
 	{
 	}
-protected:
-	virtual SEVoid OnPinch(SEFloat nDelta)
-	{
-		if (nullptr != m_pCameraCtrl)
-		{
-			m_pCameraCtrl->OnPinch(nDelta);
-		}
-	}
 
-	virtual SEVoid OnDrag(SEInt nButton, SEInt nDeltaX, SEInt nDeltaY)
+	virtual SEVoid OnEvent(_SSE_EVENT_DATA* pEvent)
 	{
-		if (nullptr != m_pCameraCtrl)
+		static SEUInt nDrag = -1;
+		static SELong nLastTime = 0;
+
+		if ("mousewheel" == pEvent->m_pType)
 		{
-			m_pCameraCtrl->OnDrag(nButton, nDeltaX, nDeltaY);
+			if (nullptr != m_pCameraCtrl) {
+				m_pCameraCtrl->OnPinch(pEvent->m_mMovement.y);
+			}
+		}
+		else if ("mousedown" == pEvent->m_pType)
+		{
+			nDrag = pEvent->m_nKeyCode;
+			nLastTime = pEvent->m_nTimestamp;
+		}
+		else if ("mouseup" == pEvent->m_pType)
+		{
+			if (0 == pEvent->m_nKeyCode && 250 > (pEvent->m_nTimestamp - nLastTime))
+			{
+				printf("click \n");
+			}
+
+			nDrag = -1;
+		}
+		else if ("mouseout" == pEvent->m_pType)
+		{
+			nDrag = -1;
+		}
+		else if ("mousemove" == pEvent->m_pType)
+		{
+			if (0 == nDrag || 2 == nDrag && nullptr != m_pCameraCtrl) {
+				m_pCameraCtrl->OnDrag(nDrag, pEvent->m_mMovement.x, pEvent->m_mMovement.y);
+			}
 		}
 	}
 

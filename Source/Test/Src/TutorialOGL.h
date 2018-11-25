@@ -15,13 +15,6 @@ protected:
 	_CSETutorial()
 		:m_hInstance(0), m_hWnd(0), m_hDC(0), m_hRC(0)
 	{
-		if (nullptr != g_pInstance)
-		{
-			SE_ERROR(0, "nullptr != _CSETutorial::g_pInstance");
-			return;
-		}
-
-		g_pInstance = this;
 	}
 
 public:
@@ -29,8 +22,11 @@ public:
 	{
 	}
 	
-	virtual SEBool Open()
+	virtual SEBool Open(SEFloat nWidth = 1280.0f, SEFloat nHeight = 720.0f)
 	{
+		m_nWidth = nWidth;
+		m_nHeight = nHeight;
+
 		m_hWnd = 0;
 		m_hDC = 0;
 		m_hRC = 0;
@@ -48,12 +44,15 @@ public:
 
 		//===========================------------------------------------------------------------
 
+		m_mEvent.m_pApplication = this;
+		m_mEvent.m_pTarget = "OGL";
+
 		m_hInstance = GetModuleHandle(NULL);
 		
 		WNDCLASSEX mClass;
 		mClass.cbSize = sizeof(WNDCLASSEX);
 		mClass.style = NULL;
-		mClass.lpfnWndProc = WindowProc;
+		mClass.lpfnWndProc = RegisterEventListener(&m_mEvent);
 		mClass.hInstance = m_hInstance;
 		mClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 		mClass.cbClsExtra = 0;
@@ -69,7 +68,7 @@ public:
 			return SEFalse;
 		}
 
-		m_hWnd = CreateWindowEx(NULL, "OGL", "Tutorial", WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION, 0, 0, 1280, 720, NULL, NULL, m_hInstance, NULL);
+		m_hWnd = CreateWindowEx(NULL, "OGL", "Tutorial", WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION, 0, 0, m_nWidth, m_nHeight, NULL, NULL, m_hInstance, NULL);
 		if (!m_hWnd)
 		{
 			return SEFalse;
@@ -296,57 +295,121 @@ public:
 
 	virtual SEVoid Finalize() = 0;
 	
-protected:
-	virtual SEVoid OnPinch(SEFloat nDelta) = 0;
-
-	virtual SEVoid OnDrag(SEInt nButton, SEInt nDeltaX, SEInt nDeltaY) = 0;
+	virtual SEVoid OnEvent(_SSE_EVENT_DATA* pEvent) = 0;
 
 protected:
-	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
+	WNDPROC RegisterEventListener(_SSE_EVENT_DATA* pData)
 	{
-		// 鼠标是否移动，上次鼠标移动信息，当前鼠标移动信息
-		static SEInt aMouseMove[] = {0, -1, 0, 0, 0, 0, 0 };
-		aMouseMove[0] = 0;
-
-		switch (nMsg)
+		static WNDPROC pListener = [](HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 		{
-		case WM_MOUSEMOVE:
-			aMouseMove[0] = 1;
-			aMouseMove[4] = (SEInt)wParam;
-			aMouseMove[5] = (SEInt)LOWORD(lParam);
-			aMouseMove[6] = (SEInt)HIWORD(lParam);
-			
-			break;
-		case WM_MOUSEWHEEL:
-			if (0 < (SEInt)wParam)
-				g_pInstance->OnPinch(1.0f);
-			else
-				g_pInstance->OnPinch(-1.0f);
-
-			break;
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
-		}
-
-		if (1 == aMouseMove[0])
-		{
-			if (0 < aMouseMove[4])
+			static _SSE_EVENT_DATA* pData = nullptr;
+			if (nullptr == pData)
 			{
-				g_pInstance->OnDrag(aMouseMove[4], aMouseMove[5] - aMouseMove[2], aMouseMove[6] - aMouseMove[3]);
+				pData = reinterpret_cast<_SSE_EVENT_DATA*>(lParam);
+				return 0;
 			}
-			
-			aMouseMove[1] = aMouseMove[4];
-			aMouseMove[2] = aMouseMove[5];
-			aMouseMove[3] = aMouseMove[6];
-		}
 
-		return DefWindowProc(hWnd, nMsg, wParam, lParam);
+			pData->m_pType = nullptr;
+
+			switch (nMsg)
+			{
+			case WM_LBUTTONDOWN:
+				pData->m_pType = "mousedown";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = 0;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+			case WM_MBUTTONDOWN:
+				pData->m_pType = "mousedown";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = 1;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+			case WM_RBUTTONDOWN:
+				pData->m_pType = "mousedown";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = 2;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+				//=============---------------------------------
+			case WM_LBUTTONUP:
+				pData->m_pType = "mouseup";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = 0;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+			case WM_MBUTTONUP:
+				pData->m_pType = "mouseup";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = 1;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+			case WM_RBUTTONUP:
+				pData->m_pType = "mouseup";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = 2;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+				//=============---------------------------------
+			case WM_MOUSELEAVE: // 无法响应
+				pData->m_pType = "mouseout";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = (SEInt)wParam;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, 0.0f, 0.0f };
+				pData->m_nButtons = 0;
+				break;
+			case WM_MOUSEMOVE:
+				pData->m_pType = "mousemove";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = (SEInt)wParam;
+				pData->m_mMovement = { static_cast<SEFloat>((SEInt)LOWORD(lParam)) - pData->m_mPoint.x, static_cast<SEFloat>((SEInt)HIWORD(lParam)) - pData->m_mPoint.y, 0.0f };
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_nButtons = 0;
+				break;
+			case WM_MOUSEWHEEL:
+				pData->m_pType = "mousewheel";
+				pData->m_nTimestamp = ISETimer::Get()->Now();
+				pData->m_nKeyCode = (SEInt)wParam;
+				pData->m_mPoint = { static_cast<SEFloat>((SEInt)LOWORD(lParam)), static_cast<SEFloat>((SEInt)HIWORD(lParam)) };
+				pData->m_mMovement = { 0.0f, ((SEInt)wParam / abs((SEInt)wParam) * 3.0f), 0.0f };
+				pData->m_nButtons = 0;
+				break;
+				//=============---------------------------------
+			case WM_DESTROY:
+				PostQuitMessage(0);
+				return 0;
+			default:
+				break;
+			}
+
+			reinterpret_cast<_CSETutorial*>(pData->m_pApplication)->OnEvent(pData);
+
+			return DefWindowProc(hWnd, nMsg, wParam, lParam);
+		};
+
+		pListener(0, 0, 0, reinterpret_cast<LPARAM>(pData));
+
+		return pListener;
 	}
 
-	static _CSETutorial* g_pInstance;
-
 public:
+	SEUInt m_nWidth;
+
+	SEUInt m_nHeight;
+
 	HINSTANCE m_hInstance;
 
 	HWND m_hWnd;
@@ -356,9 +419,9 @@ public:
 	HGLRC m_hRC;
 
 	PIXELFORMATDESCRIPTOR m_mPFD;
-};
 
-_CSETutorial* _CSETutorial::g_pInstance = nullptr;
+	_SSE_EVENT_DATA m_mEvent;
+};
 
 
 #endif // !SE_TEST_TUTORIAL_OGL
