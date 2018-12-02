@@ -109,7 +109,7 @@ public:
 		if ("mousewheel" == pEvent->m_pType)
 		{
 			if (nullptr != m_pCameraCtrl) {
-				m_pCameraCtrl->OnPinch(pEvent->m_mMovement.y);
+				m_pCameraCtrl->OnPinch(pEvent->m_mMovement.y * 0.5f);
 			}
 		}
 		else if ("mousedown" == pEvent->m_pType)
@@ -132,7 +132,7 @@ public:
 		}
 		else if ("mousemove" == pEvent->m_pType)
 		{
-			if (0 == nDrag || 2 == nDrag && nullptr != m_pCameraCtrl) {
+			if ((0 == nDrag || 2 == nDrag) && nullptr != m_pCameraCtrl) {
 				m_pCameraCtrl->OnDrag(nDrag, pEvent->m_mMovement.x, pEvent->m_mMovement.y);
 			}
 		}

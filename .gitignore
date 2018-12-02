@@ -4,3 +4,4 @@
 /Build/Object/
 /Thirdparty/*
 !Thirdparty.zip
+!CMakeLists.txt

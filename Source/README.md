@@ -1,6 +1,6 @@
 
 //http://10.0.0.19/Emscripten/Out.html
-
+http://www.learnopengles.com/loading-a-png-into-memory-and-displaying-it-as-a-texture-with-opengl-es-2-using-almost-the-same-code-on-ios-android-and-emscripten/
 // 3+3+3=9+3=12
 // 1024 * 1024 * 12 = 12M 一百万个面，for循环最多128次
 // 最极限，点被半球包围，半径128米，128*3.14，精度3.14米，样点数128*128
@@ -143,7 +143,7 @@ public:
 };
 
 
-A CloneA(A a) 
+A CloneA(A a)
 {
 	/// 存在一个拷贝构造
 	return a;
@@ -154,16 +154,47 @@ A a = CloneA(A(2));
 /// 存在一个拷贝构造
 A b = CloneA(b);
 
-
 // https://blog.csdn.net/u010780613/article/details/54923139
 // https://blog.csdn.net/jadeshu/article/details/21254587
 
+概念设计
 
+1、关卡（场景） Scene
+关卡切换，从内景到外景。为适配当前产品，需要描述关卡类型（内景/外景），以用不同方式装载不同关卡
+多个关卡可以同时活动
+一个场景中包含了去到其它场景的通路
+一个HANDLER包含场景索引，堆索引，涉及到场景导入，堆导入，这两个索引需要有变更的能力
+角色在各个场景各个堆中活动，需要一个单独的堆存储
 
+2、世界 World
+配置关卡列表
+有些世界包含海量关卡，这些关卡通过ID维护，往后台请求
 
+3、活动对象记录当前处于世界的哪个Scene、哪个位置
 
+emscripten提供图片解析：https://kripken.github.io/emscripten-site/docs/porting/files/packaging_files.html
+装载图片
+https://www.khronos.org/opengl/wiki/Image_Libraries
+http://freeimage.sourceforge.net/download.html
+LibJPEG 9c
+http://www.ijg.org/
+LibPNG 1.6.35
+http://www.libpng.org/
+LibTIFF 4.0.9
+http://www.simplesystems.org/libtiff/
+OpenEXR 2.2.1
+http://www.openexr.com
+OpenJPEG 2.1.0
+http://code.google.com/p/openjpeg/
+ZLib 1.2.11
+http://www.zlib.net
+LibRaw 0.19
+http://www.libraw.org
+LibJXR 1.1
+https://jxrlib.codeplex.com
+LibWebP 1.0.0
+https://developers.google.com/speed/webp/
 
-
-
-
-
+只持支持C++14
+ADD_DEFINITIONS(-DLIBRAW_BUILDLIB)
+ADD_DEFINITIONS(-DINITGUID)

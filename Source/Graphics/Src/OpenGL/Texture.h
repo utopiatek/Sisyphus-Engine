@@ -90,7 +90,7 @@ public:
 					glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_pMapInfo->m_nBuffer);
 
 					glTexSubImage2D(GL_TEXTURE_2D, m_pMapInfo->m_nLevel, m_pMapInfo->m_nOffsetX, m_pMapInfo->m_nOffsetY, m_pMapInfo->m_nWidth, m_pMapInfo->m_nHeight, m_aFormat[1], m_aFormat[2], nullptr);
-
+					
 					glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 				}
 
