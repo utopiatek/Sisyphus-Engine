@@ -39,7 +39,8 @@ echo %cd%
 ::TOTAL_MEMORY=1024*1024*1024
 ::ALLOW_MEMORY_GROWTH=1 会影响一些性能优化
 ::X5只支持分配256内存
-call emcc -O3 libCore.so libMath.so libGraphics.so libTest.so libFreeImage.so -s USE_WEBGL2=1 -s FULL_ES3=1 -s TOTAL_MEMORY=268435456 -s ASSERTIONS=1 -s WASM=1 -o index.html
+::libFreeImage.so
+call emcc -O3 libCore.so libMath.so libGraphics.so libEngine.so libTest.so -s USE_WEBGL2=1 -s FULL_ES3=1 -s TOTAL_MEMORY=268435456 -s ASSERTIONS=1 -s WASM=1 -o index.html
 
 echo "==2======================================"
 pause

@@ -1,6 +1,10 @@
 
 //http://10.0.0.19/Emscripten/Out.html
 http://www.learnopengles.com/loading-a-png-into-memory-and-displaying-it-as-a-texture-with-opengl-es-2-using-almost-the-same-code-on-ios-android-and-emscripten/
+https://m.aliyun.com/jiaocheng/977991.html
+emscripten_async_wget
+http://blog.mozilla.com.tw/posts/6965/porting-to-emscripten-3
+
 // 3+3+3=9+3=12
 // 1024 * 1024 * 12 = 12M 一百万个面，for循环最多128次
 // 最极限，点被半球包围，半径128米，128*3.14，精度3.14米，样点数128*128

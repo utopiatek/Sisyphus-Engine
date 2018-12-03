@@ -11,6 +11,9 @@
 #include <GLES3/gl2ext.h>
 
 
+#define SE_CHECK_FLAG(P, FLAG) ((P & FLAG) > 0)
+
+
 class _CSETutorial
 {
 protected:
@@ -91,7 +94,7 @@ private:
 			_SSE_EVENT_DATA* pData = static_cast<_SSE_EVENT_DATA*>(pUserData);
 
 			pData->m_pType = nullptr;
-			
+
 			switch (nType)
 			{
 			case EMSCRIPTEN_EVENT_MOUSEDOWN:
@@ -155,6 +158,23 @@ private:
 		emscripten_set_mouseup_callback(pData->m_pTarget, pData, false, pMouseAction);
 		emscripten_set_mouseleave_callback(pData->m_pTarget, pData, false, pMouseAction);
 		emscripten_set_mousemove_callback(pData->m_pTarget, pData, false, pMouseAction);
+
+		SEUInt ii = 501347081;
+
+		ISERequest::Get()->DoGet("http://localhost/3d/timg.jpg", [ii](SEInt nType, SEInt nSize, SEVoid* pData) {
+			if (1 == nType)
+			{
+				printf("================== %d %d \n", nSize, ii);
+			}
+			else if (-1 == nType)
+			{
+				printf("------------------ %d %s \n", nSize, *reinterpret_cast<SECString*>(pData));
+			}
+			else
+			{
+				printf("****************** %d \n", nSize);
+			}
+		});
 	}
 
 private:
