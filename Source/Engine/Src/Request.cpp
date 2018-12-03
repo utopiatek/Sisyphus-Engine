@@ -36,6 +36,33 @@ public:
 		});
 	}
 
+	virtual SEVoid DecodeImage(SEChar* pData, SEInt nSize, SECString pSuffix, SEDelegate<SEVoid(SEInt, SEInt, SEVoid*)> Callback)
+	{
+		GET_TASK* pTask = reinterpret_cast<GET_TASK*>(ISEMemory::Get()->Malloc(sizeof(GET_TASK)));
+
+		*pTask = Callback;
+
+		emscripten_run_preload_plugins_data(pData, nSize, pSuffix, pTask, [](SEVoid* pUserData, SECString pFile) {
+			SEInt nWidth = 0;
+			SEInt nHeight = 0;
+			SEChar* pData = emscripten_get_preloaded_image_data(pFile, &nWidth, &nHeight);
+
+			if (nullptr != pData)
+			{
+				GET_TASK* pTask = reinterpret_cast<GET_TASK*>(pUserData);
+				(*pTask)(nWidth, nHeight, pData);
+			}
+			else
+			{
+				GET_TASK* pTask = reinterpret_cast<GET_TASK*>(pUserData);
+				(*pTask)(0, 0, nullptr);
+			}
+
+			delete pFile;
+		}, [](SEVoid* pUserData) {
+		});
+	}
+
 public:
 	_SE_SINGLETON_DECL(ISERequest, __CSERequest, SE_TEXT("ISERequest"))
 

@@ -38,7 +38,7 @@ public:
 
 		m_pConstBuffer = CreateConstBuffer();
 
-		m_pTexture = CreateTexture();
+		/*m_pTexture = */CreateTexture();
 
 		m_pRenderTarget = CreateRenderTarget();
 
@@ -80,7 +80,10 @@ public:
 
 		m_pConstBuffer->BindAsCBuffer(1);
 
-		m_pTexture->Bind(0);
+		if (nullptr != m_pTexture)
+		{
+			m_pTexture->Bind(0);
+		}
 
 		m_pRenderer->IASetPrimitiveTopology(ESE_STATE_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		m_pRenderer->Draw(3, 0);
@@ -186,7 +189,7 @@ protected:
 		out vec4 fragColor;                         \n \
 		void main()                                 \n \
 		{                                           \n \
-			fragColor = Proj[0];//texture(tex0, v_UV);        \n \
+			fragColor = texture(tex0, v_UV); //Proj[0];//       \n \
 		}                                           \n ");
 
 		SECString aSource[] = { pSource };
@@ -296,17 +299,44 @@ protected:
 		return pBuffer;
 	}
 
-	ISETexture2D* CreateTexture()
+	SEVoid CreateTexture()
 	{
-		SEUByte aColor[4 * 4] = {
-		255, 0, 0, 255,
-		0, 255, 0, 255,
-		0, 0, 255, 255,
-		255, 255, 255, 255 };
+		ISERequest::Get()->DoGet("http://localhost/3d/timg.jpg", [this](SEInt nType, SEInt nSize, SEVoid* pData) {
+			if (1 == nType)
+			{
+				printf("================== %d \n", nSize);
+				ISERequest::Get()->DecodeImage(reinterpret_cast<SEChar*>(pData), nSize, "jpg", [this](SEInt nWidth, SEInt nHeight, SEVoid* pData) {
+					if (nullptr != pData)
+					{
+						m_pTexture = CreateTexture2(nWidth, nHeight, reinterpret_cast<SEChar*>(pData));
+					}
+					printf("image %d %d %d \n", nWidth, nHeight, (SEUInt)pData);
+				});
+			}
+			else if (-1 == nType)
+			{
+				printf("------------------ %d %s \n", nSize, *reinterpret_cast<SECString*>(pData));
+			}
+			else
+			{
+				printf("****************** %d \n", nSize);
+			}
+		});
+	}
+
+	ISETexture2D* CreateTexture2(SEInt nWidth, SEInt nHeight, SEChar* pData)
+	{
+		//SEUByte aColor[4 * 4] = {
+		//255, 0, 0, 255,
+		//0, 255, 0, 255,
+		//0, 0, 255, 255,
+		//255, 255, 255, 255 };
+
+
 
 		ISETexture2D::DESC mDesc;
-		mDesc.m_nWidth = 2;
-		mDesc.m_nHeight = 2;
+		mDesc.m_nWidth = nWidth;
+		mDesc.m_nHeight = nHeight;
 		mDesc.m_nMipLevels = 1;
 		mDesc.m_eFormat = ESE_FORMAT_R8G8B8A8_UNORM;
 
@@ -318,13 +348,13 @@ protected:
 			mData.m_nOffsetX = 0;
 			mData.m_nOffsetY = 0;
 			mData.m_nOffsetZ = 0;
-			mData.m_nWidth = 2;
-			mData.m_nHeight = 2;
+			mData.m_nWidth = nWidth;
+			mData.m_nHeight = nHeight;
 			mData.m_nDepth = 1;
 
 			if (pTexture->Map(&mData, ESE_RESOURCE_MAP_WRITE_DISCARD))
 			{
-				memcpy(mData.m_pData, aColor, sizeof(aColor));
+				memcpy(mData.m_pData, pData, nWidth * nHeight * 4);
 			}
 
 			pTexture->Unmap();

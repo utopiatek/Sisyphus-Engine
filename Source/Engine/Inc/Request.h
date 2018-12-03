@@ -34,6 +34,18 @@ public:
 	virtual SEVoid DoGet(SECString pUrl, SEDelegate<SEVoid(SEInt, SEInt, SEVoid*)> Callback) = 0;
 
 	/// <summary>
+	/// 解码图片数据。
+	/// </summary>
+	/// <param name="pData">图片编码数据。</param>
+	/// <param name="nSize">图片编码数据大小。</param>
+	/// <param name="pSuffix">图片类型，支持JPG与PNG。</param>
+	/// <param name="Callback">请求响应函数。</param>
+	/// <param name="Callback-1">图片像素宽度。</param>
+	/// <param name="Callback-2">图片像素高度。</param>
+	/// <param name="Callback-3">图片解码数据。</param>
+	virtual SEVoid DecodeImage(SEChar* pData, SEInt nSize, SECString pSuffix, SEDelegate<SEVoid(SEInt, SEInt, SEVoid*)> Callback) = 0;
+
+	/// <summary>
 	/// 激活获取接口实体。
 	/// </summary>
 	/// <returns>返回接口实体。</returns>
