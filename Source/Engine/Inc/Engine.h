@@ -4,6 +4,7 @@
 
 
 #include "Request.h"
+#include "Material.h"
 
 
 /// <summary>

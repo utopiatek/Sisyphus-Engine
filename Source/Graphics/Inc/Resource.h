@@ -61,6 +61,8 @@ public:
 	/// </summary>
 	virtual ~ISEResource() {};
 
+	// 资源类型
+
 	/// <summary>
 	/// 获取资源ID，默认0。
 	/// </summary>
