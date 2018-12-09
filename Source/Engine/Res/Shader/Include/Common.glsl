@@ -1,5 +1,9 @@
+#version 300 es
 
-#ifndef SE_ATTRIBUTE
-#define SE_ATTRIBUTE
+precision highp float;
 
-#endif
+layout(std140) uniform CUSTOM_PER_MATERIAL
+{
+	vec4 Color;
+	mat4x4 Proj;
+};

@@ -295,6 +295,7 @@ SEVoid __CSEResourceFactory::Reinit()
 {
 	// 丢弃所有正在使用的对象
 	_CSEBuffer::Cache().Free();
+	_CSETexture2D::Cache().Free();
 }
 
 SEVoid __CSEResourceFactory::Reset()

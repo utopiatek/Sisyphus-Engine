@@ -16,6 +16,28 @@ public:
 	{
 	}
 
+	virtual SEBool ReadFile(SECString pPath, SEVoid** pBuffer, SEUInt& nSize)
+	{
+		ISEStream* pStream = ISEStreamFactory::Get()->CreateFileStream(pPath);
+		if (nullptr != pStream)
+		{
+			if (pStream->Open(ESE_STREAM_READ | ESE_STREAM_BINARY))
+			{
+				nSize = static_cast<SEUInt>(pStream->Length());
+				*pBuffer = ISEMemory::Get()->Malloc(nSize);
+
+				pStream->Read(reinterpret_cast<SEChar*>(*pBuffer), nSize);
+				pStream->Close();
+
+				return SETrue;
+			}
+
+			pStream->Release();
+		}
+
+		return SEFalse;
+	}
+
 	virtual SEVoid DoGet(SECString pUrl, SEDelegate<SEVoid(SEInt, SEInt, SEVoid*)> Callback)
 	{
 		GET_TASK* pTask = reinterpret_cast<GET_TASK*>(ISEMemory::Get()->Malloc(sizeof(GET_TASK)));
@@ -61,6 +83,15 @@ public:
 			delete pFile;
 		}, [](SEVoid* pUserData) {
 		});
+	}
+
+	virtual SEVoid Free(SEVoid** pData)
+	{
+		if (nullptr != *pData)
+		{
+			free(*pData);
+			*pData = nullptr;
+		}
 	}
 
 public:

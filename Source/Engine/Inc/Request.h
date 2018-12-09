@@ -24,6 +24,15 @@ public:
 	virtual ~ISERequest() {};
 
 	/// <summary>
+	/// 获取预加载文件路径。
+	/// </summary>
+	/// <param name="pPath">文件路径。</param>
+	/// <param name="pBuffer">文件数据缓存（ISEMemory分配内存，需释放）。</param>
+	/// <param name="nSize">文件数据大小。</param>
+	/// <returns>返回成功标记。</returns>
+	virtual SEBool ReadFile(SECString pPath, SEVoid** pBuffer, SEUInt& nSize) = 0;
+
+	/// <summary>
 	/// 通过GET请求数据。
 	/// </summary>
 	/// <param name="pUrl">数据URL。</param>
@@ -44,6 +53,12 @@ public:
 	/// <param name="Callback-2">图片像素高度。</param>
 	/// <param name="Callback-3">图片解码数据。</param>
 	virtual SEVoid DecodeImage(SEChar* pData, SEInt nSize, SECString pSuffix, SEDelegate<SEVoid(SEInt, SEInt, SEVoid*)> Callback) = 0;
+
+	/// <summary>
+	/// 释放所请求数据。
+	/// </summary>
+	/// <param name="pData">数据指针。</param>
+	virtual SEVoid Free(SEVoid** pData) = 0;
 
 	/// <summary>
 	/// 激活获取接口实体。

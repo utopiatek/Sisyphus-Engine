@@ -18,7 +18,7 @@ class _CSETutorial01 : public _CSETutorial
 public:
 	_CSETutorial01()
 		:_CSETutorial(),
-		m_pProgram(nullptr), m_pInputLayout(nullptr), m_pConstBuffer(nullptr),
+		m_pMaterial(nullptr), m_pInputLayout(nullptr), m_pConstBuffer(nullptr),
 		m_pTexture(nullptr), m_pRenderTarget(nullptr), m_pRenderer(nullptr)
 	{
 	}
@@ -32,9 +32,9 @@ public:
 		m_pCameraCtrl = new _CSECameraCtrl();
 		m_pCameraCtrl->Init(m_nWidth, m_nHeight, 3.14159f * 0.3333f, 1.0f, 100.0f);
 
-		m_pProgram = CreateProgram();
+		m_pMaterial = ISEMaterialFactory::Get()->CreateMaterial(0);
 
-		m_pInputLayout = CreateInputLayout(m_pProgram);
+		m_pInputLayout = CreateInputLayout(m_pMaterial->GetShader());
 
 		m_pConstBuffer = CreateConstBuffer();
 
@@ -74,7 +74,7 @@ public:
 		m_pRenderTarget->ClearColor(aColor);
 		m_pRenderTarget->ClearDepthStencil(1.0, 0);
 
-		m_pProgram->Bind();
+		m_pMaterial->GetShader()->Bind();
 
 		m_pInputLayout->Bind();
 
@@ -142,93 +142,6 @@ public:
 	}
 
 protected:
-	ISEShader* CreateVertexShader()
-	{
-		SEChar pSource[] = ("                          \
-		#version 300 es                             \n \
-		layout (location = 0) in vec4 vPosition;    \n \
-		layout (location = 1) in vec2 vUV;          \n \
-		layout(std140) uniform CUSTOM_PER_MATERIAL  \n \
-		{                                           \n \
-			vec4 Color;                             \n \
-			mat4x4 Proj;                            \n \
-		};                                          \n \
-		out vec2 v_UV;                              \n \
-		void main()                                 \n \
-		{                                           \n \
-			v_UV = vUV;                             \n \
-			gl_Position = Proj * vPosition;         \n \
-		}                                           \n ");
-
-		SECString aSource[] = { pSource };
-		SEInt aLength[] = { sizeof(pSource) };
-
-		ISEShader::DESC mDesc;
-		mDesc.m_eType = ESE_PROGRAM_SHADER_VERTEX;
-		mDesc.m_nSourceCount = 1;
-		mDesc.m_pLength = nullptr; // aLength;
-		mDesc.m_pSource = aSource;
-
-		ISEShader* pShader = ISEProgramFactory::Get()->CreateShader(&mDesc);
-
-		return pShader;
-	}
-
-	ISEShader* CreatePixelShader()
-	{
-		SEChar pSource[] = ("                          \
-		#version 300 es                             \n \
-		precision highp float;                    \n \
-		layout(std140) uniform CUSTOM_PER_MATERIAL  \n \
-		{                                           \n \
-			vec4 Color;                             \n \
-			mat4x4 Proj;                            \n \
-		};                                          \n \
-		uniform sampler2D tex0;                     \n \
-		in vec2 v_UV;                               \n \
-		out vec4 fragColor;                         \n \
-		void main()                                 \n \
-		{                                           \n \
-			fragColor = texture(tex0, v_UV); //Proj[0];//       \n \
-		}                                           \n ");
-
-		SECString aSource[] = { pSource };
-		SEInt aLength[] = { sizeof(pSource) };
-
-		ISEShader::DESC mDesc;
-		mDesc.m_eType = ESE_PROGRAM_SHADER_PIXEL;
-		mDesc.m_nSourceCount = 1;
-		mDesc.m_pLength = nullptr; // aLength;
-		mDesc.m_pSource = aSource;
-
-		ISEShader* pShader = ISEProgramFactory::Get()->CreateShader(&mDesc);
-
-		return pShader;
-	}
-
-	ISEProgram* CreateProgram()
-	{
-		ISEShader* pVertexShader = CreateVertexShader();
-		if (nullptr == pVertexShader)
-		{
-			return nullptr;
-		}
-
-		ISEShader* pPixelShader = CreatePixelShader();
-		if (nullptr == pPixelShader)
-		{
-			return nullptr;
-		}
-
-		ISEProgram::DESC mDesc;
-		mDesc.m_pVertexShader = pVertexShader;
-		mDesc.m_pPixelShader = pPixelShader;
-
-		ISEProgram* pProgram = ISEProgramFactory::Get()->CreateProgram(&mDesc);
-
-		return pProgram;
-	}
-
 	ISEBuffer* CreateVertexBuffer()
 	{
 		SEFloat aVertex[] = {
@@ -301,6 +214,46 @@ protected:
 
 	SEVoid CreateTexture()
 	{
+		SEVoid* pBuffer = nullptr;
+		SEUInt nSize = 0;
+
+		if (ISERequest::Get()->ReadFile("Shader/Include/Common.glsl", &pBuffer, nSize))
+		{
+			printf("=223================= %d %s \n", nSize, reinterpret_cast<SECString>(pBuffer));
+		}
+
+		/*ISEStream* pStream = ISEStreamFactory::Get()->CreateFileStream("Shader/Include/Common.glsl");
+		if (nullptr != pStream)
+		{
+			if (pStream->Open(ESE_STREAM_READ | ESE_STREAM_BINARY))
+			{
+				SEUInt nLength = pStream->Length();
+				SEVoid* pBuffer = ISEMemory::Get()->Malloc(nLength);
+
+				pStream->Read(reinterpret_cast<SEChar*>(pBuffer), nLength);
+				pStream->Close();
+
+				printf("=22================= %d %s \n", nLength, reinterpret_cast<SECString>(pBuffer));
+			}
+
+			pStream->Release();
+		}*/
+
+		ISERequest::Get()->DoGet("http://localhost/3d/Res/Shader/Include/Common.glsl", [this](SEInt nType, SEInt nSize, SEVoid* pData) {
+			if (1 == nType)
+			{
+				printf("================== %s %d \n", nSize, reinterpret_cast<SECString>(pData));
+			}
+			else if (-1 == nType)
+			{
+				printf("------------------ %d %s \n", nSize, *reinterpret_cast<SECString*>(pData));
+			}
+			else
+			{
+				printf("****************** %d \n", nSize);
+			}
+		});
+
 		ISERequest::Get()->DoGet("http://localhost/3d/timg.jpg", [this](SEInt nType, SEInt nSize, SEVoid* pData) {
 			if (1 == nType)
 			{
@@ -311,6 +264,10 @@ protected:
 						m_pTexture = CreateTexture2(nWidth, nHeight, reinterpret_cast<SEChar*>(pData));
 					}
 					printf("image %d %d %d \n", nWidth, nHeight, (SEUInt)pData);
+
+					ISERequest::Get()->Free(&pData);
+					
+					// 释放原始数据
 				});
 			}
 			else if (-1 == nType)
@@ -418,7 +375,7 @@ protected:
 	}
 
 private:
-	ISEProgram* m_pProgram;
+	ISEMaterial* m_pMaterial;
 
 	ISEInputLayout* m_pInputLayout;
 

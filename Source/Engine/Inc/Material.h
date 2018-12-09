@@ -105,7 +105,7 @@ public:
 	/// 创建指定类型材质。
 	/// </summary>
 	/// <returns>返回材质接口。</returns>
-	virtual ISEMaterial* CreateMaterial() = 0;
+	virtual ISEMaterial* CreateMaterial(SEInt nIndex) = 0;
 
 	/// <summary>
 	/// 激活获取接口实体。
