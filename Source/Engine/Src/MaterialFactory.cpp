@@ -38,7 +38,6 @@ public:
 		PROGRAM* pProgram = CreateProgram(nIndex);
 		if (nullptr == pProgram)
 		{
-			printf("5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \n");
 			return nullptr;
 		}
 
@@ -62,7 +61,6 @@ protected:
 
 			if (!ISERequest::Get()->ReadFile(mVertexShader.m_pFileName, &pBuffer, nSize))
 			{
-				printf("1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx %s \n", mVertexShader.m_pFileName);
 				return nullptr;
 			}
 
@@ -81,7 +79,6 @@ protected:
 
 			if (nullptr == mVertexShader.m_pShader)
 			{
-				printf("2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \n");
 				return nullptr;
 			}
 		}
@@ -94,7 +91,6 @@ protected:
 
 			if (!ISERequest::Get()->ReadFile(mPixelShader.m_pFileName, &pBuffer, nSize))
 			{
-				printf("3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  %s \n", mPixelShader.m_pFileName);
 				return nullptr;
 			}
 
@@ -113,7 +109,6 @@ protected:
 
 			if (nullptr == mPixelShader.m_pShader)
 			{
-				printf("4xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \n");
 				return nullptr;
 			}
 		}
