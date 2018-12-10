@@ -118,7 +118,7 @@ class _CSEProgram : public ISEProgram
 {
 public:
 	_CSEProgram()
-		:m_nID(0), m_nProgram(0), m_nRefCount(0), m_pLast(nullptr), m_pNext(nullptr)
+		:m_nID(0), m_nProgram(0), m_pUniform(nullptr), m_nRefCount(0), m_pLast(nullptr), m_pNext(nullptr)
 	{
 	}
 
@@ -146,10 +146,11 @@ public:
 		return reinterpret_cast<SEHandle>(m_nProgram);
 	}
 
-	virtual _CSEProgram* Init(SEUInt nProgram)
+	virtual _CSEProgram* Init(SEUInt nProgram, SSE_UNIFORM* pUniform)
 	{
 		m_nID = 0;
 		m_nProgram = nProgram;
+		m_pUniform = pUniform;
 		m_nRefCount = 1;
 
 		Cache().Register(this);
@@ -171,6 +172,11 @@ public:
 		return nLength;
 	}
 
+	virtual SEConst SSE_UNIFORM* GetUniform()
+	{
+		return m_pUniform;
+	}
+
 	virtual SEVoid Finalize()
 	{
 		Cache().Unregister(this);
@@ -179,6 +185,8 @@ public:
 
 		m_nID = 0;
 		m_nProgram = 0;
+		ISEMemory::Get()->Free(m_pUniform);
+		m_pUniform = nullptr;
 		m_nRefCount = 0;
 		m_pLast = nullptr;
 		m_pNext = nullptr;
@@ -190,6 +198,8 @@ public:
 	{
 		m_nID = 0;
 		m_nProgram = 0;
+		ISEMemory::Get()->Free(m_pUniform);
+		m_pUniform = nullptr;
 		m_nRefCount = 0;
 		m_pLast = nullptr;
 		m_pNext = nullptr;
@@ -222,6 +232,8 @@ public:
 	SEResID m_nID;
 
 	SEUInt m_nProgram;
+
+	SSE_UNIFORM* m_pUniform;
 
 	SEInt m_nRefCount;
 
