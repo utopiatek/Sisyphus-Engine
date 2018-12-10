@@ -109,6 +109,16 @@ struct SSE_UNIFORM
 	SEInt m_nBlockCount;
 
 	/// <summary>
+	/// 非属于统一变量块统一变量总数。
+	/// </summary>
+	SEInt m_nSingleCount;
+
+	/// <summary>
+	/// 非属于统一变量块统一变量总大小。
+	/// </summary>
+	SEInt m_nSingleSize;
+
+	/// <summary>
 	/// 名称最大长度。
 	/// </summary>
 	SEInt m_nNameMax;

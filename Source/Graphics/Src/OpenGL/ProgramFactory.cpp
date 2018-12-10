@@ -11,6 +11,41 @@ public:
 		m_aConstBuffer[0] = SE_TEXT("CUSTOM_PER_SHADER");
 		m_aConstBuffer[1] = SE_TEXT("CUSTOM_PER_MATERIAL");
 		m_nConstBufferCount = 2;
+
+		SEInt aTypeLut[] = {
+			0,
+			GL_FLOAT, GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT_VEC4,
+			GL_INT, GL_INT_VEC2, GL_INT_VEC3, GL_INT_VEC4,
+			GL_UNSIGNED_INT, GL_UNSIGNED_INT_VEC2, GL_UNSIGNED_INT_VEC3, GL_UNSIGNED_INT_VEC4,
+			GL_BOOL, GL_BOOL_VEC2, GL_BOOL_VEC3, GL_BOOL_VEC4,
+			GL_FLOAT_MAT2, GL_FLOAT_MAT2x3, GL_FLOAT_MAT2x4,
+			GL_FLOAT_MAT3x2, GL_FLOAT_MAT3, GL_FLOAT_MAT3x4,
+			GL_FLOAT_MAT4x2, GL_FLOAT_MAT4x3, GL_FLOAT_MAT4,
+			GL_SAMPLER_2D, GL_SAMPLER_3D, GL_SAMPLER_CUBE,
+			GL_SAMPLER_2D_SHADOW, GL_SAMPLER_2D_ARRAY, GL_SAMPLER_2D_ARRAY_SHADOW, GL_SAMPLER_CUBE_SHADOW,
+			GL_INT_SAMPLER_2D, GL_INT_SAMPLER_3D, GL_INT_SAMPLER_CUBE, GL_INT_SAMPLER_2D_ARRAY,
+			GL_UNSIGNED_INT_SAMPLER_2D, GL_UNSIGNED_INT_SAMPLER_3D, GL_UNSIGNED_INT_SAMPLER_CUBE, GL_UNSIGNED_INT_SAMPLER_2D_ARRAY,
+		};
+
+		SEInt nPointerSize = sizeof(SEVoid*);
+
+		SEInt aSizeLut[] = {
+			0,
+			4, 8, 12, 16,
+			4, 8, 12, 16,
+			4, 8, 12, 16,
+			1, 2, 3, 4,
+			16, 24, 32,
+			24, 36, 48,
+			32, 48, 64,
+			nPointerSize, nPointerSize, nPointerSize,
+			nPointerSize, nPointerSize, nPointerSize, nPointerSize,
+			nPointerSize, nPointerSize, nPointerSize, nPointerSize,
+			nPointerSize, nPointerSize, nPointerSize, nPointerSize,
+		};
+
+		memcpy(m_aTypeLut, aTypeLut, sizeof(m_aTypeLut));
+		memcpy(m_aSizeLut, aSizeLut, sizeof(m_aSizeLut));
 	}
 
 	virtual ~__CSEProgramFactory()
@@ -226,8 +261,11 @@ protected:
 			if (0 > pAttachment->m_aBlockIndex[i])
 			{
 				nBlockUniformStart = i + 1;
+				pAttachment->m_nSingleSize += m_aSizeLut[pAttachment->m_aType[i]];
 			}
 		}
+
+		pAttachment->m_nSingleCount = nBlockUniformStart;
 
 		for (SEInt i = 0; i < nBlockCount; i++)
 		{
@@ -239,10 +277,9 @@ protected:
 			nBlockUniformStart += pAttachment->m_aBlock[i].m_nUniformCount;
 		}
 
-		for (SEInt i = 0; i < nUniformCount; i++)
+		for (SEInt i = 0; i < pAttachment->m_nSingleCount; i++)
 		{
-			printf("name: %s, index: %d, type: %d, size: %d, block: %d, offset: %d, arrayStride: %d, matrixStride: %d, isRowMajor: %d \n",
-				(pAttachment->m_aUniformName + (nNameMax * i)), i, pAttachment->m_aType[i], pAttachment->m_aSize[i], pAttachment->m_aBlockIndex[i], pAttachment->m_aOffset[i], pAttachment->m_aArrayStride[i], pAttachment->m_aMatrixStride[i], pAttachment->m_aIsRowMajor[i]);
+			printf("name: %s, %d \n", (pAttachment->m_aUniformName + (nNameMax * i)), pAttachment->m_nSingleSize);
 		}
 
 		for (SEInt i = 0; i < nBlockCount; i++)
@@ -257,27 +294,12 @@ protected:
 
 		return pAttachment;
 	}
-
+	
 	SEVoid ConvertUniformType(SEInt& nType)
 	{
-		static SEInt aLut[] = {
-			0,
-			GL_FLOAT, GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT_VEC4,
-			GL_INT, GL_INT_VEC2, GL_INT_VEC3, GL_INT_VEC4,
-			GL_UNSIGNED_INT, GL_UNSIGNED_INT_VEC2, GL_UNSIGNED_INT_VEC3, GL_UNSIGNED_INT_VEC4,
-			GL_BOOL, GL_BOOL_VEC2, GL_BOOL_VEC3, GL_BOOL_VEC4,
-			GL_FLOAT_MAT2, GL_FLOAT_MAT2x3, GL_FLOAT_MAT2x4,
-			GL_FLOAT_MAT3x2, GL_FLOAT_MAT3, GL_FLOAT_MAT3x4,
-			GL_FLOAT_MAT4x2, GL_FLOAT_MAT4x3, GL_FLOAT_MAT4,
-			GL_SAMPLER_2D, GL_SAMPLER_3D, GL_SAMPLER_CUBE,
-			GL_SAMPLER_2D_SHADOW, GL_SAMPLER_2D_ARRAY, GL_SAMPLER_2D_ARRAY_SHADOW, GL_SAMPLER_CUBE_SHADOW,
-			GL_INT_SAMPLER_2D, GL_INT_SAMPLER_3D, GL_INT_SAMPLER_CUBE, GL_INT_SAMPLER_2D_ARRAY,
-			GL_UNSIGNED_INT_SAMPLER_2D, GL_UNSIGNED_INT_SAMPLER_3D, GL_UNSIGNED_INT_SAMPLER_CUBE, GL_UNSIGNED_INT_SAMPLER_2D_ARRAY,
-		};
-
 		for (SEInt i = 0; i < 41; i++)
 		{
-			if (aLut[i] == nType)
+			if (m_aTypeLut[i] == nType)
 			{
 				nType = i;
 				return;
@@ -294,6 +316,10 @@ private:
 	SEUInt m_nConstBufferCount;
 
 	SECString m_aConstBuffer[16];
+
+	SEInt m_aTypeLut[41];
+
+	SEInt m_aSizeLut[41];
 };
 
 

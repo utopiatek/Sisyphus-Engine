@@ -41,6 +41,10 @@ public:
 			return nullptr;
 		}
 
+		// 统一变量
+
+		// 统一变量块
+
 		return _CSEMaterial::Cache().Cache()->Init(pProgram->m_pName, pProgram->m_pProgram);
 	}
 
