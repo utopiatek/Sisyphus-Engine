@@ -69,7 +69,7 @@ enum ESE_UNIFORM_TYPE
 /// <summary>
 /// 着色器程序统一变量描述。
 /// </summary>
-struct SSE_UNIFORM
+struct SSE_UNIFORM_DESC
 {
 	/// <summary>
 	/// 统一变量块。
@@ -90,6 +90,16 @@ struct SSE_UNIFORM
 		/// 数据块大小。
 		/// </summary>
 		SEInt m_nSize;
+
+		/// <summary>
+		/// 内存偏移。
+		/// </summary>
+		SEInt m_nOffset;
+
+		/// <summary>
+		/// 绑定插槽。
+		/// </summary>
+		SEInt m_nSlot;
 	};
 
 
@@ -119,6 +129,11 @@ struct SSE_UNIFORM
 	SEInt m_nSingleSize;
 
 	/// <summary>
+	/// 非属于统一变量块统一变量总大小。
+	/// </summary>
+	SEInt m_nTotalSize;
+
+	/// <summary>
 	/// 名称最大长度。
 	/// </summary>
 	SEInt m_nNameMax;
@@ -146,10 +161,10 @@ struct SSE_UNIFORM
 	/// <summary>
 	/// 变量元素数量数组GL_UNIFORM_SIZE（m_aType + 4 * UniformCount）。
 	/// </summary>
-	SEInt* m_aSize;
+	SEInt* m_aLength;
 
 	/// <summary>
-	/// 变量所属块数组GL_UNIFORM_BLOCK_INDEX（m_aSize + 4 * UniformCount）。
+	/// 变量所属块数组GL_UNIFORM_BLOCK_INDEX或者统一变量位置（m_aSize + 4 * UniformCount）。
 	/// </summary>
 	SEInt* m_aBlockIndex;
 
@@ -169,9 +184,9 @@ struct SSE_UNIFORM
 	SEInt* m_aMatrixStride;
 
 	/// <summary>
-	/// 变量矩阵类型数组GL_UNIFORM_IS_ROW_MAJOR（m_aMatrixStride + 4 * UniformCount）。
+	/// 变量大小（m_aMatrixStride + 4 * UniformCount）。
 	/// </summary>
-	SEInt* m_aIsRowMajor;
+	SEInt* m_aSize;
 };
 
 
@@ -300,6 +315,15 @@ public:
 	virtual SEVoid Bind() = 0;
 
 	/// <summary>
+	/// 设置统一变量，设置之前需要绑定着色器程序。
+	/// </summary>
+	/// <param name="eType">统一变量类型。</param>
+	/// <param name="nLocation">统一变量插槽位置。</param>
+	/// <param name="nLength">统一变量数组长度。</param>
+	/// <param name="pData">统一变量数据。</param>
+	virtual SEVoid SetUniform(ESE_UNIFORM_TYPE eType, SEInt nLocation, SEInt nLength, SEVoid* pData) = 0;
+
+	/// <summary>
 	/// 获取着色器程序二进制数据。
 	/// </summary>
 	/// <param name="nFormat">二进制数据格式指定。</param>
@@ -312,7 +336,7 @@ public:
 	/// 获取着色器程序统一变量描述。
 	/// </summary>
 	/// <returns>返回统一变量描述。</returns>
-	virtual SEConst SSE_UNIFORM* GetUniform() = 0;
+	virtual SEConst SSE_UNIFORM_DESC* GetUniformDesc() = 0;
 };
 
 

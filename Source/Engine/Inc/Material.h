@@ -73,14 +73,33 @@ public:
 	virtual SEVoid SetTextureOffset(SECString pName, SEConst SSEFloat2& mOffset) = 0;
 
 	/// <summary>
+	/// 为着色器变量赋值。
+	/// </summary>
+	/// <param name="pName">着色器变量名称。</param>
+	/// <param name="mValue">SSEFloat4类型值。</param>
+	virtual SEBool SetValue(SECString pName, SEConst SSEFloat4& mValue) = 0;
+
+	/// <summary>
+	/// 为着色器变量赋值。
+	/// </summary>
+	/// <param name="pName">着色器变量名称。</param>
+	/// <param name="mValue">SSEFloat4类型值。</param>
+	virtual SEBool SetValue(SECString pName, SEConst SSEFloat4x4& mValue) = 0;
+
+	/// <summary>
 	/// 获取材质着色器。
 	/// </summary>
-	virtual ISEProgram* GetShader() = 0;
+	virtual ISEProgram* GetProgram() = 0;
 
 	/// <summary>
 	/// 设置材质着色器。
 	/// </summary>
-	virtual SEVoid SetShader(SEConst ISEProgram* pShader) = 0;
+	virtual SEVoid SetProgram(SEConst ISEProgram* pShader) = 0;
+
+	/// <summary>
+	/// 绑定材质。
+	/// </summary>
+	virtual SEVoid Bind() = 0;
 };
 
 

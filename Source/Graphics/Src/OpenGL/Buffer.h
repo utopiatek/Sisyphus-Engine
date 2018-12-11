@@ -97,6 +97,11 @@ public:
 		glBindBufferBase(GL_UNIFORM_BUFFER, nSlot, m_nBuffer);
 	}
 
+	virtual SEVoid BindAsCBuffer(SEInt nSlot, SEInt nOffset, SEInt nSize)
+	{
+		glBindBufferRange(GL_UNIFORM_BUFFER, nSlot, m_nBuffer, nOffset, nSize);
+	}
+
 	virtual SEVoid BindAsStreamOutBuffer(SEInt nSlot, SEInt nOffset)
 	{
 		glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, nSlot, m_nBuffer);

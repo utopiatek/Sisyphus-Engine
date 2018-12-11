@@ -41,11 +41,15 @@ public:
 			return nullptr;
 		}
 
-		// 统一变量
+		m_mMatDesc.m_pName = pProgram->m_pName;
+		m_mMatDesc.m_pProgram = pProgram->m_pProgram;
+		m_mMatDesc.m_pUniform = pProgram->m_pProgram->GetUniformDesc();
+		m_mMatDesc.m_pMemory = nullptr;
+		m_mMatDesc.m_pBuffer = nullptr;
+		m_mMatDesc.m_nBufferSize = m_mMatDesc.m_pUniform->m_nTotalSize - m_mMatDesc.m_pUniform->m_nSingleSize;
+		m_mMatDesc.m_nBufferOffset = 0;
 
-		// 统一变量块
-
-		return _CSEMaterial::Cache().Cache()->Init(pProgram->m_pName, pProgram->m_pProgram);
+		return _CSEMaterial::Cache().Cache()->Init(m_mMatDesc);
 	}
 
 protected:
@@ -142,6 +146,7 @@ private:
 
 	PROGRAM m_aProgram[1];
 
+	_CSEMaterial::DESC m_mMatDesc;
 
 	// 每个材质的顶点输入布局
 	// 每个材质的属性插槽

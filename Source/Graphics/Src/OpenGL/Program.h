@@ -146,7 +146,7 @@ public:
 		return reinterpret_cast<SEHandle>(m_nProgram);
 	}
 
-	virtual _CSEProgram* Init(SEUInt nProgram, SSE_UNIFORM* pUniform)
+	virtual _CSEProgram* Init(SEUInt nProgram, SSE_UNIFORM_DESC* pUniform)
 	{
 		m_nID = 0;
 		m_nProgram = nProgram;
@@ -163,6 +163,96 @@ public:
 		glUseProgram(m_nProgram);
 	}
 
+	virtual SEVoid SetUniform(ESE_UNIFORM_TYPE eType, SEInt nLocation, SEInt nLength, SEVoid* pData)
+	{
+		switch (eType)
+		{
+		case ESE_UNIFORM_FLOAT:
+			glUniform1fv(nLocation, nLength, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT2:
+			glUniform2fv(nLocation, nLength, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT3:
+			glUniform3fv(nLocation, nLength, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT4:
+			glUniform4fv(nLocation, nLength, reinterpret_cast<SEFloat*>(pData));
+			break;
+
+		case ESE_UNIFORM_INT:
+			glUniform1iv(nLocation, nLength, reinterpret_cast<SEInt*>(pData));
+			break;
+		case ESE_UNIFORM_INT2:
+			glUniform2iv(nLocation, nLength, reinterpret_cast<SEInt*>(pData));
+			break;
+		case ESE_UNIFORM_INT3:
+			glUniform3iv(nLocation, nLength, reinterpret_cast<SEInt*>(pData));
+			break;
+		case ESE_UNIFORM_INT4:
+			glUniform4iv(nLocation, nLength, reinterpret_cast<SEInt*>(pData));
+			break;
+
+		case ESE_UNIFORM_UINT:
+			glUniform1uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+		case ESE_UNIFORM_UINT2:
+			glUniform2uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+		case ESE_UNIFORM_UINT3:
+			glUniform3uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+		case ESE_UNIFORM_UINT4:
+			glUniform4uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+
+		case ESE_UNIFORM_BOOL:
+			glUniform1uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+		case ESE_UNIFORM_BOOL2:
+			glUniform2uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+		case ESE_UNIFORM_BOOL3:
+			glUniform3uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+		case ESE_UNIFORM_BOOL4:
+			glUniform4uiv(nLocation, nLength, reinterpret_cast<SEUInt*>(pData));
+			break;
+
+		case ESE_UNIFORM_FLOAT2X2:
+			glUniformMatrix2fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT2X3:
+			glUniformMatrix2x3fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT2X4:
+			glUniformMatrix2x4fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+
+		case ESE_UNIFORM_FLOAT3X2:
+			glUniformMatrix3x2fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT3X3:
+			glUniformMatrix3fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT3X4:
+			glUniformMatrix3x4fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+
+		case ESE_UNIFORM_FLOAT4X2:
+			glUniformMatrix4x2fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT4X3:
+			glUniformMatrix4x3fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		case ESE_UNIFORM_FLOAT4X4:
+			glUniformMatrix4fv(nLocation, nLength, SEFalse, reinterpret_cast<SEFloat*>(pData));
+			break;
+		default:
+			break;
+		}
+	}
+
 	virtual SEInt GetBinary(SEUInt nFormat, SEInt nBufferSize, SEVoid* pBuffer)
 	{
 		SEInt nLength = 0;
@@ -172,7 +262,7 @@ public:
 		return nLength;
 	}
 
-	virtual SEConst SSE_UNIFORM* GetUniform()
+	virtual SEConst SSE_UNIFORM_DESC* GetUniformDesc()
 	{
 		return m_pUniform;
 	}
@@ -233,7 +323,7 @@ public:
 
 	SEUInt m_nProgram;
 
-	SSE_UNIFORM* m_pUniform;
+	SSE_UNIFORM_DESC* m_pUniform;
 
 	SEInt m_nRefCount;
 

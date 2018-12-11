@@ -141,7 +141,7 @@ public:
 			}
 		}
 
-		SSE_UNIFORM* pUniform = GetUniform(nProgram);
+		SSE_UNIFORM_DESC* pUniform = GetUniform(nProgram);
 
 		return _CSEProgram::Cache().Cache()->Init(nProgram, pUniform);
 	}
@@ -181,13 +181,13 @@ public:
 			return nullptr;
 		}
 
-		SSE_UNIFORM* pUniform = GetUniform(nProgram);
+		SSE_UNIFORM_DESC* pUniform = GetUniform(nProgram);
 
 		return _CSEProgram::Cache().Cache()->Init(nProgram, pUniform);
 	}
 
 protected:
-	SSE_UNIFORM* GetUniform(SEUInt nProgram)
+	SSE_UNIFORM_DESC* GetUniform(SEUInt nProgram)
 	{
 		// https://blog.csdn.net/csxiaoshui/article/details/32101977
 
@@ -206,14 +206,14 @@ protected:
 		SEInt nNameMax = nBlockMaxName > nUniformMaxName ? nBlockMaxName : nUniformMaxName;
 		SEInt nStructSize = 0;
 
-		nStructSize += sizeof(SSE_UNIFORM);
+		nStructSize += sizeof(SSE_UNIFORM_DESC);
 		nStructSize += nNameMax * nUniformCount;
 		nStructSize += nNameMax * nBlockCount;
-		nStructSize += sizeof(SSE_UNIFORM::BLOCK) * nBlockCount;
+		nStructSize += sizeof(SSE_UNIFORM_DESC::BLOCK) * nBlockCount;
 		nStructSize += 4 * nUniformCount * 7;
 
 		SEChar* pMemory = reinterpret_cast<SEChar*>(ISEMemory::Get()->Malloc(nStructSize));
-		SSE_UNIFORM* pAttachment = reinterpret_cast<SSE_UNIFORM*>(pMemory); pMemory += sizeof(SSE_UNIFORM);
+		SSE_UNIFORM_DESC* pAttachment = reinterpret_cast<SSE_UNIFORM_DESC*>(pMemory); pMemory += sizeof(SSE_UNIFORM_DESC);
 
 		pAttachment->m_nStructSize = nStructSize;
 		pAttachment->m_nUniformCount = nUniformCount;
@@ -221,14 +221,14 @@ protected:
 		pAttachment->m_nNameMax = nNameMax;
 		pAttachment->m_aUniformName = pMemory; pMemory += nNameMax * nUniformCount;
 		pAttachment->m_aBlockName = pMemory; pMemory += nNameMax * nBlockCount;
-		pAttachment->m_aBlock = reinterpret_cast<SSE_UNIFORM::BLOCK*>(pMemory); pMemory += sizeof(SSE_UNIFORM::BLOCK) * nBlockCount;
+		pAttachment->m_aBlock = reinterpret_cast<SSE_UNIFORM_DESC::BLOCK*>(pMemory); pMemory += sizeof(SSE_UNIFORM_DESC::BLOCK) * nBlockCount;
 		pAttachment->m_aType = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
-		pAttachment->m_aSize = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
+		pAttachment->m_aLength = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
 		pAttachment->m_aBlockIndex = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
 		pAttachment->m_aOffset = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
 		pAttachment->m_aArrayStride = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
 		pAttachment->m_aMatrixStride = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
-		pAttachment->m_aIsRowMajor = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
+		pAttachment->m_aSize = reinterpret_cast<SEInt*>(pMemory); pMemory += 4 * nUniformCount;
 
 		if (nStructSize != (pMemory - reinterpret_cast<SEChar*>(pAttachment)))
 		{
@@ -243,12 +243,12 @@ protected:
 		}
 
 		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_TYPE, pAttachment->m_aType);
-		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_SIZE, pAttachment->m_aSize);
+		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_SIZE, pAttachment->m_aLength);
 		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_BLOCK_INDEX, pAttachment->m_aBlockIndex);
 		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_OFFSET, pAttachment->m_aOffset);
 		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_ARRAY_STRIDE, pAttachment->m_aArrayStride);
 		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_MATRIX_STRIDE, pAttachment->m_aMatrixStride);
-		glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_IS_ROW_MAJOR, pAttachment->m_aIsRowMajor);
+		//glGetActiveUniformsiv(nProgram, nUniformCount, aIndex, GL_UNIFORM_IS_ROW_MAJOR, pAttachment->m_aIsRowMajor);
 
 		SEInt nBlockUniformStart = 0;
 		
@@ -258,37 +258,45 @@ protected:
 			
 			ConvertUniformType(pAttachment->m_aType[i]);
 
+			pAttachment->m_aSize[i] = m_aSizeLut[pAttachment->m_aType[i]];
+
 			if (0 > pAttachment->m_aBlockIndex[i])
 			{
 				nBlockUniformStart = i + 1;
+				pAttachment->m_aOffset[i] = pAttachment->m_nSingleSize;
 				pAttachment->m_nSingleSize += m_aSizeLut[pAttachment->m_aType[i]];
+				pAttachment->m_aBlockIndex[i] = glGetUniformLocation(nProgram, (pAttachment->m_aUniformName + nNameMax * i));
 			}
 		}
 
 		pAttachment->m_nSingleCount = nBlockUniformStart;
+		pAttachment->m_nTotalSize = pAttachment->m_nSingleSize;
 
 		for (SEInt i = 0; i < nBlockCount; i++)
 		{
 			glGetActiveUniformBlockName(nProgram, i, nNameMax, nullptr, (pAttachment->m_aBlockName + nNameMax * i));
 			glGetActiveUniformBlockiv(nProgram, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &pAttachment->m_aBlock[i].m_nUniformCount);
 			glGetActiveUniformBlockiv(nProgram, i, GL_UNIFORM_BLOCK_DATA_SIZE, &pAttachment->m_aBlock[i].m_nSize);
+			glGetActiveUniformBlockiv(nProgram, i, GL_UNIFORM_BLOCK_BINDING, &pAttachment->m_aBlock[i].m_nSlot);
 
 			pAttachment->m_aBlock[i].m_nStartUniform = nBlockUniformStart;
+			pAttachment->m_aBlock[i].m_nOffset = pAttachment->m_nTotalSize;
+			pAttachment->m_nTotalSize += pAttachment->m_aBlock[i].m_nSize;
 			nBlockUniformStart += pAttachment->m_aBlock[i].m_nUniformCount;
 		}
 
 		for (SEInt i = 0; i < pAttachment->m_nSingleCount; i++)
 		{
-			printf("name: %s, %d \n", (pAttachment->m_aUniformName + (nNameMax * i)), pAttachment->m_nSingleSize);
+			printf("%s, %d, %d, %d \n", (pAttachment->m_aUniformName + (nNameMax * i)), pAttachment->m_aBlockIndex[i], pAttachment->m_aOffset[i], pAttachment->m_aSize[i]);
 		}
 
 		for (SEInt i = 0; i < nBlockCount; i++)
 		{
-			SSE_UNIFORM::BLOCK& mBlock = pAttachment->m_aBlock[i];
+			SSE_UNIFORM_DESC::BLOCK& mBlock = pAttachment->m_aBlock[i];
 
 			for (SEInt j = mBlock.m_nStartUniform; j < mBlock.m_nStartUniform + mBlock.m_nUniformCount; j++)
 			{
-				printf("block: %s, %d name: %s \n", (pAttachment->m_aBlockName + (nNameMax * i)), mBlock.m_nSize, (pAttachment->m_aUniformName + (nNameMax * j)));
+				printf("%s, %d, %d, %d  Var: %s %d %d \n", (pAttachment->m_aBlockName + (nNameMax * i)), mBlock.m_nOffset, mBlock.m_nSize, mBlock.m_nSlot, (pAttachment->m_aUniformName + (nNameMax * j)), pAttachment->m_aOffset[j], pAttachment->m_aBlockIndex[j]);
 			}
 		}
 

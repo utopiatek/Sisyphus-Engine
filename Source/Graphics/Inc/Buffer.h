@@ -54,6 +54,12 @@ public:
 	virtual SEVoid BindAsCBuffer(SEInt nSlot) = 0;
 
 	/// <summary>
+	/// 将缓存作为常量缓存绑定到渲染管线。需要标记允许。
+	/// </summary>
+	/// <param name="nSlot">绑定端口号。</param>
+	virtual SEVoid BindAsCBuffer(SEInt nSlot, SEInt nOffset, SEInt nSize) = 0;
+
+	/// <summary>
 	/// 将缓存作为流输出缓存绑定到渲染管线。需要标记允许。
 	/// </summary>
 	/// <param name="nOffset">缓存起始地址偏移。</param>
