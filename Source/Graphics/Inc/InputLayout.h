@@ -95,7 +95,7 @@ struct ISEInputLayout::ELEMENT
 struct ISEInputLayout::DESC
 {
 	/// <summary>
-	/// 关联着色器程序。
+	/// 关联着色器程序，如果不为空则与着色器声明匹配绑定。
 	/// </summary>
 	ISEProgram* m_pProgram;
 

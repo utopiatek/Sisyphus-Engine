@@ -4,6 +4,7 @@
 
 
 #include "Request.h"
+#include "Mesh.h"
 #include "Material.h"
 
 
