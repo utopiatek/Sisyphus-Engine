@@ -6,6 +6,9 @@
 #include "Utility.h"
 
 
+//struct SSEQuaternion;
+
+
 struct SE_API SSEFloat4x4
 {
 public:
@@ -24,11 +27,17 @@ public:
 	SSEFloat4x4() {};
 
 public:
+	static SEVoid Inverse(SEConst SSEFloat4x4* pMatrixIn, SSEFloat4x4* pMatrixOut);
+
 	static SEVoid Multiply(SSEFloat4x4* pMatrix, SEConst SSEFloat4x4* pLeft, SEConst SSEFloat4x4* pRight);
 
 	static SEVoid LookAtLH(SSEFloat4x4* pMatrix, SEConst SSEFloat3* pEye, SEConst SSEFloat3* pFocus, SEConst SSEFloat3* pUp);
 
 	static SEVoid PerspectiveFovLH(SSEFloat4x4* pMatrix, SEFloat nFovAngleY, SEFloat nAspectRatio, SEFloat nNearZ, SEFloat nFarZ);
+
+	static SEBool Decompose(SSEFloat4x4* pMatrix, SSEFloat3* pTranslateOut, SSEQuaternion* pRotationOut, SSEFloat3* pScaleOut);
+
+	static SEVoid Transform();
 };
 
 

@@ -4,6 +4,7 @@
 
 
 #include "../Inc/Engine.h"
+#include <algorithm>
 
 #ifdef SE_WINDOWS_DESKTOP
 #elif defined(SE_EMSCRIPTEN_ASM) || defined(SE_EMSCRIPTEN_WASM)
