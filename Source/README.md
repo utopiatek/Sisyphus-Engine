@@ -202,3 +202,5 @@ https://developers.google.com/speed/webp/
 只持支持C++14
 ADD_DEFINITIONS(-DLIBRAW_BUILDLIB)
 ADD_DEFINITIONS(-DINITGUID)
+
+测试VS2019
