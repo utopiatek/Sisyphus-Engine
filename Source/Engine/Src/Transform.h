@@ -4,7 +4,7 @@
 
 
 #include "Stdafx.h"
-
+#include <math.h>
 
 class _CSETransform : public ISETransform
 {
@@ -32,7 +32,7 @@ public:
 			reinterpret_cast<_CSETransform*>(pParent)->AddChild(this);
 		}
 
-		m_pParent = pParent;
+		m_pParent = reinterpret_cast<_CSETransform*>(pParent);
 
 		if (bWorldStays)
 		{

@@ -11,7 +11,7 @@ LINK_DIRECTORIES(../Thirdparty/Lib/32/)
 else()
 LINK_DIRECTORIES(../Thirdparty/Lib/64/)
 endif()
-ADD_SUBDIRECTORY(FreeImage)
+#ADD_SUBDIRECTORY(FreeImage)
 
 #GL: https://github.com/KhronosGroup/OpenGL-Registry
 #GLEW: http://glew.sourceforge.net/

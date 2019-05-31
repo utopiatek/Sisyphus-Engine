@@ -124,7 +124,7 @@ public:
 				mElement.m_nOffset = 0;
 				mElement.m_nStride = m_aElement[i].m_nStride;
 				mElement.m_nInstanceCount = 0;
-				printf("Apply: %d, %d, %d %d \n", mElement.m_nSlot, mElement.m_nBufferOffset, mElement.m_nStride, mElement.m_eFormat);
+				//printf("Apply: %d, %d, %d %d \n", mElement.m_nSlot, mElement.m_nBufferOffset, mElement.m_nStride, mElement.m_eFormat);
 				nBufferOffset += mElement.m_nStride * m_aElement[i].m_nCount;
 			}
 		}
@@ -162,7 +162,7 @@ public:
 					{
 						SEUInt nBufferBegin = mDesc.m_aElement[i].m_nBufferOffset;
 						SEVoid* pData = reinterpret_cast<SEVoid*>(mDesc.m_aElement[i].m_pBuffer);
-						printf("Buffer: %d %d %d \n", nBufferBegin, nBufferEnd, (SEUInt)pData);
+						//printf("Buffer: %d %d %d \n", nBufferBegin, nBufferEnd, (SEUInt)pData);
 						memcpy(reinterpret_cast<SEChar*>(mData.m_pData) + nBufferBegin, pData, nBufferEnd - nBufferBegin);
 
 						nBufferEnd = nBufferBegin;

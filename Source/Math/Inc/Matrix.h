@@ -6,7 +6,7 @@
 #include "Utility.h"
 
 
-//struct SSEQuaternion;
+struct SSEQuaternion;
 
 
 struct SE_API SSEFloat4x4
